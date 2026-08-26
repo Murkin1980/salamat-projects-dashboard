@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "systemLibrary": "tabler-icons",
+  "brandLibrary": "simple-icons",
+  "entities": {
+    "project": "folder-code",
+    "ai_agent": "ai-agent",
+    "agent_group": "ai-agents",
+    "ai_gateway": "ai-gateway",
+    "code_ai": "code-ai",
+    "connection": "connection",
+    "api": "api",
+    "plugin": "plug-connected",
+    "database": "database",
+    "serverless": "serverless",
+    "server": "server",
+    "git_branch": "git-branch",
+    "pull_request": "git-pull-request",
+    "document": "file-text",
+    "evidence": "file-check",
+    "report": "report-analytics",
+    "history": "history",
+    "decision_gate": "route",
+    "human_approval": "user-check",
+    "security": "shield-check",
+    "settings": "settings"
+  },
+  "triage": {
+    "ACTION_NOW": "bolt",
+    "BLOCKED": "alert-triangle",
+    "READY": "circle-check",
+    "IN_PROGRESS": "player-play",
+    "VALIDATION": "flask",
+    "HOLD": "player-pause",
+    "DONE": "rosette-discount-check"
+  },
+  "brandNodes": [
+    "github",
+    "cloudflare",
+    "openai",
+    "figma",
+    "supabase",
+    "notion",
+    "whatsapp"
+  ]
+}
