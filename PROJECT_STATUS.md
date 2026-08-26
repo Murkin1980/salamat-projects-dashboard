@@ -3,7 +3,7 @@
 Decision: `NEW_REPOSITORY`
 
 Current checkpoint: `CP-02 — Static Triage Shell`
-Status: `READY`
+Status: `IN_PROGRESS`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -29,20 +29,28 @@ Evidence:
 - React Flow is explicitly restricted to presentation/control and may not become workflow truth/runtime;
 - `config/projects.json` contains the initial active-project registry fixture for the static shell.
 
-## Current work
-`CP-02 — Static Triage Shell`
+## CP-02 — Static Triage Shell
+Status: `IN_PROGRESS`
 
-Scope:
-- build responsive dashboard shell;
+Implemented:
+- React + TypeScript + Vite app scaffold;
+- responsive desktop/mobile shell;
 - Triage / Portfolio / Attention navigation;
-- render fixture data from `config/projects.json`;
-- desktop + mobile usability;
-- no live GitHub adapter yet.
+- fixture rendering from `config/projects.json`;
+- triage counts and filter pills;
+- project search;
+- summary KPI cards;
+- disabled future controls instead of fake functionality;
+- mobile navigation and single-column project layout.
+
+Verification pending:
+- dependency installation/build verification in an environment with npm registry access;
+- browser smoke check at desktop and mobile widths.
 
 ## Next
-`CP-03 — Project State Contract`
+`CP-03 — Project State Contract` only after CP-02 exit criteria are verified.
 
 ## Blocker
-None.
+No product blocker. Build verification is pending because the current execution environment did not complete npm dependency installation within the available run window.
 
 Last updated: 2026-08-26
