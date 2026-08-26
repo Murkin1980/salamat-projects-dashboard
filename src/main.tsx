@@ -1,21 +1,23 @@
 import { useMemo, useState } from 'react'
+import { createRoot } from 'react-dom/client'
 import {
   IconAlertTriangle,
   IconBolt,
-  IconCheck,
   IconCircleCheck,
   IconClock,
+  IconFlask,
   IconFolderCode,
   IconLayoutDashboard,
   IconListDetails,
   IconPlayerPause,
   IconPlayerPlay,
+  IconRosetteDiscountCheck,
   IconSearch,
   IconSettings,
   IconSparkles,
   IconTargetArrow,
-  IconTestPipe,
 } from '@tabler/icons-react'
+import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.json'
 import './styles.css'
 
@@ -32,18 +34,44 @@ type Project = {
 }
 
 const projects = projectRegistry.projects as Project[]
+const registryUpdatedAt = new Intl.DateTimeFormat('ru-RU').format(new Date(`${projectRegistry.updatedAt}T00:00:00`))
+
+const triageIcons = {
+  bolt: IconBolt,
+  'alert-triangle': IconAlertTriangle,
+  'circle-check': IconCircleCheck,
+  'player-play': IconPlayerPlay,
+  flask: IconFlask,
+  'player-pause': IconPlayerPause,
+  'rosette-discount-check': IconRosetteDiscountCheck,
+} as const
+
+function getTriageIcon(name: string) {
+  const Icon = triageIcons[name as keyof typeof triageIcons]
+  if (!Icon) throw new Error(`Unsupported triage icon in config/icon-map.json: ${name}`)
+  return Icon
+}
 
 const triageMeta: Record<TriageState, { label: string; className: string; Icon: typeof IconBolt }> = {
-  ACTION_NOW: { label: 'ACTION NOW', className: 'status-action', Icon: IconBolt },
-  BLOCKED: { label: 'BLOCKED', className: 'status-blocked', Icon: IconAlertTriangle },
-  READY: { label: 'READY', className: 'status-ready', Icon: IconCircleCheck },
-  IN_PROGRESS: { label: 'IN PROGRESS', className: 'status-progress', Icon: IconPlayerPlay },
-  VALIDATION: { label: 'VALIDATION', className: 'status-validation', Icon: IconTestPipe },
-  HOLD: { label: 'HOLD', className: 'status-hold', Icon: IconPlayerPause },
-  DONE: { label: 'DONE', className: 'status-done', Icon: IconCheck },
+  ACTION_NOW: { label: 'ACTION NOW', className: 'status-action', Icon: getTriageIcon(iconMap.triage.ACTION_NOW) },
+  BLOCKED: { label: 'BLOCKED', className: 'status-blocked', Icon: getTriageIcon(iconMap.triage.BLOCKED) },
+  READY: { label: 'READY', className: 'status-ready', Icon: getTriageIcon(iconMap.triage.READY) },
+  IN_PROGRESS: { label: 'IN PROGRESS', className: 'status-progress', Icon: getTriageIcon(iconMap.triage.IN_PROGRESS) },
+  VALIDATION: { label: 'VALIDATION', className: 'status-validation', Icon: getTriageIcon(iconMap.triage.VALIDATION) },
+  HOLD: { label: 'HOLD', className: 'status-hold', Icon: getTriageIcon(iconMap.triage.HOLD) },
+  DONE: { label: 'DONE', className: 'status-done', Icon: getTriageIcon(iconMap.triage.DONE) },
 }
 
 const triageOrder: TriageState[] = ['ACTION_NOW', 'BLOCKED', 'READY', 'IN_PROGRESS', 'VALIDATION', 'HOLD', 'DONE']
+
+function matchesQuery(project: Project, query: string) {
+  const normalized = query.trim().toLowerCase()
+  if (!normalized) return true
+  return [project.name, project.summary, project.currentStage ?? '', project.nextAction]
+    .join(' ')
+    .toLowerCase()
+    .includes(normalized)
+}
 
 function App() {
   const [view, setView] = useState<View>('triage')
@@ -57,16 +85,13 @@ function App() {
   }, [])
 
   const visibleProjects = useMemo(() => {
-    const normalized = query.trim().toLowerCase()
     return projects.filter((project) => {
       if (filter !== 'ALL' && project.triage !== filter) return false
-      if (!normalized) return true
-      return [project.name, project.summary, project.currentStage ?? '', project.nextAction]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalized)
+      return matchesQuery(project, query)
     })
   }, [filter, query])
+
+  const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [query])
 
   const attentionProjects = useMemo(
     () => projects.filter((project) => ['ACTION_NOW', 'BLOCKED', 'VALIDATION'].includes(project.triage)),
@@ -112,7 +137,7 @@ function App() {
 
         <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triage !== 'HOLD' && p.triage !== 'DONE').length} detail="в рабочем портфеле" />
-          <SummaryCard label="Требуют внимания" value={counts.ACTION_NOW + counts.BLOCKED} detail="action / blocked" tone="critical" />
+          <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="action / blocked / validation" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
         </section>
@@ -130,11 +155,11 @@ function App() {
           </>
         )}
 
-        {view === 'portfolio' && <ProjectGrid projects={visibleProjects} />}
+        {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} />}
 
         {view === 'attention' && (
           <section className="attention-list">
-            {attentionProjects.filter(project => !query || project.name.toLowerCase().includes(query.toLowerCase())).map((project) => (
+            {attentionProjects.filter((project) => matchesQuery(project, query)).map((project) => (
               <article key={project.id} className="attention-row">
                 <StatusBadge state={project.triage}/>
                 <div>
@@ -180,7 +205,7 @@ function ProjectCard({ project }: { project: Project }) {
         <div><dt>Следующее действие</dt><dd>{project.nextAction}</dd></div>
       </dl>
       <div className="project-footer">
-        <span><IconClock size={16}/> Registry 26.08.2026</span>
+        <span><IconClock size={16}/> Registry updated {registryUpdatedAt}</span>
         <button type="button" disabled title="Continue станет активным после Codex App Server experiment">Continue</button>
       </div>
     </article>
@@ -194,3 +219,5 @@ function StatusBadge({ state }: { state: TriageState }) {
 }
 
 export default App
+
+createRoot(document.getElementById('root')!).render(<App />)

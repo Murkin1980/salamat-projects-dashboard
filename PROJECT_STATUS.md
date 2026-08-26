@@ -2,8 +2,8 @@
 
 Decision: `NEW_REPOSITORY`
 
-Current checkpoint: `CP-02 — Static Triage Shell`
-Status: `IN_PROGRESS`
+Current checkpoint: `CP-03 — Project State Contract`
+Status: `READY`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -30,7 +30,7 @@ Evidence:
 - `config/projects.json` contains the initial active-project registry fixture for the static shell.
 
 ## CP-02 — Static Triage Shell
-Status: `IN_PROGRESS`
+Status: `PASS`
 
 Implemented:
 - React + TypeScript + Vite app scaffold;
@@ -43,14 +43,21 @@ Implemented:
 - disabled future controls instead of fake functionality;
 - mobile navigation and single-column project layout.
 
-Verification pending:
-- dependency installation/build verification in an environment with npm registry access;
-- browser smoke check at desktop and mobile widths.
+Verification evidence:
+- `npm install` completed with 0 vulnerabilities;
+- `npm run build` passed (`tsc -b && vite build`, Vite 7.3.6);
+- browser smoke check passed at desktop `1440x1000` and mobile `390x844`;
+- Triage navigation, all seven filters, fixture counts, KPI cards, search by project and next action, Portfolio and Attention views were exercised;
+- Portfolio does not inherit the hidden Triage filter;
+- mobile document width equals the viewport width (`390px`), with no horizontal page overflow;
+- future Roadmap / Reports / Settings / Continue controls remain disabled and honestly labelled;
+- fixture data is read from `config/projects.json`; canonical triage icons are read from `config/icon-map.json`;
+- no live GitHub integration or workflow runtime is present.
 
 ## Next
-`CP-03 — Project State Contract` only after CP-02 exit criteria are verified.
+`CP-03 — Project State Contract`.
 
 ## Blocker
-No product blocker. Build verification is pending because the current execution environment did not complete npm dependency installation within the available run window.
+None.
 
 Last updated: 2026-08-26
