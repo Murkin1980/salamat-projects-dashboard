@@ -19,23 +19,17 @@ import {
 } from '@tabler/icons-react'
 import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.json'
+import {
+  parseProjectRegistry,
+  type ProjectState,
+  type TriageState,
+} from './contract/project-state'
 import './styles.css'
 
-type TriageState = 'ACTION_NOW' | 'BLOCKED' | 'READY' | 'IN_PROGRESS' | 'VALIDATION' | 'HOLD' | 'DONE'
 type View = 'triage' | 'portfolio' | 'attention'
 
-type Project = {
-  id: string
-  name: string
-  triage: TriageState
-  summary: string
-  currentStage?: string
-  nextAction: string
-}
-
-const projects = projectRegistry.projects as Project[]
-const registryUpdatedAt = new Intl.DateTimeFormat('ru-RU').format(new Date(`${projectRegistry.updatedAt}T00:00:00`))
-
+const registry = parseProjectRegistry(projectRegistry)
+const projects = registry.projects
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
@@ -64,10 +58,10 @@ const triageMeta: Record<TriageState, { label: string; className: string; Icon: 
 
 const triageOrder: TriageState[] = ['ACTION_NOW', 'BLOCKED', 'READY', 'IN_PROGRESS', 'VALIDATION', 'HOLD', 'DONE']
 
-function matchesQuery(project: Project, query: string) {
+function matchesQuery(project: ProjectState, query: string) {
   const normalized = query.trim().toLowerCase()
   if (!normalized) return true
-  return [project.name, project.summary, project.currentStage ?? '', project.nextAction]
+  return [project.name, project.summary, project.stage ?? '', project.nextAction ?? '']
     .join(' ')
     .toLowerCase()
     .includes(normalized)
@@ -80,13 +74,15 @@ function App() {
 
   const counts = useMemo(() => {
     const base = Object.fromEntries(triageOrder.map((state) => [state, 0])) as Record<TriageState, number>
-    projects.forEach((project) => { base[project.triage] += 1 })
+    projects.forEach((project) => {
+      if (project.triageState) base[project.triageState] += 1
+    })
     return base
   }, [])
 
   const visibleProjects = useMemo(() => {
     return projects.filter((project) => {
-      if (filter !== 'ALL' && project.triage !== filter) return false
+      if (filter !== 'ALL' && project.triageState !== filter) return false
       return matchesQuery(project, query)
     })
   }, [filter, query])
@@ -94,7 +90,8 @@ function App() {
   const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [query])
 
   const attentionProjects = useMemo(
-    () => projects.filter((project) => ['ACTION_NOW', 'BLOCKED', 'VALIDATION'].includes(project.triage)),
+    () => projects.filter((project) => project.triageState === null
+      || ['ACTION_NOW', 'BLOCKED', 'VALIDATION'].includes(project.triageState)),
     [],
   )
 
@@ -118,7 +115,7 @@ function App() {
         </nav>
         <div className="sidebar-note">
           <IconSparkles size={18}/>
-          <span>CP-02 Static Triage Shell</span>
+          <span>CP-03 Project State Contract</span>
         </div>
       </aside>
 
@@ -136,7 +133,7 @@ function App() {
         </header>
 
         <section className="summary-grid" aria-label="Сводка">
-          <SummaryCard label="Активные" value={projects.filter(p => p.triage !== 'HOLD' && p.triage !== 'DONE').length} detail="в рабочем портфеле" />
+          <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="action / blocked / validation" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
@@ -161,12 +158,12 @@ function App() {
           <section className="attention-list">
             {attentionProjects.filter((project) => matchesQuery(project, query)).map((project) => (
               <article key={project.id} className="attention-row">
-                <StatusBadge state={project.triage}/>
+                <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
                 <div>
                   <strong>{project.name}</strong>
-                  <p>{project.nextAction}</p>
+                  <p>{project.nextAction ?? 'Следующее действие не определено'}</p>
                 </div>
-                <span className="attention-stage">{project.currentStage ?? 'Stage not normalized yet'}</span>
+                <span className="attention-stage">{project.stage ?? 'Stage is explicitly unknown'}</span>
               </article>
             ))}
           </section>
@@ -180,7 +177,7 @@ function SummaryCard({ label, value, detail, tone = 'neutral' }: { label: string
   return <article className={`summary-card ${tone}`}><span>{label}</span><strong>{value}</strong><small>{detail}</small></article>
 }
 
-function ProjectGrid({ projects }: { projects: Project[] }) {
+function ProjectGrid({ projects }: { projects: ProjectState[] }) {
   if (!projects.length) return <div className="empty-state">Ничего не найдено по текущему фильтру.</div>
   return (
     <section className="project-grid">
@@ -189,30 +186,33 @@ function ProjectGrid({ projects }: { projects: Project[] }) {
   )
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project }: { project: ProjectState }) {
   return (
     <article className="project-card">
       <div className="project-card-head">
         <div className="project-icon"><IconFolderCode size={22}/></div>
-        <StatusBadge state={project.triage}/>
+        <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
       </div>
       <div className="project-body">
         <h2>{project.name}</h2>
         <p>{project.summary}</p>
       </div>
       <dl className="project-meta">
-        <div><dt>Текущий этап</dt><dd>{project.currentStage ?? 'Будет нормализован на CP-03'}</dd></div>
-        <div><dt>Следующее действие</dt><dd>{project.nextAction}</dd></div>
+        <div><dt>Текущий этап</dt><dd>{project.stage ?? 'Неизвестно по fixture source'}</dd></div>
+        <div><dt>Следующее действие</dt><dd>{project.nextAction ?? 'Не определено источником'}</dd></div>
       </dl>
       <div className="project-footer">
-        <span><IconClock size={16}/> Registry updated {registryUpdatedAt}</span>
+        <span><IconClock size={16}/> {project.source.id} · {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
         <button type="button" disabled title="Continue станет активным после Codex App Server experiment">Continue</button>
       </div>
     </article>
   )
 }
 
-function StatusBadge({ state }: { state: TriageState }) {
+function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | null; resolution?: 'KNOWN' | 'UNKNOWN' | 'CONFLICT' }) {
+  if (state === null) {
+    return <span className="status-badge status-hold"><IconAlertTriangle size={15}/>{resolution === 'CONFLICT' ? 'SOURCE CONFLICT' : 'STATUS UNKNOWN'}</span>
+  }
   const meta = triageMeta[state]
   const Icon = meta.Icon
   return <span className={`status-badge ${meta.className}`}><Icon size={15}/>{meta.label}</span>

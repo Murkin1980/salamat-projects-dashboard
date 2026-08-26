@@ -1,17 +1,21 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "1.0.0",
   "id": "business-discovery",
   "name": "Business Discovery",
-  "repo": "Murkin1980/business-discovery",
-  "triageState": "VALIDATION",
+  "summary": "Evidence-backed business discovery and audit engine.",
+  "repo": null,
+  "triageState": "ACTION_NOW",
+  "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
   "stage": "Stage 5 — Auditor MVP",
-  "checkpoint": "Stage 4 PASS",
-  "progress": {"completed": 4, "total": 8},
+  "checkpoint": null,
+  "progress": null,
   "lastUpdated": "2026-08-26",
   "blocker": null,
-  "nextAction": "Replay Pilot",
+  "nextAction": "Build Auditor MVP, then run Replay Pilot.",
   "evidenceLinks": [],
   "dependencies": [],
   "tools": [],
-  "approvals": []
+  "approvals": [],
+  "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+  "staleAfterDays": 7
 }

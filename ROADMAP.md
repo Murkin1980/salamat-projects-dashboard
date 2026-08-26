@@ -3,8 +3,8 @@
 1. CP-00 Repository Foundation — PASS
 2. CP-01 Visual System — PASS
 3. CP-02 Static Triage Shell — PASS
-4. CP-03 Project State Contract — READY
-5. CP-04 GitHub/MPE Source Adapter
+4. CP-03 Project State Contract — PASS
+5. CP-04 GitHub/MPE Source Adapter — READY
 6. CP-05 Live Triage
 7. CP-06 Flow / Nodes MVP
 8. CP-07 History & Reports
