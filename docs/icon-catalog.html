@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projects Dashboard — Icon Catalog v0</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#16181d;background:#f6f7f9}body{margin:0;padding:28px}main{max-width:1180px;margin:auto}h1{margin:0 0 8px;font-size:28px}p{color:#626773}.note{padding:14px 16px;background:#fff;border:1px solid #e2e5ea;border-radius:14px;margin:16px 0 26px}.section{margin:28px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.card{background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:16px;min-height:112px;display:flex;flex-direction:column;justify-content:space-between}.icon{width:34px;height:34px;object-fit:contain}.brand{width:34px;height:34px}.name{font-weight:650;font-size:14px;margin-top:14px}.src{font-size:11px;color:#858b96}.swatches{display:flex;gap:10px;flex-wrap:wrap}.badge{padding:9px 12px;border:1px solid #dfe3e8;border-radius:999px;background:#fff;font-size:13px}.action{border-color:#efb3ae}.blocked{border-color:#efb3ae}.ready{border-color:#b8dfc5}.progress{border-color:#b9c9ef}.validation{border-color:#d3bceb}.hold{border-color:#d7d9dd}.done{border-color:#b8dfc5}@media(max-width:520px){body{padding:16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head><body><main>
+<h1>Icon Catalog v0</h1>
+<p>Визуальный лист для nodes / files / tools / statuses. Primary: Tabler Icons. Brands: Simple Icons.</p>
+<div class="note"><strong>Правило:</strong> тип ноды задаёт иконку; operational state задаётся badge/border/status-dot. Node View не является workflow runtime.</div>
+<div class="section"><h2>Triage states</h2><div class="swatches"><span class="badge action">ACTION NOW</span><span class="badge blocked">BLOCKED</span><span class="badge ready">READY</span><span class="badge progress">IN PROGRESS</span><span class="badge validation">VALIDATION</span><span class="badge hold">HOLD</span><span class="badge done">DONE</span></div></div>
+<div id="catalog"></div>
+<script>
+const tabler='https://cdn.jsdelivr.net/npm/@tabler/icons@3.46.0/icons/outline/';
+const simple='https://cdn.simpleicons.org/';
+const sections={
+'Projects & Work':['folder','folder-code','briefcase','road','target-arrow','checklist','progress'],
+'Agents & AI':['ai-agent','ai-agents','ai-gateway','robot','brain','sparkles','code-ai'],
+'Data & Infrastructure':['database','server','serverless','cloud','api','connection','network','webhook'],
+'Code & Delivery':['brand-github','git-branch','git-pull-request','git-pull-request-conflict','code','terminal-2','rocket'],
+'Files & Evidence':['file','file-text','file-code','file-description','file-report','photo','table','json'],
+'Control & Governance':['shield-check','lock','user-check','alert-triangle','player-pause','ban','settings','adjustments']};
+const brands=['github','cloudflare','openai','figma','supabase','notion','whatsapp','google','slack'];
+const root=document.getElementById('catalog');
+for(const [title,icons] of Object.entries(sections)){
+ const s=document.createElement('section');s.className='section';s.innerHTML='<h2>'+title+'</h2><div class="grid"></div>';
+ const g=s.querySelector('.grid');
+ for(const n of icons){const c=document.createElement('div');c.className='card';c.innerHTML='<img class="icon" alt="" src="'+tabler+n+'.svg"><div><div class="name">'+n+'</div><div class="src">Tabler</div></div>';g.appendChild(c)}root.appendChild(s)}
+const s=document.createElement('section');s.className='section';s.innerHTML='<h2>Brand / Service Nodes</h2><div class="grid"></div>';const g=s.querySelector('.grid');
+for(const n of brands){const c=document.createElement('div');c.className='card';c.innerHTML='<img class="brand" alt="" src="'+simple+n+'"><div><div class="name">'+n+'</div><div class="src">Simple Icons</div></div>';g.appendChild(c)}root.appendChild(s);
+</script></main></body></html>
