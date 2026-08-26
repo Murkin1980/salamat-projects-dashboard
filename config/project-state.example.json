@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "business-discovery",
+  "name": "Business Discovery",
+  "repo": "Murkin1980/business-discovery",
+  "triageState": "VALIDATION",
+  "stage": "Stage 5 — Auditor MVP",
+  "checkpoint": "Stage 4 PASS",
+  "progress": {"completed": 4, "total": 8},
+  "lastUpdated": "2026-08-26",
+  "blocker": null,
+  "nextAction": "Replay Pilot",
+  "evidenceLinks": [],
+  "dependencies": [],
+  "tools": [],
+  "approvals": []
+}
