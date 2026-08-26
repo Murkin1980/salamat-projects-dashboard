@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-26",
+  "projects": [
+    {
+      "id": "murat-project-engineer",
+      "name": "Murat Project Engineer",
+      "triage": "ACTION_NOW",
+      "summary": "Portfolio engineering, gates, experiments and project governance.",
+      "nextAction": "Advance the current checkpoint / experiment from the active roadmap."
+    },
+    {
+      "id": "business-discovery",
+      "name": "Business Discovery",
+      "triage": "ACTION_NOW",
+      "summary": "Evidence-backed business discovery and audit engine.",
+      "currentStage": "Stage 5 — Auditor MVP",
+      "nextAction": "Build Auditor MVP, then run Replay Pilot."
+    },
+    {
+      "id": "salamat-projects-dashboard",
+      "name": "Salamat Projects Dashboard",
+      "triage": "ACTION_NOW",
+      "summary": "Live portfolio triage and node-flow dashboard.",
+      "currentStage": "CP-01 — Visual System",
+      "nextAction": "Proceed to CP-02 Static Triage Shell after CP-01 PASS."
+    },
+    {
+      "id": "mebelflow-ai",
+      "name": "MebelFlow AI",
+      "triage": "IN_PROGRESS",
+      "summary": "Furniture workflow and design automation experiments.",
+      "nextAction": "Close remaining live gates and continue pilot work."
+    },
+    {
+      "id": "murat-ads-control",
+      "name": "Murat Ads Control",
+      "triage": "IN_PROGRESS",
+      "summary": "Google Ads control and optimization layer for furniture brands.",
+      "nextAction": "Continue real campaign validation and control-loop work."
+    },
+    {
+      "id": "interactive-kp",
+      "name": "Interactive KP",
+      "triage": "IN_PROGRESS",
+      "summary": "Interactive commercial proposals and Qulpinay Style offers.",
+      "nextAction": "Continue production use and iterative improvements."
+    },
+    {
+      "id": "mebellegal-kz",
+      "name": "MebelLegal KZ",
+      "triage": "VALIDATION",
+      "summary": "Furniture legal/document workflow for Kazakhstan.",
+      "nextAction": "Validate against real contracts and document cases."
+    },
+    {
+      "id": "whatsapp-sales-agent",
+      "name": "WhatsApp Sales Agent",
+      "triage": "VALIDATION",
+      "summary": "AI sales assistant for WhatsApp furniture leads.",
+      "nextAction": "Validate stable end-to-end behavior on real leads."
+    },
+    {
+      "id": "tender-assistant",
+      "name": "Tender Assistant",
+      "triage": "READY",
+      "summary": "Furniture tender monitoring and entrepreneur assistance.",
+      "nextAction": "Start monitoring-first MVP for Almaty furniture tenders."
+    },
+    {
+      "id": "etsy-market-research",
+      "name": "Etsy Market Research",
+      "triage": "HOLD",
+      "summary": "Market research exploration for Etsy opportunities.",
+      "nextAction": "Resume only after higher-priority portfolio work allows it."
+    }
+  ]
+}
