@@ -92,24 +92,24 @@
       "triageState": "READY",
       "triageSource": {
         "status": "KNOWN",
-        "sourceId": "f30a16a9806f60f9060780e66e8265a4c043ae69:PROJECT_STATUS.md"
+        "sourceId": "ce5c48aeb21269c59a6d1e79d429d334df5db442:PROJECT_STATUS.md"
       },
       "stage": null,
-      "checkpoint": "CP-05 — Live Triage",
+      "checkpoint": "CP-06 — Flow / Nodes MVP",
       "progress": null,
       "lastUpdated": "2026-08-27",
       "blocker": null,
-      "nextAction": "CP-05 — Live Triage",
+      "nextAction": "CP-06 — Flow / Nodes MVP",
       "evidenceLinks": [
         {
           "label": "PROJECT_STATUS.md",
           "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
-          "sourceId": "f30a16a9806f60f9060780e66e8265a4c043ae69:PROJECT_STATUS.md"
+          "sourceId": "ce5c48aeb21269c59a6d1e79d429d334df5db442:PROJECT_STATUS.md"
         },
         {
           "label": "ROADMAP.md",
           "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/ROADMAP.md",
-          "sourceId": "80faa7dbad883111493235775ea24f4238c39ca4:ROADMAP.md"
+          "sourceId": "423614f65e5ef7ebe1dd6d3fa2c77364b3f40519:ROADMAP.md"
         }
       ],
       "dependencies": [],
