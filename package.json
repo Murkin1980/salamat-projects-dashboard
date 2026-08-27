@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "test": "tsx --test tests/**/*.test.ts",
     "sync:github": "tsx scripts/sync-github-projects.ts",
+    "sync:github:watch": "tsx scripts/sync-github-projects.ts --output config/projects.github.json --watch 60",
     "preview": "vite preview"
   },
   "dependencies": {

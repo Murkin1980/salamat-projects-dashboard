@@ -35,3 +35,14 @@ npm run sync:github -- --output config/projects.github.json
 Without `--output`, the validated normalized registry is written to stdout.
 `config/projects.github.json` is a committed reviewable snapshot so a clean
 checkout builds deterministically without requiring GitHub credentials.
+
+For CP-05 live triage, keep a terminal running:
+
+```powershell
+$env:GH_TOKEN = gh auth token
+npm run sync:github:watch
+```
+
+Each successful cycle atomically publishes the same schema-validated normalized
+registry to `public/project-state.json`. The browser polls that file and keeps
+the last valid state if a later request fails.

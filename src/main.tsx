@@ -12,6 +12,7 @@ import {
   IconPlayerPause,
   IconPlayerPlay,
   IconRosetteDiscountCheck,
+  IconRefresh,
   IconSearch,
   IconSettings,
   IconSparkles,
@@ -24,12 +25,13 @@ import {
   type ProjectState,
   type TriageState,
 } from './contract/project-state'
+import { useLiveRegistry } from './hooks/use-live-registry'
+import { deriveLiveProjectState } from './triage/live-triage'
 import './styles.css'
 
 type View = 'triage' | 'portfolio' | 'attention'
 
-const registry = parseProjectRegistry(projectRegistry)
-const projects = registry.projects
+const initialRegistry = parseProjectRegistry(projectRegistry)
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
@@ -71,6 +73,15 @@ function App() {
   const [view, setView] = useState<View>('triage')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<TriageState | 'ALL'>('ALL')
+  const { registry, refresh, refreshState, error, lastSuccessAt } = useLiveRegistry(initialRegistry)
+  const liveProjects = useMemo(
+    () => registry.projects.map((project) => deriveLiveProjectState(project, new Date())),
+    [registry],
+  )
+  const projects = useMemo(
+    () => liveProjects.map(({ project, effectiveTriageState }) => ({ ...project, triageState: effectiveTriageState })),
+    [liveProjects],
+  )
 
   const counts = useMemo(() => {
     const base = Object.fromEntries(triageOrder.map((state) => [state, 0])) as Record<TriageState, number>
@@ -78,22 +89,18 @@ function App() {
       if (project.triageState) base[project.triageState] += 1
     })
     return base
-  }, [])
+  }, [projects])
 
   const visibleProjects = useMemo(() => {
     return projects.filter((project) => {
       if (filter !== 'ALL' && project.triageState !== filter) return false
       return matchesQuery(project, query)
     })
-  }, [filter, query])
+  }, [filter, projects, query])
 
-  const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [query])
+  const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [projects, query])
 
-  const attentionProjects = useMemo(
-    () => projects.filter((project) => project.triageState === null
-      || ['ACTION_NOW', 'BLOCKED', 'VALIDATION'].includes(project.triageState)),
-    [],
-  )
+  const attentionProjects = useMemo(() => liveProjects.filter(({ attention }) => attention.length > 0), [liveProjects])
 
   return (
     <div className="app-shell">
@@ -115,7 +122,7 @@ function App() {
         </nav>
         <div className="sidebar-note">
           <IconSparkles size={18}/>
-          <span>CP-04 GitHub / MPE Source Adapter</span>
+          <span>CP-05 Live Triage</span>
         </div>
       </aside>
 
@@ -124,17 +131,26 @@ function App() {
           <div>
             <p className="eyebrow">Operational portfolio</p>
             <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : 'Attention'}</h1>
-            <p>Живой пульт проектов. Проверенные GitHub-состояния читаются из нормализованного CP-04 snapshot.</p>
+            <p>Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.</p>
           </div>
-          <label className="search-box">
-            <IconSearch size={19}/>
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" />
-          </label>
+          <div className="header-actions">
+            <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
+              <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
+              <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
+                <IconRefresh size={17} className={refreshState === 'REFRESHING' ? 'spinning' : ''}/>
+                {refreshState === 'REFRESHING' ? 'Обновление…' : 'Обновить'}
+              </button>
+            </div>
+            <label className="search-box">
+              <IconSearch size={19}/>
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" />
+            </label>
+          </div>
         </header>
 
         <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
-          <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="action / blocked / validation" tone="critical" />
+          <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
         </section>
@@ -156,14 +172,15 @@ function App() {
 
         {view === 'attention' && (
           <section className="attention-list">
-            {attentionProjects.filter((project) => matchesQuery(project, query)).map((project) => (
+            {attentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
               <article key={project.id} className="attention-row">
-                <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
+                <StatusBadge state={effectiveTriageState} resolution={project.triageSource.status}/>
                 <div>
                   <strong>{project.name}</strong>
-                  <p>{project.nextAction ?? 'Следующее действие не определено'}</p>
+                  <p>{attention.map((signal) => signal.label).join(' · ')}</p>
+                  <small>Источник: {attention.map((signal) => signal.sourceId).join(' · ')}</small>
                 </div>
-                <span className="attention-stage">{project.stage ?? 'Stage is explicitly unknown'}</span>
+                <span className="attention-stage">{attention.map((signal) => signal.kind.replaceAll('_', ' ')).join(' / ')}</span>
               </article>
             ))}
           </section>

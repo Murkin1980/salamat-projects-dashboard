@@ -29,6 +29,13 @@ button { cursor: pointer; }
 .eyebrow { margin:0 0 5px; text-transform:uppercase; letter-spacing:.12em; font-size:11px; color:#7c8798; font-weight:800; }
 h1 { margin:0; font-size:clamp(28px,4vw,44px); letter-spacing:-.045em; }
 .page-header p:not(.eyebrow) { margin:8px 0 0; max-width:760px; color:var(--muted); line-height:1.5; }
+.header-actions { min-width:280px; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.sync-state { display:flex; align-items:center; justify-content:flex-end; gap:10px; color:#5d6a7b; font-size:11px; }
+.sync-state button { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:#fff; color:#33445c; border-radius:10px; padding:7px 9px; }
+.sync-state button:disabled { cursor:wait; opacity:.65; }
+.sync-state.sync-error { color:#9a2830; }
+.spinning { animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
 .search-box { min-width:250px; display:flex; align-items:center; gap:8px; padding:0 13px; height:44px; border:1px solid var(--border); border-radius:14px; background:#fff; color:#7a8493; }
 .search-box input { border:0; outline:0; width:100%; min-width:0; background:transparent; font-size:16px; }
 .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
@@ -49,7 +56,7 @@ h1 { margin:0; font-size:clamp(28px,4vw,44px); letter-spacing:-.045em; }
 .project-body h2 { margin:0 0 7px; font-size:20px; letter-spacing:-.025em; }.project-body p { margin:0; color:var(--muted); line-height:1.5; font-size:14px; }
 .project-meta { margin:0; display:grid; gap:12px; }.project-meta div { padding-top:11px; border-top:1px solid #edf0f4; }.project-meta dt { color:#8a93a0; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }.project-meta dd { margin:5px 0 0; line-height:1.4; font-size:13px; }
 .project-footer { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px; }.project-footer span { color:#8a93a0; font-size:11px; display:flex; align-items:center; gap:5px; }.project-footer button { border:1px solid var(--border); background:#f5f6f8; border-radius:10px; padding:8px 10px; color:#9aa1aa; cursor:not-allowed; }
-.attention-list { display:grid; gap:10px; }.attention-row { display:grid; grid-template-columns:auto minmax(0,1fr) minmax(160px,auto); gap:14px; align-items:center; background:#fff; border:1px solid var(--border); border-radius:16px; padding:15px; }.attention-row strong { display:block; }.attention-row p { margin:4px 0 0; color:var(--muted); font-size:13px; }.attention-stage { color:#707a88; font-size:12px; text-align:right; }
+.attention-list { display:grid; gap:10px; }.attention-row { display:grid; grid-template-columns:auto minmax(0,1fr) minmax(160px,auto); gap:14px; align-items:center; background:#fff; border:1px solid var(--border); border-radius:16px; padding:15px; }.attention-row strong { display:block; }.attention-row p { margin:4px 0 0; color:var(--muted); font-size:13px; }.attention-row small { display:block; margin-top:5px; color:#8b94a1; font-size:10px; overflow-wrap:anywhere; }.attention-stage { color:#707a88; font-size:11px; font-weight:800; text-align:right; }
 .empty-state { border:1px dashed #cfd5df; border-radius:18px; padding:42px 20px; text-align:center; color:#7c8796; background:rgba(255,255,255,.5); }
 @media (max-width: 1100px) { .project-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width: 760px) {
@@ -61,6 +68,8 @@ h1 { margin:0; font-size:clamp(28px,4vw,44px); letter-spacing:-.045em; }
   .nav-list button:disabled, .sidebar-note { display:none; }
   .main-content { padding:20px 14px 40px; }
   .page-header { align-items:stretch; flex-direction:column; gap:16px; }
+  .header-actions { min-width:0; width:100%; align-items:stretch; }
+  .sync-state { justify-content:space-between; }
   .search-box { min-width:0; width:100%; }
   .summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
   .summary-card { padding:14px; min-height:104px; }.summary-card strong { font-size:28px; }

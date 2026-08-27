@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile, rename, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { tmpdir } from 'node:os'
@@ -174,24 +174,33 @@ function mergeSelected(
   }
 }
 
-function parseArgs(argv: string[]): { outputPath: string | null } {
+function parseArgs(argv: string[]): { outputPath: string | null; watchSeconds: number | null } {
   let outputPath: string | null = null
+  let watchSeconds: number | null = null
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i]
     if (arg === '--output') {
       outputPath = argv[i + 1]
       if (!outputPath) failClosed('--output requires a path')
       i += 1
+    } else if (arg === '--watch') {
+      const rawInterval = argv[i + 1]
+      watchSeconds = Number(rawInterval)
+      if (!rawInterval || !Number.isInteger(watchSeconds) || watchSeconds < 15) {
+        failClosed('--watch requires an integer interval of at least 15 seconds')
+      }
+      i += 1
     } else if (arg === '-h' || arg === '--help') {
       process.stdout.write(
-        'Usage: sync-github-projects.ts [--output <path>]\n',
+        'Usage: sync-github-projects.ts [--output <path>] [--watch <seconds>]\n',
       )
       process.exit(0)
     } else {
       failClosed(`unknown argument: ${arg}`)
     }
   }
-  return { outputPath }
+  if (watchSeconds !== null && outputPath === null) failClosed('--watch requires --output')
+  return { outputPath, watchSeconds }
 }
 
 function resolveSafeOutput(outputPath: string): string {
@@ -209,9 +218,13 @@ function resolveSafeOutput(outputPath: string): string {
   return resolved
 }
 
-async function main(): Promise<void> {
-  const { outputPath } = parseArgs(process.argv.slice(2))
-  const token = getToken()
+async function writeAtomic(outputPath: string, json: string): Promise<void> {
+  const temporaryPath = `${outputPath}.next`
+  await writeFile(temporaryPath, json, 'utf8')
+  await rename(temporaryPath, outputPath)
+}
+
+async function syncOnce(outputPath: string | null, token: string | null): Promise<void> {
 
   const sourceConfig = JSON.parse(
     await readFile(path.join(repoRoot, 'config', 'source-repositories.json'), 'utf8'),
@@ -291,10 +304,25 @@ async function main(): Promise<void> {
   const json = `${JSON.stringify(validated, null, 2)}\n`
 
   if (outputPath) {
-    await writeFile(resolveSafeOutput(outputPath), json, 'utf8')
+    const resolvedOutput = resolveSafeOutput(outputPath)
+    await writeAtomic(resolvedOutput, json)
+    if (resolvedOutput === path.join(repoRoot, 'config', 'projects.github.json')) {
+      await writeAtomic(path.join(repoRoot, 'public', 'project-state.json'), json)
+    }
   } else {
     process.stdout.write(json)
   }
+}
+
+async function main(): Promise<void> {
+  const { outputPath, watchSeconds } = parseArgs(process.argv.slice(2))
+  const token = getToken()
+  do {
+    await syncOnce(outputPath, token)
+    if (watchSeconds === null) return
+    process.stderr.write(`sync-github-projects: refreshed; next run in ${watchSeconds}s\n`)
+    await new Promise((resolve) => setTimeout(resolve, watchSeconds * 1_000))
+  } while (true)
 }
 
 main().catch((error) => failClosed('sync failed', error))

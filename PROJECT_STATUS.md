@@ -2,7 +2,7 @@
 
 Decision: `NEW_REPOSITORY`
 
-Current checkpoint: `CP-05 — Live Triage`
+Current checkpoint: `CP-06 — Flow / Nodes MVP`
 Status: `READY`
 
 ## CP-00 — Repository Foundation
@@ -92,8 +92,27 @@ Evidence:
 - adapter, contract and real-cache tests pass; the sync script is included in TypeScript build validation;
 - production build and browser smoke pass, including visible `STATUS UNKNOWN`, `SOURCE CONFLICT` and repository attribution.
 
+## CP-05 — Live Triage
+Status: `PASS`
+
+Disposition:
+- `EXTEND_EXISTING` — CP-05 extends the CP-04 adapter and the existing Triage/Attention views; no parallel service or repository was introduced.
+
+Evidence:
+- the read-only GitHub sync supports an operator-run watch interval and keeps credentials in process environment only;
+- each successful cycle schema-validates and atomically publishes normalized state to the committed cache and browser runtime snapshot;
+- the browser polls the runtime snapshot every 60 seconds and provides an explicit manual refresh;
+- refresh errors and invalid schemas fail visibly while preserving the last valid registry;
+- deterministic triage precedence applies unresolved source, blocker and pending-approval rules without writing back to source repositories;
+- Attention signals explain source conflict/unknown, blockers, pending approvals, staleness, ACTION_NOW and VALIDATION with source attribution;
+- 31 automated tests pass, including precedence, injected-clock staleness, HTTP failure and invalid runtime schema scenarios;
+- production TypeScript/Vite build passes;
+- a real GitHub watch run completed two consecutive cycles and published byte-identical validated cache/runtime snapshots;
+- desktop browser smoke shows live refresh state and ten projects; mobile at 390x844 has no horizontal overflow (`390/390`);
+- Codex Router delegation was attempted across four suitable OpenCode models, but final independent review was unavailable because all review attempts returned provider `429 Too Many Requests`.
+
 ## Next
-`CP-05 — Live Triage`.
+`CP-06 — Flow / Nodes MVP`.
 
 ## Blocker
 None.

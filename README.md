@@ -13,6 +13,22 @@ CP-04 consumes a committed normalized GitHub snapshot. Refresh it with a
 temporary `GH_TOKEN` or `GITHUB_TOKEN`; tokens and raw private content are never
 persisted. See `docs/GITHUB_SOURCE_ADAPTER.md`.
 
+## Live triage
+
+Run the UI and read-only source watcher in separate terminals:
+
+```powershell
+npm run dev
+```
+
+```powershell
+$env:GH_TOKEN = gh auth token
+npm run sync:github:watch
+```
+
+The browser polls the normalized runtime snapshot every 60 seconds. A failed or
+invalid refresh is shown explicitly while the last valid state remains visible.
+
 ## Read first
 1. `FOUNDATION.md`
 2. `AGENTS.md`
