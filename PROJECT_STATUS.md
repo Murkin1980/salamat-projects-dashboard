@@ -2,7 +2,7 @@
 
 Decision: `NEW_REPOSITORY`
 
-Current checkpoint: `CP-04 — GitHub/MPE Source Adapter`
+Current checkpoint: `CP-05 — Live Triage`
 Status: `READY`
 
 ## CP-00 — Repository Foundation
@@ -73,10 +73,29 @@ Evidence:
 - browser smoke check confirmed all ten normalized cards render and search by normalized `nextAction` works;
 - no GitHub adapter, live synchronization or workflow runtime was introduced.
 
+## CP-04 — GitHub/MPE Source Adapter
+Status: `PASS`
+
+Deep-change approval:
+- Murat explicitly approved the read-only GitHub/MPE Source Adapter for `murat-project-engineer`, `business-discovery` and `salamat-projects-dashboard` without token or raw private content persistence.
+
+Evidence:
+- repository metadata and approved status/roadmap artifacts are fetched read-only through the GitHub REST API;
+- `PROJECT_STATUS.md` has priority, `STATUS.md` is its fallback, and `ROADMAP.md` is supporting evidence only;
+- exact artifact SHAs and blob URLs remain attached to normalized evidence;
+- `murat-project-engineer` resolves honestly to `UNKNOWN` because its fallback status artifact lacks a canonical status label;
+- divergent Business Discovery status documents resolve to `CONFLICT` without guessing a triage state;
+- `salamat-projects-dashboard` resolves to canonical `READY`;
+- the UI consumes the committed normalized snapshot and remains buildable from a clean checkout without credentials;
+- tokens are read from environment variables only; raw repository content is processed in memory and is never persisted;
+- sync output is restricted to the canonical cache or a system temporary directory;
+- adapter, contract and real-cache tests pass; the sync script is included in TypeScript build validation;
+- production build and browser smoke pass, including visible `STATUS UNKNOWN`, `SOURCE CONFLICT` and repository attribution.
+
 ## Next
-`CP-04 — GitHub/MPE Source Adapter`.
+`CP-05 — Live Triage`.
 
 ## Blocker
 None.
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27

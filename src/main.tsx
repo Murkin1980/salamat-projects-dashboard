@@ -18,7 +18,7 @@ import {
   IconTargetArrow,
 } from '@tabler/icons-react'
 import iconMap from '../config/icon-map.json'
-import projectRegistry from '../config/projects.json'
+import projectRegistry from '../config/projects.github.json'
 import {
   parseProjectRegistry,
   type ProjectState,
@@ -115,7 +115,7 @@ function App() {
         </nav>
         <div className="sidebar-note">
           <IconSparkles size={18}/>
-          <span>CP-03 Project State Contract</span>
+          <span>CP-04 GitHub / MPE Source Adapter</span>
         </div>
       </aside>
 
@@ -124,7 +124,7 @@ function App() {
           <div>
             <p className="eyebrow">Operational portfolio</p>
             <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : 'Attention'}</h1>
-            <p>Живой пульт проектов. Сейчас данные читаются из локального registry; live GitHub подключится на CP-04/05.</p>
+            <p>Живой пульт проектов. Проверенные GitHub-состояния читаются из нормализованного CP-04 snapshot.</p>
           </div>
           <label className="search-box">
             <IconSearch size={19}/>
@@ -198,7 +198,7 @@ function ProjectCard({ project }: { project: ProjectState }) {
         <p>{project.summary}</p>
       </div>
       <dl className="project-meta">
-        <div><dt>Текущий этап</dt><dd>{project.stage ?? 'Неизвестно по fixture source'}</dd></div>
+        <div><dt>Текущий этап</dt><dd>{project.stage ?? 'Не определено источником'}</dd></div>
         <div><dt>Следующее действие</dt><dd>{project.nextAction ?? 'Не определено источником'}</dd></div>
       </dl>
       <div className="project-footer">

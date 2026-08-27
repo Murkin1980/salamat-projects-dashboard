@@ -9,6 +9,10 @@ A live control surface for Murat's active projects: triage, readiness, blockers,
 This repository is the UI/control-plane repository. It must NOT become the canonical source of project truth.
 Canonical project state remains in the project repositories and Murat Project Engineer (MPE) artifacts.
 
+CP-04 consumes a committed normalized GitHub snapshot. Refresh it with a
+temporary `GH_TOKEN` or `GITHUB_TOKEN`; tokens and raw private content are never
+persisted. See `docs/GITHUB_SOURCE_ADAPTER.md`.
+
 ## Read first
 1. `FOUNDATION.md`
 2. `AGENTS.md`

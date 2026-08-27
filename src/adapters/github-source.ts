@@ -18,9 +18,13 @@ export interface AlternateStatus {
 
 export interface RepositorySnapshot {
   projectId: string
+  name: string
+  summary: string
   repo: string
   defaultBranch: string
   headSha: string
+  /** Required ISO timestamp from the repository HEAD commit; never a sync clock. */
+  headCommittedAt: string
   retrievedAt: string
   artifacts: RepositoryArtifact[]
   alternateStatus?: AlternateStatus
@@ -88,6 +92,11 @@ function parseLabels(content: string): ParsedLabels {
   return result
 }
 
+function normalizeNullableText(value: string | null): string | null {
+  if (!value) return null
+  return /^(none|no blocker)[.!]?$/i.test(value.trim()) ? null : value.trim()
+}
+
 function mapStatus(raw: string | null): ProjectState['triageState'] {
   if (!raw) return null
   const upper = raw.toUpperCase().replace(/\s+/g, '_')
@@ -95,9 +104,11 @@ function mapStatus(raw: string | null): ProjectState['triageState'] {
 }
 
 function toIsoDate(raw: string | null, fallback: string): string {
-  if (!raw) return fallback
-  const match = raw.match(/(\d{4}-\d{2}-\d{2})/)
-  return match ? match[1] : fallback
+  const fallbackMatch = fallback.match(/(\d{4}-\d{2}-\d{2})/)
+  const match = raw?.match(/(\d{4}-\d{2}-\d{2})/)
+  if (match) return match[1]
+  if (fallbackMatch) return fallbackMatch[1]
+  throw new Error(`No attributable ISO date in status artifact or HEAD commit: ${fallback}`)
 }
 
 function buildEvidenceUrl(artifact: RepositoryArtifact, repo: string): string {
@@ -108,11 +119,11 @@ function buildEvidenceUrl(artifact: RepositoryArtifact, repo: string): string {
 // --- Main adapter ----------------------------------------------------------
 
 export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
-  const { projectId, repo, retrievedAt, artifacts, alternateStatus } = snapshot
+  const { projectId, name, summary, repo, headCommittedAt, artifacts, alternateStatus } = snapshot
 
   const primaryNames = ['PROJECT_STATUS.md', 'STATUS.md'] as const
   const primary = findArtifact(artifacts, primaryNames)
-  const roadmap = findArtifact(artifacts, ['ROADMAP.md'])
+  const roadmap = artifacts.find((artifact) => artifact.path === 'ROADMAP.md' || artifact.path.endsWith('/ROADMAP.md'))
 
   const primaryLabels = primary ? parseLabels(primary.content) : null
   // ROADMAP is supporting: only consulted when a primary status artifact exists
@@ -124,13 +135,14 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
   const rawStatus = primaryLabels?.status ?? roadmapLabels?.status ?? null
   const nextAction =
     primaryLabels?.nextAction ?? roadmapLabels?.nextAction ?? null
-  const blocker =
-    primaryLabels?.blocker ?? roadmapLabels?.blocker ?? null
+  const blocker = normalizeNullableText(
+    primaryLabels?.blocker ?? roadmapLabels?.blocker ?? null,
+  )
   const parsedDate =
     primaryLabels?.lastUpdated ?? roadmapLabels?.lastUpdated ?? null
 
   const triageState = mapStatus(rawStatus)
-  const lastUpdated = toIsoDate(parsedDate, retrievedAt)
+  const lastUpdated = toIsoDate(parsedDate, headCommittedAt)
 
   // --- Conflict detection --------------------------------------------------
 
@@ -139,16 +151,23 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
   if (alternateStatus) {
     const altLabels = parseLabels(alternateStatus.artifact.content)
     const altTriage = mapStatus(altLabels.status)
+    const rawStatusesDiffer = (altLabels.status ?? '').trim().toUpperCase()
+      !== (rawStatus ?? '').trim().toUpperCase()
+    const statusDocumentsDiffer = alternateStatus.artifact.content.trim()
+      !== (primary?.content.trim() ?? '')
 
-    if (altTriage !== triageState) {
+    if (altTriage !== triageState || rawStatusesDiffer || statusDocumentsDiffer) {
       const primarySourceId = primary
         ? `${primary.sha}:${primary.path}`
         : 'missing-primary'
       const altSourceId = `${alternateStatus.artifact.sha}:${alternateStatus.artifact.path}`
+      const reason = rawStatusesDiffer || altTriage !== triageState
+        ? `Default branch status "${rawStatus ?? 'missing'}" differs from ${alternateStatus.branch} status "${altLabels.status ?? 'missing'}"`
+        : `Status documents differ between ${snapshot.defaultBranch} and ${alternateStatus.branch}`
       triageSource = {
         status: 'CONFLICT',
         sourceIds: [primarySourceId, altSourceId],
-        reason: `Default branch status "${rawStatus ?? 'missing'}" differs from ${alternateStatus.branch} status "${altLabels.status ?? 'missing'}"`,
+        reason,
       }
     } else {
       triageSource = {
@@ -162,7 +181,9 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
     triageSource = {
       status: 'UNKNOWN',
       reason: primary
-        ? `Unrecognized status value "${rawStatus}"`
+        ? rawStatus === null
+          ? `No canonical Status label found in ${primary.path}`
+          : `Unrecognized status value "${rawStatus}"`
         : 'No status artifact found in repository',
     }
   } else {
@@ -196,8 +217,8 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
   return {
     schemaVersion: PROJECT_STATE_SCHEMA_VERSION,
     id: projectId,
-    name: projectId,
-    summary: `Derived from ${repo}`,
+    name,
+    summary,
     repo,
     triageState: effectiveTriageState,
     triageSource,

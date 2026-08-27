@@ -11,6 +11,8 @@ import {
 
 const fixturePath = fileURLToPath(new URL('../config/projects.json', import.meta.url))
 const validRegistry = JSON.parse(readFileSync(fixturePath, 'utf8')) as unknown
+const githubCachePath = fileURLToPath(new URL('../config/projects.github.json', import.meta.url))
+const githubCache = JSON.parse(readFileSync(githubCachePath, 'utf8')) as unknown
 
 function cloneRegistry(): ProjectRegistry {
   return structuredClone(parseProjectRegistry(validRegistry))
@@ -19,6 +21,15 @@ function cloneRegistry(): ProjectRegistry {
 test('all ten normalized project fixtures pass deterministic validation', () => {
   const registry = parseProjectRegistry(validRegistry)
   assert.equal(registry.projects.length, 10)
+})
+
+test('real GitHub cache is valid and preserves UNKNOWN and CONFLICT source states', () => {
+  const registry = parseProjectRegistry(githubCache)
+  const byId = new Map(registry.projects.map((project) => [project.id, project]))
+
+  assert.equal(byId.get('murat-project-engineer')?.triageSource.status, 'UNKNOWN')
+  assert.equal(byId.get('business-discovery')?.triageSource.status, 'CONFLICT')
+  assert.equal(byId.get('salamat-projects-dashboard')?.source.kind, 'REPOSITORY')
 })
 
 test('invalid triage states fail', () => {

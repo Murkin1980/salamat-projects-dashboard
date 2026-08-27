@@ -1,0 +1,314 @@
+{
+  "schemaVersion": "1.0.0",
+  "version": 2,
+  "updatedAt": "2026-08-27",
+  "projects": [
+    {
+      "schemaVersion": "1.0.0",
+      "id": "murat-project-engineer",
+      "name": "Murat Project Engineer",
+      "summary": "Portfolio engineering, gates, experiments and project governance.",
+      "repo": "Murkin1980/murat-project-engineer",
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "Unrecognized status value \"null\""
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-25",
+      "blocker": null,
+      "nextAction": null,
+      "evidenceLinks": [
+        {
+          "label": "STATUS.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md",
+          "sourceId": "ea23a23c4fa540c855a39bd9f0749191700cbfce:STATUS.md"
+        },
+        {
+          "label": "STAGE2_EXPERIMENT_PLAN.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STAGE2_EXPERIMENT_PLAN.md",
+          "sourceId": "27a49347fa3f657864f586b1dc40865371ff3106:STAGE2_EXPERIMENT_PLAN.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-project-engineer"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "business-discovery",
+      "name": "Business Discovery",
+      "summary": "Evidence-backed business discovery and audit engine.",
+      "repo": "Murkin1980/business-discovery",
+      "triageState": null,
+      "triageSource": {
+        "status": "CONFLICT",
+        "sourceIds": [
+          "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md",
+          "dfef377613e6d16768b8c417010077648a11df5c:PROJECT_STATUS.md"
+        ],
+        "reason": "Status documents differ between main and codex/stage-5-auditor"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": null,
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/business-discovery/blob/main/PROJECT_STATUS.md",
+          "sourceId": "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md"
+        },
+        {
+          "label": "docs/product/ROADMAP.md",
+          "url": "https://github.com/Murkin1980/business-discovery/blob/main/docs/product/ROADMAP.md",
+          "sourceId": "a931163e9187bb2913cd93f37ae1541e99dd42b3:docs/product/ROADMAP.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/business-discovery"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "salamat-projects-dashboard",
+      "name": "Salamat Projects Dashboard",
+      "summary": "Live portfolio triage and node-flow dashboard.",
+      "repo": "Murkin1980/salamat-projects-dashboard",
+      "triageState": "READY",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "942d345fa4d93ad00b1d59f04fc6ab5c04adc2ba:PROJECT_STATUS.md"
+      },
+      "stage": null,
+      "checkpoint": "CP-04 — GitHub/MPE Source Adapter",
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "CP-04 — GitHub/MPE Source Adapter",
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
+          "sourceId": "942d345fa4d93ad00b1d59f04fc6ab5c04adc2ba:PROJECT_STATUS.md"
+        },
+        {
+          "label": "ROADMAP.md",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/ROADMAP.md",
+          "sourceId": "d473677b789c52d4b5799481df4d138796d759e1:ROADMAP.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/salamat-projects-dashboard"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "mebelflow-ai",
+      "name": "MebelFlow AI",
+      "summary": "Furniture workflow and design automation experiments.",
+      "repo": null,
+      "triageState": "IN_PROGRESS",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Close remaining live gates and continue pilot work.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "murat-ads-control",
+      "name": "Murat Ads Control",
+      "summary": "Google Ads control and optimization layer for furniture brands.",
+      "repo": null,
+      "triageState": "IN_PROGRESS",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Continue real campaign validation and control-loop work.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "interactive-kp",
+      "name": "Interactive KP",
+      "summary": "Interactive commercial proposals and Qulpinay Style offers.",
+      "repo": null,
+      "triageState": "IN_PROGRESS",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Continue production use and iterative improvements.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "mebellegal-kz",
+      "name": "MebelLegal KZ",
+      "summary": "Furniture legal/document workflow for Kazakhstan.",
+      "repo": null,
+      "triageState": "VALIDATION",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Validate against real contracts and document cases.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "whatsapp-sales-agent",
+      "name": "WhatsApp Sales Agent",
+      "summary": "AI sales assistant for WhatsApp furniture leads.",
+      "repo": null,
+      "triageState": "VALIDATION",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Validate stable end-to-end behavior on real leads.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "tender-assistant",
+      "name": "Tender Assistant",
+      "summary": "Furniture tender monitoring and entrepreneur assistance.",
+      "repo": null,
+      "triageState": "READY",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Start monitoring-first MVP for Almaty furniture tenders.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "etsy-market-research",
+      "name": "Etsy Market Research",
+      "summary": "Market research exploration for Etsy opportunities.",
+      "repo": null,
+      "triageState": "HOLD",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
+      "stage": null,
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-08-26",
+      "blocker": null,
+      "nextAction": "Resume only after higher-priority portfolio work allows it.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
+    }
+  ]
+}

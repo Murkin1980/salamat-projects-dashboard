@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "tsx --test tests/**/*.test.ts",
+    "sync:github": "tsx scripts/sync-github-projects.ts",
     "preview": "vite preview"
   },
   "dependencies": {

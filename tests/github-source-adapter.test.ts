@@ -42,9 +42,12 @@ function standardSnapshot(
 ): RepositorySnapshot {
   return {
     projectId: 'salamat-dashboard',
+    name: 'Salamat Projects Dashboard',
+    summary: 'Operational portfolio dashboard.',
     repo: 'Murkin1980/salamat-projects-dashboard',
     defaultBranch: 'main',
     headSha: 'sha-head-001',
+    headCommittedAt: '2026-08-25T12:00:00Z',
     retrievedAt: '2026-08-26',
     artifacts: [
       makeArtifact({
@@ -68,7 +71,7 @@ test('dashboard standard parse produces valid ProjectState with correct triage',
   assert.equal(result.triageState, 'READY')
   assert.equal(result.checkpoint, 'CP-04 — GitHub/MPE Source Adapter')
   assert.equal(result.nextAction, 'Implement source adapter.')
-  assert.equal(result.blocker, 'None')
+  assert.equal(result.blocker, null)
   assert.equal(result.lastUpdated, '2026-08-26')
   assert.equal(result.repo, 'Murkin1980/salamat-projects-dashboard')
   assert.equal(result.source.kind, 'REPOSITORY')
@@ -135,6 +138,29 @@ test('MPE fallback: unrecognized status value yields UNKNOWN', () => {
   }
 })
 
+test('status artifact without canonical Status label explains UNKNOWN precisely', () => {
+  const result = adaptGithubSource(
+    standardSnapshot({
+      artifacts: [
+        makeArtifact({
+          path: 'STATUS.md',
+          sha: 'sha-status-without-label',
+          content: '# STATUS\n\nThe project is active, but has no canonical state label.',
+        }),
+      ],
+    }),
+  )
+
+  assert.equal(result.triageState, null)
+  assert.equal(result.triageSource.status, 'UNKNOWN')
+  if (result.triageSource.status === 'UNKNOWN') {
+    assert.equal(
+      result.triageSource.reason,
+      'No canonical Status label found in STATUS.md',
+    )
+  }
+})
+
 test('Business divergent CONFLICT: alternate branch status differs', () => {
   const altContent = DASHBOARD_STATUS_CONTENT.replace('READY', 'BLOCKED')
   const result = adaptGithubSource(
@@ -187,6 +213,48 @@ test('CONFLICT with same status on both branches is KNOWN, not CONFLICT', () => 
 
   assert.equal(result.triageState, 'READY')
   assert.equal(result.triageSource.status, 'KNOWN')
+})
+
+test('different unrecognized statuses on divergent branches remain CONFLICT', () => {
+  const primaryContent = DASHBOARD_STATUS_CONTENT.replace('READY', 'NEXT / SCOPE UPDATED')
+  const alternateContent = DASHBOARD_STATUS_CONTENT.replace('READY', 'IN PROGRESS — CHECKPOINT PASS')
+  const result = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', sha: 'sha-primary-unknown', content: primaryContent })],
+    alternateStatus: {
+      branch: 'codex/stage-5-auditor',
+      artifact: makeArtifact({
+        path: 'PROJECT_STATUS.md',
+        ref: 'codex/stage-5-auditor',
+        sha: 'sha-alt-unknown',
+        content: alternateContent,
+      }),
+    },
+  }))
+
+  assert.equal(result.triageState, null)
+  assert.equal(result.triageSource.status, 'CONFLICT')
+})
+
+test('different branch status documents remain CONFLICT without parseable status labels', () => {
+  const result = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({
+      path: 'PROJECT_STATUS.md',
+      sha: 'sha-primary-prose',
+      content: '# PROJECT STATUS\n\nStage 5 — NEXT / SCOPE UPDATED',
+    })],
+    alternateStatus: {
+      branch: 'codex/stage-5-auditor',
+      artifact: makeArtifact({
+        path: 'PROJECT_STATUS.md',
+        ref: 'codex/stage-5-auditor',
+        sha: 'sha-alt-prose',
+        content: '# PROJECT STATUS\n\nStage 5 — IN PROGRESS — deterministic checkpoint PASS',
+      }),
+    },
+  }))
+
+  assert.equal(result.triageState, null)
+  assert.equal(result.triageSource.status, 'CONFLICT')
 })
 
 test('source URLs and SHAs are traceable in evidenceLinks', () => {

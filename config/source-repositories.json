@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "projectId": "murat-project-engineer",
+      "repo": "Murkin1980/murat-project-engineer",
+      "statusPaths": ["PROJECT_STATUS.md", "STATUS.md"],
+      "roadmapPaths": ["ROADMAP.md", "STAGE2_EXPERIMENT_PLAN.md"]
+    },
+    {
+      "projectId": "business-discovery",
+      "repo": "Murkin1980/business-discovery",
+      "statusPaths": ["PROJECT_STATUS.md"],
+      "roadmapPaths": ["ROADMAP.md", "docs/product/ROADMAP.md"],
+      "alternateStatus": {
+        "ref": "codex/stage-5-auditor",
+        "path": "PROJECT_STATUS.md"
+      }
+    },
+    {
+      "projectId": "salamat-projects-dashboard",
+      "repo": "Murkin1980/salamat-projects-dashboard",
+      "statusPaths": ["PROJECT_STATUS.md"],
+      "roadmapPaths": ["ROADMAP.md"]
+    }
+  ]
+}
