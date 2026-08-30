@@ -2,7 +2,7 @@
 
 Decision: `NEW_REPOSITORY`
 
-Current checkpoint: `CP-06 — Flow / Nodes MVP`
+Current checkpoint: `CP-07 — History & Reports`
 Status: `READY`
 
 ## CP-00 — Repository Foundation
@@ -111,10 +111,28 @@ Evidence:
 - desktop browser smoke shows live refresh state and ten projects; mobile at 390x844 has no horizontal overflow (`390/390`);
 - Codex Router delegation was attempted across four suitable OpenCode models, but final independent review was unavailable because all review attempts returned provider `429 Too Many Requests`.
 
+## CP-06 — Flow / Nodes MVP
+Status: `PASS`
+
+Disposition:
+- `EXTEND_EXISTING` — CP-06 extends the existing dashboard with a read-only derived graph; it does not add execution authority or a workflow runtime.
+
+Evidence:
+- a strict, source-attributed `NodeGraph` contract validates nodes, relationships, immutable evidence URLs, unique identifiers and referenced endpoints;
+- the first factual vertical slice maps Business Discovery subsystems, evidence documents, stages and divergent branches from committed repository evidence;
+- the desktop React Flow canvas is read-only and supports node-type and relationship filters, reset, zoom, pan and evidence inspection;
+- the divergent Stage 5 branch and Auditor remain explicitly `CONFLICT`, while future scope remains explicitly `FUTURE`;
+- mobile uses the same parsed manifest as a readable node list and inspector without depending on the canvas;
+- 35 automated tests pass, including rejection of missing evidence and dangling/invented node references;
+- the production TypeScript/Vite build passes;
+- browser smoke passed at desktop `1440x1000` and mobile `390x844`; filter changes, node selection and evidence inspection were exercised;
+- mobile document width equals the viewport width (`390px`), with no horizontal page overflow;
+- no graph editing, repository write-back, task execution or workflow orchestration was introduced.
+
 ## Next
-`CP-06 — Flow / Nodes MVP`.
+`CP-07 — History & Reports`.
 
 ## Blocker
 None.
 
-Last updated: 2026-08-27
+Last updated: 2026-08-30

@@ -13,6 +13,7 @@ import {
   IconPlayerPlay,
   IconRosetteDiscountCheck,
   IconRefresh,
+  IconRoute,
   IconSearch,
   IconSettings,
   IconSparkles,
@@ -20,6 +21,8 @@ import {
 } from '@tabler/icons-react'
 import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.github.json'
+import nodeGraphRegistry from '../config/node-graphs.json'
+import { NodeView } from './components/NodeView'
 import {
   parseProjectRegistry,
   type ProjectState,
@@ -27,11 +30,13 @@ import {
 } from './contract/project-state'
 import { useLiveRegistry } from './hooks/use-live-registry'
 import { deriveLiveProjectState } from './triage/live-triage'
+import { parseNodeGraphRegistry } from './graph/node-graph'
 import './styles.css'
 
-type View = 'triage' | 'portfolio' | 'attention'
+type View = 'triage' | 'portfolio' | 'attention' | 'nodes'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
+const businessDiscoveryGraph = parseNodeGraphRegistry(nodeGraphRegistry).graphs.find((graph) => graph.id === 'business-discovery')!
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
@@ -116,6 +121,7 @@ function App() {
           <button className={view === 'triage' ? 'active' : ''} onClick={() => setView('triage')}><IconLayoutDashboard size={20}/> Triage</button>
           <button className={view === 'portfolio' ? 'active' : ''} onClick={() => setView('portfolio')}><IconFolderCode size={20}/> Portfolio</button>
           <button className={view === 'attention' ? 'active' : ''} onClick={() => setView('attention')}><IconAlertTriangle size={20}/> Attention</button>
+          <button className={view === 'nodes' ? 'active' : ''} onClick={() => setView('nodes')}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
           <button disabled title="Будет реализовано в CP-07"><IconListDetails size={20}/> Reports</button>
           <button disabled title="Настройки появятся позже"><IconSettings size={20}/> Settings</button>
@@ -130,10 +136,10 @@ function App() {
         <header className="page-header">
           <div>
             <p className="eyebrow">Operational portfolio</p>
-            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : 'Attention'}</h1>
-            <p>Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.</p>
+            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : 'Node View'}</h1>
+            <p>{view === 'nodes' ? 'Карта реальных связей проекта с evidence для каждого узла и ребра.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
-          <div className="header-actions">
+          {view !== 'nodes' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
@@ -145,15 +151,15 @@ function App() {
               <IconSearch size={19}/>
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" />
             </label>
-          </div>
+          </div>}
         </header>
 
-        <section className="summary-grid" aria-label="Сводка">
+        {view !== 'nodes' && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
-        </section>
+        </section>}
 
         {view === 'triage' && (
           <>
@@ -185,6 +191,8 @@ function App() {
             ))}
           </section>
         )}
+
+        {view === 'nodes' && <NodeView graph={businessDiscoveryGraph}/>}
       </main>
     </div>
   )

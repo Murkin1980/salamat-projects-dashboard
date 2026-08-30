@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tabler/icons-react": "^3.34.1",
+    "@xyflow/react": "^12.11.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "zod": "^4.4.3"
