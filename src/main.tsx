@@ -22,7 +22,9 @@ import {
 import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.github.json'
 import nodeGraphRegistry from '../config/node-graphs.json'
+import historyRegistry from '../config/project-history.json'
 import { NodeView } from './components/NodeView'
+import { ReportView } from './components/ReportView'
 import {
   parseProjectRegistry,
   type ProjectState,
@@ -31,12 +33,14 @@ import {
 import { useLiveRegistry } from './hooks/use-live-registry'
 import { deriveLiveProjectState } from './triage/live-triage'
 import { parseNodeGraphRegistry } from './graph/node-graph'
+import { parseHistoryRegistry } from './history/project-history'
 import './styles.css'
 
-type View = 'triage' | 'portfolio' | 'attention' | 'nodes'
+type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
 const businessDiscoveryGraph = parseNodeGraphRegistry(nodeGraphRegistry).graphs.find((graph) => graph.id === 'business-discovery')!
+const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
@@ -123,12 +127,12 @@ function App() {
           <button className={view === 'attention' ? 'active' : ''} onClick={() => setView('attention')}><IconAlertTriangle size={20}/> Attention</button>
           <button className={view === 'nodes' ? 'active' : ''} onClick={() => setView('nodes')}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
-          <button disabled title="Будет реализовано в CP-07"><IconListDetails size={20}/> Reports</button>
+          <button className={view === 'reports' ? 'active' : ''} onClick={() => setView('reports')}><IconListDetails size={20}/> Reports</button>
           <button disabled title="Настройки появятся позже"><IconSettings size={20}/> Settings</button>
         </nav>
         <div className="sidebar-note">
           <IconSparkles size={18}/>
-          <span>CP-05 Live Triage</span>
+          <span>CP-07 History & Reports</span>
         </div>
       </aside>
 
@@ -136,10 +140,10 @@ function App() {
         <header className="page-header">
           <div>
             <p className="eyebrow">Operational portfolio</p>
-            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : 'Node View'}</h1>
-            <p>{view === 'nodes' ? 'Карта реальных связей проекта с evidence для каждого узла и ребра.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
+            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : 'History & Reports'}</h1>
+            <p>{view === 'nodes' ? 'Карта реальных связей проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
-          {view !== 'nodes' && <div className="header-actions">
+          {view !== 'nodes' && view !== 'reports' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
@@ -154,7 +158,7 @@ function App() {
           </div>}
         </header>
 
-        {view !== 'nodes' && <section className="summary-grid" aria-label="Сводка">
+        {view !== 'nodes' && view !== 'reports' && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
@@ -193,6 +197,7 @@ function App() {
         )}
 
         {view === 'nodes' && <NodeView graph={businessDiscoveryGraph}/>}
+        {view === 'reports' && <ReportView history={dashboardHistory}/>}
       </main>
     </div>
   )

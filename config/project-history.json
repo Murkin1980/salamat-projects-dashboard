@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "snapshotAt": "2026-08-30T19:50:12+05:00",
+  "projects": [
+    {
+      "projectId": "salamat-projects-dashboard",
+      "projectName": "Salamat Projects Dashboard",
+      "events": [
+        { "id": "cp00-to-cp01", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-26T20:21:09+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-00", "to": "CP-01", "summary": "Repository Foundation passed and Visual System became ready.", "sourceId": "034b34dca70bdf4f2fe5fab8fc0b24d69e234a97", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/034b34dca70bdf4f2fe5fab8fc0b24d69e234a97" },
+        { "id": "cp01-to-cp02", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-26T20:30:47+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-01", "to": "CP-02", "summary": "Visual System passed and Static Triage Shell became ready.", "sourceId": "5b61bf6965a9a8cbdd10c2b34df8a751533caa3d", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/5b61bf6965a9a8cbdd10c2b34df8a751533caa3d" },
+        { "id": "cp02-started", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-26T20:36:27+05:00", "type": "STATE_CHANGED", "from": "READY", "to": "IN_PROGRESS", "summary": "Static Triage Shell implementation was recorded as in progress.", "sourceId": "3714e7acf2281ff9ed8b0a6d3a0c435343387d69", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/3714e7acf2281ff9ed8b0a6d3a0c435343387d69" },
+        { "id": "cp02-to-cp03", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-26T23:39:12+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-02", "to": "CP-03", "summary": "Responsive shell passed and Project State Contract became ready.", "sourceId": "0cf7a112ff294e3876c22893a0a6db10f3d71ae3", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/0cf7a112ff294e3876c22893a0a6db10f3d71ae3" },
+        { "id": "cp03-to-cp04", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-26T23:50:12+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-03", "to": "CP-04", "summary": "Project State Contract passed and GitHub/MPE Source Adapter became ready.", "sourceId": "90cb8533f544cdc12157d57a484a824e49332c3f", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/90cb8533f544cdc12157d57a484a824e49332c3f" },
+        { "id": "cp04-to-cp05", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-27T08:13:49+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-04", "to": "CP-05", "summary": "Traceable GitHub source sync passed and Live Triage became ready.", "sourceId": "df7f07c23d0fdb8305b1e9c7a01a1dfbea0217f7", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/df7f07c23d0fdb8305b1e9c7a01a1dfbea0217f7" },
+        { "id": "cp05-to-cp06", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-27T09:03:35+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-05", "to": "CP-06", "summary": "Live Triage passed and Flow / Nodes MVP became ready.", "sourceId": "f1dbaffb96fb1a6bb07f9c05d4b2d25493da4890", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/f1dbaffb96fb1a6bb07f9c05d4b2d25493da4890" },
+        { "id": "cp06-to-cp07", "projectId": "salamat-projects-dashboard", "occurredAt": "2026-08-30T19:50:12+05:00", "type": "CHECKPOINT_MOVED", "from": "CP-06", "to": "CP-07", "summary": "Flow / Nodes MVP passed and History & Reports became ready.", "sourceId": "113ecc014b7c0bcf98318a7bfeb346faac6d36f0", "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/113ecc014b7c0bcf98318a7bfeb346faac6d36f0" }
+      ]
+    }
+  ]
+}

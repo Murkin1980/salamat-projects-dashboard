@@ -2,7 +2,7 @@
 
 Decision: `NEW_REPOSITORY`
 
-Current checkpoint: `CP-07 — History & Reports`
+Current checkpoint: `CP-08 — Cloudflare Production`
 Status: `READY`
 
 ## CP-00 — Repository Foundation
@@ -129,8 +129,27 @@ Evidence:
 - mobile document width equals the viewport width (`390px`), with no horizontal page overflow;
 - no graph editing, repository write-back, task execution or workflow orchestration was introduced.
 
+## CP-07 — History & Reports
+Status: `PASS`
+
+Disposition:
+- `EXTEND_EXISTING` — CP-07 extends the current dashboard and Git evidence model with a read-only transition manifest; no database or parallel analytics service was introduced.
+
+Evidence:
+- a strict, versioned history contract rejects duplicate events, reverse chronology, unchanged transitions and unattributed sources;
+- the first vertical slice contains seven checkpoint movements and one state transition derived from immutable Salamat Projects Dashboard commits;
+- each event retains its full commit SHA and direct GitHub evidence URL;
+- report totals and the timeline are computed from the same schema-validated manifest;
+- zero blocker changes are shown explicitly as no confirmed changes, without invented blocker activity;
+- checkpoint, state and blocker filters visibly update the timeline, support reset and expose a truthful empty state;
+- 39 automated tests pass, including history validation and report aggregation inputs;
+- the production TypeScript/Vite build passes;
+- desktop browser smoke at `1440x1000` verified report metrics, chronological evidence and filtering;
+- mobile browser smoke at `390x844` verified the same controls and no horizontal overflow (`390/390`);
+- history remains committed derived data and cannot edit repositories or become source of truth.
+
 ## Next
-`CP-07 — History & Reports`.
+`CP-08 — Cloudflare Production`.
 
 ## Blocker
 None.
