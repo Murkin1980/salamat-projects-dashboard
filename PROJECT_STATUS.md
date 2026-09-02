@@ -3,7 +3,7 @@
 Decision: `NEW_REPOSITORY`
 
 Current checkpoint: `CP-08 — Cloudflare Production`
-Status: `READY`
+Status: `IN_PROGRESS`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -148,10 +148,26 @@ Evidence:
 - mobile browser smoke at `390x844` verified the same controls and no horizontal overflow (`390/390`);
 - history remains committed derived data and cannot edit repositories or become source of truth.
 
+## CP-08 — Cloudflare Production
+Status: `IN_PROGRESS`
+
+Disposition:
+- `REUSE_COMPONENT` — deploy the existing validated Vite output to Cloudflare Pages without adding a Worker, database or parallel runtime.
+
+Evidence:
+- local Wrangler `4.128.0` is installed and authenticated to the intended Cloudflare account;
+- repeatable Pages configuration and build/deploy scripts are committed;
+- Cloudflare Pages project `salamat-projects-dashboard` was created with production branch `main`;
+- production deployment `eb53e8e1-5807-43d5-a326-630dc2ddf906` completed from commit `db6c8d4`;
+- `https://salamat-projects-dashboard.pages.dev/` returns HTTPS 200;
+- production browser smoke verified Triage, Nodes and Reports at desktop `1440x1000`;
+- production mobile smoke at `390x844` verified no horizontal overflow (`390/390`);
+- Pages custom domain `projects.salamat-mebel.kz` was created but remains pending until its CNAME exists.
+
 ## Next
-`CP-08 — Cloudflare Production`.
+Complete `CP-08 — Cloudflare Production` by activating and verifying the custom domain.
 
 ## Blocker
-None.
+`projects.salamat-mebel.kz` has no DNS CNAME. Create a proxied CNAME named `projects` targeting `salamat-projects-dashboard.pages.dev`; the current Wrangler OAuth token has Pages write and zone read but not DNS Edit.
 
-Last updated: 2026-08-30
+Last updated: 2026-09-02
