@@ -42,3 +42,10 @@ multiple repositories manually.
 4. Branch divergence and Auditor are visibly conflict-backed, not presented as main.
 5. Mobile exposes the same nodes as a readable list without canvas dependence.
 6. Tests reject missing evidence, dangling edges and invented node references.
+
+## Edge clarity refinement
+
+- every relationship type has a stable semantic color and visible text label;
+- every edge has an arrowhead that identifies source-to-destination direction;
+- selecting an edge highlights both endpoints, dims unrelated edges and opens a read-only relationship inspector;
+- mobile exposes the same relationships as explicit `source → destination` rows.

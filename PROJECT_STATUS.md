@@ -123,7 +123,10 @@ Evidence:
 - the desktop React Flow canvas is read-only and supports node-type and relationship filters, reset, zoom, pan and evidence inspection;
 - the divergent Stage 5 branch and Auditor remain explicitly `CONFLICT`, while future scope remains explicitly `FUTURE`;
 - mobile uses the same parsed manifest as a readable node list and inspector without depending on the canvas;
-- 35 automated tests pass, including rejection of missing evidence and dangling/invented node references;
+- relationship types now use distinct semantic colors plus text labels and directional arrowheads;
+- selecting an edge dims unrelated relationships, marks source and destination nodes, and opens a read-only `source → destination` evidence inspector;
+- mobile exposes the same relationships as labelled `source → destination` rows;
+- 41 automated tests pass across the full dashboard suite, including edge-presentation semantics, missing evidence and dangling/invented node references;
 - the production TypeScript/Vite build passes;
 - browser smoke passed at desktop `1440x1000` and mobile `390x844`; filter changes, node selection and evidence inspection were exercised;
 - mobile document width equals the viewport width (`390px`), with no horizontal page overflow;

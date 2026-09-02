@@ -3,6 +3,7 @@ import {
   Background,
   Controls,
   Handle,
+  MarkerType,
   MiniMap,
   Position,
   ReactFlow,
@@ -21,6 +22,7 @@ import {
   IconFileCheck,
   IconFolderCode,
   IconGitBranch,
+  IconRelationOneToMany,
   IconRoute,
   IconX,
 } from '@tabler/icons-react'
@@ -31,6 +33,7 @@ import {
   type GraphNodeType,
   type NodeGraph,
 } from '../graph/node-graph'
+import { edgePresentation } from '../graph/edge-presentation'
 
 const nodeTypeMeta = {
   PROJECT: { label: 'Проект', Icon: IconFolderCode },
@@ -62,7 +65,8 @@ function BlueprintNode({ data, selected }: NodeProps<Node<GraphNodeData>>) {
 const nodeTypes = { blueprint: BlueprintNode }
 
 export function NodeView({ graph }: { graph: NodeGraph }) {
-  const [selectedId, setSelectedId] = useState('auditor')
+  const [selectedId, setSelectedId] = useState<string | null>('auditor')
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
   const [visibleTypes, setVisibleTypes] = useState<Set<GraphNodeType>>(() => new Set(allNodeTypes))
   const [relationship, setRelationship] = useState<GraphEdgeType | 'ALL'>('ALL')
 
@@ -72,23 +76,41 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
     new Set(relationship === 'ALL' ? allEdgeTypes : [relationship]),
   ), [graph, relationship, visibleTypes])
 
-  const nodes = useMemo<Node<GraphNodeData>[]>(() => filtered.nodes.map((node) => ({
-    id: node.id,
-    type: 'blueprint',
-    position: { x: node.x, y: node.y },
-    data: node,
-    draggable: false,
-    connectable: false,
-  })), [filtered.nodes])
+  const selectedEdge = graph.edges.find((edge) => edge.id === selectedEdgeId) ?? null
+  const selectedEdgeSource = selectedEdge ? graph.nodes.find((node) => node.id === selectedEdge.source) ?? null : null
+  const selectedEdgeTarget = selectedEdge ? graph.nodes.find((node) => node.id === selectedEdge.target) ?? null : null
 
-  const edges = useMemo<Edge[]>(() => filtered.edges.map((edge) => ({
-    id: edge.id,
-    source: edge.source,
-    target: edge.target,
-    label: edge.type.replaceAll('_', ' '),
-    type: 'smoothstep',
-    className: `graph-edge edge-${edge.type}`,
-  })), [filtered.edges])
+  const nodes = useMemo<Node<GraphNodeData>[]>(() => filtered.nodes.map((node) => {
+    const endpointRole = selectedEdge?.source === node.id ? 'edge-source' : selectedEdge?.target === node.id ? 'edge-target' : ''
+    return {
+      id: node.id,
+      type: 'blueprint',
+      position: { x: node.x, y: node.y },
+      data: node,
+      className: endpointRole,
+      draggable: false,
+      connectable: false,
+    }
+  }), [filtered.nodes, selectedEdge])
+
+  const edges = useMemo<Edge[]>(() => filtered.edges.map((edge) => {
+    const presentation = edgePresentation[edge.type]
+    const isSelected = selectedEdgeId === edge.id
+    const isDimmed = selectedEdgeId !== null && !isSelected
+    return {
+      id: edge.id,
+      source: edge.source,
+      target: edge.target,
+      label: presentation.label,
+      type: 'smoothstep',
+      className: `graph-edge edge-${edge.type} ${isSelected ? 'is-edge-selected' : ''}`,
+      style: { stroke: presentation.color, strokeWidth: isSelected ? 4 : 2, opacity: isDimmed ? 0.14 : 1, strokeDasharray: presentation.dash },
+      labelStyle: { fill: presentation.color, fontWeight: 800, opacity: isDimmed ? 0.18 : 1 },
+      labelBgStyle: { fill: '#ffffff', fillOpacity: isDimmed ? 0.45 : 0.96 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: presentation.color, width: isSelected ? 24 : 18, height: isSelected ? 24 : 18 },
+      zIndex: isSelected ? 20 : 0,
+    }
+  }), [filtered.edges, selectedEdgeId])
 
   const selectedNode = graph.nodes.find((node) => node.id === selectedId) ?? null
   const selectedRelations = selectedNode
@@ -132,6 +154,10 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
         <button type="button" className="clear-filters" onClick={() => { setVisibleTypes(new Set(allNodeTypes)); setRelationship('ALL') }}>Сбросить</button>
       </div>
 
+      <ul className="relationship-legend" aria-label="Легенда типов связей">
+        {allEdgeTypes.map((type) => <li key={type}><span style={{ '--edge-color': edgePresentation[type].color } as React.CSSProperties}/><strong>{edgePresentation[type].label}</strong></li>)}
+      </ul>
+
       <div className="nodes-layout">
         <div className="graph-canvas" aria-label="Интерактивная карта узлов Business Discovery">
           {nodes.length ? (
@@ -139,7 +165,9 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
               nodes={nodes}
               edges={edges}
               nodeTypes={nodeTypes}
-              onNodeClick={(_, node) => setSelectedId(node.id)}
+              onNodeClick={(_, node) => { setSelectedId(node.id); setSelectedEdgeId(null) }}
+              onEdgeClick={(_, edge) => { setSelectedEdgeId(edge.id); setSelectedId(null) }}
+              onPaneClick={() => setSelectedEdgeId(null)}
               nodesDraggable={false}
               nodesConnectable={false}
               elementsSelectable
@@ -156,8 +184,24 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
           ) : <div className="graph-empty"><IconArrowsSplit size={26}/><strong>Нет узлов по текущим фильтрам</strong><button type="button" onClick={() => setVisibleTypes(new Set(allNodeTypes))}>Показать все типы</button></div>}
         </div>
 
-        <aside className="node-inspector" aria-label="Инспектор узла">
-          {selectedNode ? (
+        <aside className="node-inspector" aria-label="Инспектор узла или связи">
+          {selectedEdge && selectedEdgeSource && selectedEdgeTarget ? (
+            <>
+              <div className="inspector-title edge-inspector-title">
+                <div className="inspector-icon" style={{ color: edgePresentation[selectedEdge.type].color, background: `${edgePresentation[selectedEdge.type].color}14` }}><IconRelationOneToMany size={22}/></div>
+                <div><span>Выбранная связь</span><h3>{edgePresentation[selectedEdge.type].label}</h3></div>
+              </div>
+              <div className="edge-direction" style={{ '--edge-color': edgePresentation[selectedEdge.type].color } as React.CSSProperties}>
+                <div className="edge-source-card"><small>ИСТОЧНИК</small><strong>{selectedEdgeSource.label}</strong><span>{selectedEdgeSource.detail}</span></div>
+                <div className="direction-arrow">→</div>
+                <div className="edge-target-card"><small>ПОЛУЧАТЕЛЬ</small><strong>{selectedEdgeTarget.label}</strong><span>{selectedEdgeTarget.detail}</span></div>
+              </div>
+              <p>{edgePresentation[selectedEdge.type].description}</p>
+              <div className="edge-type-key"><span style={{ background: edgePresentation[selectedEdge.type].color }}/>{selectedEdge.type.replaceAll('_', ' ')}</div>
+              <a href={selectedEdge.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence связи <IconExternalLink size={15}/></a>
+              <code>{selectedEdge.sourceId}</code>
+            </>
+          ) : selectedNode ? (
             <>
               <div className="inspector-title">
                 <div className="inspector-icon">{(() => { const Icon = nodeTypeMeta[selectedNode.type].Icon; return <Icon size={22}/> })()}</div>
@@ -176,15 +220,21 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
               <a href={selectedNode.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence <IconExternalLink size={15}/></a>
               <code>{selectedNode.sourceId}</code>
             </>
-          ) : <div className="inspector-empty"><IconX size={20}/>Выберите узел</div>}
+          ) : <div className="inspector-empty"><IconX size={20}/>Выберите узел или связь</div>}
         </aside>
       </div>
 
       <div className="mobile-node-list" aria-label="Список узлов">
         {filtered.nodes.map((node) => {
           const Icon = nodeTypeMeta[node.type].Icon
-          return <button type="button" key={node.id} onClick={() => setSelectedId(node.id)} className={selectedId === node.id ? 'selected' : ''}><Icon size={19}/><span><strong>{node.label}</strong><small>{nodeTypeMeta[node.type].label} · {node.status}</small></span></button>
+          return <button type="button" key={node.id} onClick={() => { setSelectedId(node.id); setSelectedEdgeId(null) }} className={selectedId === node.id ? 'selected' : ''}><Icon size={19}/><span><strong>{node.label}</strong><small>{nodeTypeMeta[node.type].label} · {node.status}</small></span></button>
         })}
+      </div>
+      <div className="mobile-edge-list" aria-label="Список связей">
+        <strong>Связи</strong>
+        {filtered.edges.map((edge) => <button type="button" key={edge.id} onClick={() => { setSelectedEdgeId(edge.id); setSelectedId(null) }} className={selectedEdgeId === edge.id ? 'selected' : ''} style={{ '--edge-color': edgePresentation[edge.type].color } as React.CSSProperties}>
+          <span className="mobile-edge-color"/><span><strong>{graph.nodes.find((node) => node.id === edge.source)?.label} → {graph.nodes.find((node) => node.id === edge.target)?.label}</strong><small>{edgePresentation[edge.type].label}</small></span>
+        </button>)}
       </div>
     </section>
   )
