@@ -8,7 +8,7 @@
 6. CP-05 Live Triage — PASS
 7. CP-06 Flow / Nodes MVP — PASS
 8. CP-07 History & Reports — PASS
-9. CP-08 Cloudflare Production — READY
-10. CP-09 Codex App Server Experiment
+9. CP-08 Cloudflare Production — PASS
+10. CP-09 Codex App Server Experiment — READY / EXPERIMENT_GATE_PENDING
 
 No later checkpoint starts by silently expanding the scope of an earlier checkpoint.

@@ -1,9 +1,10 @@
 # PROJECT STATUS
 
-Decision: `NEW_REPOSITORY`
+Decision: `REUSE_COMPONENT`
 
-Current checkpoint: `CP-08 — Cloudflare Production`
-Status: `IN_PROGRESS`
+Current checkpoint: `CP-09 — Codex App Server Experiment`
+Status: `READY`
+Experiment gate: `PENDING`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -152,7 +153,7 @@ Evidence:
 - history remains committed derived data and cannot edit repositories or become source of truth.
 
 ## CP-08 — Cloudflare Production
-Status: `IN_PROGRESS`
+Status: `PASS`
 
 Disposition:
 - `REUSE_COMPONENT` — deploy the existing validated Vite output to Cloudflare Pages without adding a Worker, database or parallel runtime.
@@ -161,16 +162,21 @@ Evidence:
 - local Wrangler `4.128.0` is installed and authenticated to the intended Cloudflare account;
 - repeatable Pages configuration and build/deploy scripts are committed;
 - Cloudflare Pages project `salamat-projects-dashboard` was created with production branch `main`;
-- production deployment `eb53e8e1-5807-43d5-a326-630dc2ddf906` completed from commit `db6c8d4`;
+- production deployment `7af63d62-979f-41d9-bd6c-070ed234d682` completed from commit `cd2e155`;
 - `https://salamat-projects-dashboard.pages.dev/` returns HTTPS 200;
-- production browser smoke verified Triage, Nodes and Reports at desktop `1440x1000`;
-- production mobile smoke at `390x844` verified no horizontal overflow (`390/390`);
-- Pages custom domain `projects.salamat-mebel.kz` was created but remains pending until its CNAME exists.
+- proxied DNS record `CNAME projects → salamat-projects-dashboard.pages.dev` is active with TTL Auto;
+- Cloudflare Pages reports custom domain `projects.salamat-mebel.kz` as `active`, including active ownership verification and HTTP validation;
+- `https://projects.salamat-mebel.kz/` returns HTTPS 200 directly with a trusted TLS connection and no redirect loop;
+- production browser evidence at desktop `1440x1000` verified Triage, Nodes and Reports, relationship selection with explicit `source → destination`, and the evidence inspector;
+- production browser evidence at mobile `390x844` verified the responsive Reports view and no horizontal overflow (`390/390`);
+- desktop document width equals the viewport width (`1440/1440`);
+- browser console inspection produced no critical errors;
+- no Worker, D1, KV, R2, Pages Functions, write-back or automatic synchronization was added.
 
 ## Next
-Complete `CP-08 — Cloudflare Production` by activating and verifying the custom domain.
+`CP-09 — Codex App Server Experiment` is `READY`, but its experiment gate remains pending. No CP-09 implementation has started.
 
 ## Blocker
-`projects.salamat-mebel.kz` has no DNS CNAME. Create a proxied CNAME named `projects` targeting `salamat-projects-dashboard.pages.dev`; the current Wrangler OAuth token has Pages write and zone read but not DNS Edit.
+None for CP-08.
 
 Last updated: 2026-09-02
