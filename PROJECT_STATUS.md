@@ -3,8 +3,7 @@
 Decision: `REUSE_COMPONENT`
 
 Current checkpoint: `CP-09 — Codex App Server Experiment`
-Status: `READY`
-Experiment gate: `PENDING`
+Status: `IN_PROGRESS` (Baseline complete)
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -173,10 +172,27 @@ Evidence:
 - browser console inspection produced no critical errors;
 - no Worker, D1, KV, R2, Pages Functions, write-back or automatic synchronization was added.
 
+## CP-09 — Codex App Server Experiment (Baseline)
+Status: `BASELINE_COMPLETE`
+
+Disposition:
+- `EXTEND_EXISTING` — CP-09 baseline extends the existing dashboard with a strict, read-only Task Packet export contract and one-shot validation harness; no persistent orchestrator, database or cross-repository execution was introduced.
+
+Evidence:
+- `docs/CP09_CODEX_APP_SERVER_SCOPE.md` documents baseline scope, fail-closed validation, and security invariants;
+- strict versioned `TaskPacket` contract (`src/contract/task-packet.ts`) schema version `1.0.0`;
+- repository allowlist strictly permits only `Murkin1980/salamat-projects-dashboard`;
+- fail-closed validation rejects unknown fields, missing required fields, and unsupported triage values;
+- automated sensitive data / secret scanner detects GitHub PATs, Bearer tokens, API keys, private keys, passwords, cookies, and local absolute paths;
+- read-only UI preview modal (`src/components/TaskPacketModal.tsx`) provides JSON preview, clipboard copy, file download, and side-effect-free cancellation;
+- local one-shot stdio harness (`scripts/task-packet-harness.ts`) generates and validates packets via CLI without starting a daemon or executing tasks;
+- 55 automated unit and negative tests pass;
+- production build (`tsc -b && vite build`) passes.
+
 ## Next
-`CP-09 — Codex App Server Experiment` is `READY`, but its experiment gate remains pending. No CP-09 implementation has started.
+Evaluate Codex App Server integration under Murat review and experiment gates without violating dashboard read-only boundaries.
 
 ## Blocker
-None for CP-08.
+None.
 
-Last updated: 2026-09-02
+Last updated: 2026-09-03

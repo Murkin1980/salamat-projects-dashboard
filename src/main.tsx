@@ -25,11 +25,16 @@ import nodeGraphRegistry from '../config/node-graphs.json'
 import historyRegistry from '../config/project-history.json'
 import { NodeView } from './components/NodeView'
 import { ReportView } from './components/ReportView'
+import { TaskPacketModal } from './components/TaskPacketModal'
 import {
   parseProjectRegistry,
   type ProjectState,
   type TriageState,
 } from './contract/project-state'
+import {
+  isProjectAllowed,
+  isRepositoryAllowed,
+} from './contract/task-packet'
 import { useLiveRegistry } from './hooks/use-live-registry'
 import { deriveLiveProjectState } from './triage/live-triage'
 import { parseNodeGraphRegistry } from './graph/node-graph'
@@ -82,6 +87,7 @@ function App() {
   const [view, setView] = useState<View>('triage')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<TriageState | 'ALL'>('ALL')
+  const [activeTaskProject, setActiveTaskProject] = useState<ProjectState | null>(null)
   const { registry, refresh, refreshState, error, lastSuccessAt } = useLiveRegistry(initialRegistry)
   const liveProjects = useMemo(
     () => registry.projects.map((project) => deriveLiveProjectState(project, new Date())),
@@ -132,7 +138,7 @@ function App() {
         </nav>
         <div className="sidebar-note">
           <IconSparkles size={18}/>
-          <span>CP-07 History & Reports</span>
+          <span>CP-09 Codex App Server Experiment</span>
         </div>
       </aside>
 
@@ -174,11 +180,11 @@ function App() {
                 return <button key={state} className={`${filter === state ? 'selected' : ''} ${meta.className}`} onClick={() => setFilter(state)}>{meta.label} <span>{counts[state]}</span></button>
               })}
             </section>
-            <ProjectGrid projects={visibleProjects} />
+            <ProjectGrid projects={visibleProjects} onOpenTaskPacket={setActiveTaskProject} />
           </>
         )}
 
-        {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} />}
+        {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} onOpenTaskPacket={setActiveTaskProject} />}
 
         {view === 'attention' && (
           <section className="attention-list">
@@ -198,6 +204,13 @@ function App() {
 
         {view === 'nodes' && <NodeView graph={businessDiscoveryGraph}/>}
         {view === 'reports' && <ReportView history={dashboardHistory}/>}
+
+        {activeTaskProject && (
+          <TaskPacketModal
+            project={activeTaskProject}
+            onClose={() => setActiveTaskProject(null)}
+          />
+        )}
       </main>
     </div>
   )
@@ -207,16 +220,33 @@ function SummaryCard({ label, value, detail, tone = 'neutral' }: { label: string
   return <article className={`summary-card ${tone}`}><span>{label}</span><strong>{value}</strong><small>{detail}</small></article>
 }
 
-function ProjectGrid({ projects }: { projects: ProjectState[] }) {
+function ProjectGrid({
+  projects,
+  onOpenTaskPacket,
+}: {
+  projects: ProjectState[]
+  onOpenTaskPacket: (project: ProjectState) => void
+}) {
   if (!projects.length) return <div className="empty-state">Ничего не найдено по текущему фильтру.</div>
   return (
     <section className="project-grid">
-      {projects.map((project) => <ProjectCard key={project.id} project={project}/>) }
+      {projects.map((project) => (
+        <ProjectCard key={project.id} project={project} onOpenTaskPacket={onOpenTaskPacket} />
+      ))}
     </section>
   )
 }
 
-function ProjectCard({ project }: { project: ProjectState }) {
+function ProjectCard({
+  project,
+  onOpenTaskPacket,
+}: {
+  project: ProjectState
+  onOpenTaskPacket: (project: ProjectState) => void
+}) {
+  const isAllowed = isProjectAllowed(project.id) && isRepositoryAllowed(project.repo)
+  const canContinue = isAllowed && project.triageState !== 'BLOCKED' && project.triageState !== null
+
   return (
     <article className="project-card">
       <div className="project-card-head">
@@ -233,7 +263,30 @@ function ProjectCard({ project }: { project: ProjectState }) {
       </dl>
       <div className="project-footer">
         <span><IconClock size={16}/> {project.source.id} · {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
-        <button type="button" disabled title="Continue станет активным после Codex App Server experiment">Continue</button>
+        {canContinue ? (
+          <button
+            type="button"
+            className="btn-continue-active"
+            onClick={() => onOpenTaskPacket(project)}
+            title="Сформировать и экспортировать Task Packet (CP-09 Baseline)"
+          >
+            Continue
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled
+            title={
+              !isAllowed
+                ? 'Эксперимент CP-09 ограничен allowlist (только salamat-projects-dashboard)'
+                : project.triageState === 'BLOCKED'
+                  ? 'Заблокировано: проект имеет активный блокер'
+                  : 'Состояние не определено'
+            }
+          >
+            Continue
+          </button>
+        )}
       </div>
     </article>
   )

@@ -11,6 +11,7 @@
     "vite.config.ts",
     "scripts/**/*.ts",
     "src/adapters/github-source.ts",
-    "src/contract/project-state.ts"
+    "src/contract/project-state.ts",
+    "src/contract/task-packet.ts"
   ]
 }
