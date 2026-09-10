@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080014" />
+    <title>Theme preview — FreeScan Dark Control Theme</title>
+    <!-- Renders the real product stylesheet: no duplicated theme CSS.
+         `?direct` makes Vite serve raw CSS; static hosts ignore the query. -->
+    <link rel="stylesheet" href="../src/styles.css?direct" />
+    <style>
+      /* Scaffolding only — never part of the product stylesheet. */
+      body { margin: 0; padding: 24px; background: var(--fs-bg-page); }
+      .preview { max-width: 1180px; margin: 0 auto; display: grid; gap: 22px; }
+      .preview > header h1 { margin: 6px 0 8px; font-size: 30px; font-weight: 700; letter-spacing: -0.03em; }
+      .preview > header p { margin: 0; color: var(--fs-text-secondary); font-size: 14px; max-width: 760px; }
+      .preview-note {
+        border: 1px dashed var(--fs-state-attention-border);
+        background: var(--fs-warning-soft);
+        color: var(--fs-warning);
+        border-radius: var(--fs-radius-block);
+        padding: 10px 12px;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .preview-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      .swatch { display: grid; gap: 6px; }
+      .swatch span { font-size: 11px; color: var(--fs-text-muted); font-family: var(--fs-font-mono); }
+      .swatch i { display: block; height: 44px; border: 1px solid var(--fs-border); border-radius: var(--fs-radius-block); }
+      h2.section-title { margin: 0 0 10px; font-size: 20px; font-weight: 680; letter-spacing: -0.02em; }
+      @media (max-width: 900px) {
+        body { padding: 14px; }
+        .preview-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview">
+      <header>
+        <p class="eyebrow">Design review artifact</p>
+        <h1>FreeScan Dark Control Theme — state preview</h1>
+        <p>
+          Static page that renders the product stylesheet (<code class="fs-machine-id">src/styles.css</code>) so every
+          token, badge, button, progress, tab, card and inspector state can be reviewed in one place.
+        </p>
+      </header>
+
+      <p class="preview-note">
+        <strong>Not live data.</strong> The values below are illustrative samples used to review states that the current
+        runtime snapshot does not contain (for example <code class="fs-machine-id">BLOCKED</code> or a project with
+        numeric progress). The product never renders a progress bar or a score when the source publishes none.
+      </p>
+
+      <section>
+        <h2 class="section-title">Surfaces</h2>
+        <div class="preview-grid">
+          <div class="swatch"><i style="background: var(--fs-bg-page)"></i><span>--fs-bg-page #080014 — app background</span></div>
+          <div class="swatch"><i style="background: var(--fs-bg-primary)"></i><span>--fs-bg-primary #100524 — header, sidebar, inspector</span></div>
+          <div class="swatch"><i style="background: var(--fs-bg-card)"></i><span>--fs-bg-card #190D2C — card surface</span></div>
+          <div class="swatch"><i style="background: var(--fs-bg-raised)"></i><span>--fs-bg-raised #211221 — nested blocks</span></div>
+          <div class="swatch"><i style="background: var(--fs-bg-cool-panel)"></i><span>--fs-bg-cool-panel #11132A — canvas, evidence panel</span></div>
+          <div class="swatch"><i style="background: var(--fs-track)"></i><span>--fs-track #2A1B3C — progress track</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Status badges</h2>
+        <div class="preview-row">
+          <span class="fs-badge fs-badge--attention">ACTION NOW</span>
+          <span class="fs-badge fs-badge--critical">BLOCKED</span>
+          <span class="fs-badge fs-badge--positive">READY</span>
+          <span class="fs-badge fs-badge--active">IN PROGRESS</span>
+          <span class="fs-badge fs-badge--attention">VALIDATION</span>
+          <span class="fs-badge fs-badge--muted">HOLD</span>
+          <span class="fs-badge fs-badge--positive">DONE</span>
+          <span class="fs-badge fs-badge--critical">SOURCE CONFLICT</span>
+          <span class="fs-badge fs-badge--muted">STATUS UNKNOWN</span>
+          <span class="fs-badge fs-badge--attention">STALE</span>
+          <span class="fs-badge fs-badge--attention">APPROVAL PENDING</span>
+          <span class="fs-badge fs-badge--outline">SOURCE KNOWN</span>
+        </div>
+        <div class="preview-row" style="margin-top: 10px">
+          <span class="inspector-status status-pass">PASS</span>
+          <span class="inspector-status status-conflict">CONFLICT</span>
+          <span class="inspector-status">NEUTRAL</span>
+          <span class="inspector-status status-future">FUTURE</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Buttons</h2>
+        <div class="preview-row">
+          <button type="button" class="fs-btn fs-btn--primary">Continue</button>
+          <button type="button" class="fs-btn fs-btn--secondary">Обновить</button>
+          <button type="button" class="fs-btn fs-btn--danger">Удалить</button>
+          <button type="button" class="fs-btn fs-btn--ghost">Отмена</button>
+          <button type="button" class="fs-btn fs-btn--primary" disabled>Continue</button>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Progress</h2>
+        <div class="preview-grid">
+          <div class="fs-card" style="padding: 14px; display: grid; gap: 12px">
+            <div class="fs-progress fs-progress--positive">
+              <div class="fs-progress__head"><span class="fs-label">MERGED</span><span class="fs-progress__value">100%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 100%"></div></div>
+            </div>
+            <div class="fs-progress fs-progress--active">
+              <div class="fs-progress__head"><span class="fs-label">IN PROGRESS</span><span class="fs-progress__value">78%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 78%"></div></div>
+            </div>
+            <div class="fs-progress fs-progress--attention">
+              <div class="fs-progress__head"><span class="fs-label">VALIDATION</span><span class="fs-progress__value">46%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 46%"></div></div>
+            </div>
+            <div class="fs-progress fs-progress--critical">
+              <div class="fs-progress__head"><span class="fs-label">BLOCKED</span><span class="fs-progress__value">31%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 31%"></div></div>
+            </div>
+            <div class="fs-progress fs-progress--muted">
+              <div class="fs-progress__head"><span class="fs-label">HOLD</span><span class="fs-progress__value">12%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 12%"></div></div>
+            </div>
+            <p class="fs-inspector__value fs-inspector__value--muted" style="font-size: 12px">
+              Иллюстрация. В продукте полоса появляется только когда источник публикует <code class="fs-machine-id">progress</code>.
+            </p>
+          </div>
+
+          <div class="fs-card" style="padding: 14px; display: grid; gap: 12px">
+            <h2 class="section-title" style="font-size: 16px">Tabs</h2>
+            <div class="fs-tabs" role="tablist" aria-label="Пример табов">
+              <button type="button" role="tab" aria-selected="true">Overview</button>
+              <button type="button" role="tab" aria-selected="false">Projects</button>
+              <button type="button" role="tab" aria-selected="false">Relations</button>
+              <button type="button" role="tab" aria-selected="false">Evidence <span class="fs-tabs__count">12</span></button>
+            </div>
+            <div class="fs-tabs" role="tablist" aria-label="Пример табов с состоянием">
+              <button type="button" role="tab" aria-selected="false"><span class="fs-dot" style="--dot-color: var(--fs-warning)"></span>ACTION NOW <span class="fs-tabs__count">0</span></button>
+              <button type="button" role="tab" aria-selected="true"><span class="fs-dot" style="--dot-color: var(--fs-primary-fg)"></span>BLOCKED <span class="fs-tabs__count">1</span></button>
+              <button type="button" role="tab" aria-selected="false"><span class="fs-dot" style="--dot-color: var(--fs-info-fg)"></span>IN PROGRESS <span class="fs-tabs__count">3</span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Project card</h2>
+        <div class="preview-grid">
+          <article class="project-card fs-card fs-card--selected">
+            <div class="project-card-head">
+              <div class="project-icon">◧</div>
+              <span class="fs-badge fs-badge--critical">BLOCKED</span>
+            </div>
+            <div class="project-body">
+              <h2>Blocked project (sample)</h2>
+              <p>Состояние, которого нет в сегодняшнем snapshot: показывается только для проверки критического тона.</p>
+            </div>
+            <div class="project-card__checkpoint">
+              <span class="fs-label">Current checkpoint</span>
+              <span class="project-card__checkpoint-value">PILOT-OPS-02</span>
+            </div>
+            <div class="fs-progress fs-progress--critical">
+              <div class="fs-progress__head"><span class="fs-label">Progress</span><span class="fs-progress__value">31%</span></div>
+              <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 31%"></div></div>
+            </div>
+            <div class="project-card__next">
+              <span class="fs-label">Next action</span>
+              <p>Снять блокер и подтвердить evidence.</p>
+            </div>
+            <div class="project-card__flags">
+              <span class="fs-badge fs-badge--critical">BLOCKER</span>
+              <span class="fs-badge fs-badge--attention">STALE</span>
+            </div>
+            <dl class="project-card__metrics">
+              <div class="project-card__metric"><dt>Evidence</dt><dd>2</dd></div>
+              <div class="project-card__metric"><dt>Connections</dt><dd>1</dd></div>
+              <div class="project-card__metric"><dt>Signals</dt><dd>2</dd></div>
+            </dl>
+            <div class="project-footer">
+              <span><span class="fs-machine-id" title="Murkin1980/sample-project">Murkin1980/sampl…ject</span> · 27.08.2026</span>
+              <button type="button" disabled>Continue</button>
+            </div>
+          </article>
+
+          <article class="project-card fs-card">
+            <div class="project-card-head">
+              <div class="project-icon">◧</div>
+              <span class="fs-badge fs-badge--active">IN PROGRESS</span>
+            </div>
+            <div class="project-body">
+              <h2>Active project (sample)</h2>
+              <p>Обычное состояние активной работы: violet = active / informational, не «positive».</p>
+            </div>
+            <div class="project-card__checkpoint">
+              <span class="fs-label">Current checkpoint</span>
+              <span class="project-card__checkpoint-value is-empty">Источник не публикует checkpoint</span>
+            </div>
+            <div class="project-card__next">
+              <span class="fs-label">Next action</span>
+              <p>Продолжить пилот и закрыть оставшиеся гейты.</p>
+            </div>
+            <dl class="project-card__metrics">
+              <div class="project-card__metric is-zero"><dt>Evidence</dt><dd>0</dd></div>
+              <div class="project-card__metric is-zero"><dt>Connections</dt><dd>0</dd></div>
+              <div class="project-card__metric"><dt>Signals</dt><dd>1</dd></div>
+            </dl>
+            <div class="project-footer">
+              <span><span class="fs-machine-id">fixture-registry</span> · 26.08.2026</span>
+              <button type="button" class="btn-continue-active">Continue</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title">Project inspector</h2>
+        <div class="fs-inspector">
+          <div class="fs-inspector__head">
+            <div>
+              <p class="fs-label">REPOSITORY · inspector</p>
+              <h2>Sample project</h2>
+              <p class="fs-inspector__subtitle">Murkin1980/sample-project</p>
+            </div>
+          </div>
+          <div class="fs-inspector__body">
+            <section class="fs-inspector__section">
+              <h3>Status</h3>
+              <div class="fs-inspector__row">
+                <span class="fs-badge fs-badge--critical">BLOCKED</span>
+                <span class="fs-badge fs-badge--outline">SOURCE KNOWN</span>
+                <span class="fs-badge fs-badge--attention">STALE</span>
+              </div>
+              <dl class="fs-inspector__facts">
+                <div class="fs-inspector__fact"><dt>Repo</dt><dd><span class="fs-machine-id">Murkin1980/sample-project</span></dd></div>
+                <div class="fs-inspector__fact"><dt>Source</dt><dd><span class="fs-machine-id">ce5c48aeb21269c5…d.md</span></dd></div>
+                <div class="fs-inspector__fact"><dt>Updated</dt><dd>27.08.2026</dd></div>
+                <div class="fs-inspector__fact"><dt>Stale after</dt><dd>7 дн.</dd></div>
+              </dl>
+            </section>
+            <section class="fs-inspector__section">
+              <h3>Current checkpoint</h3>
+              <p class="fs-inspector__value">CP-06 — Flow / Nodes MVP</p>
+              <div class="fs-progress fs-progress--active">
+                <div class="fs-progress__head"><span class="fs-label">Progress</span><span class="fs-progress__value">78%</span></div>
+                <div class="fs-progress__track"><div class="fs-progress__fill" style="width: 78%"></div></div>
+              </div>
+            </section>
+            <section class="fs-inspector__section">
+              <h3>Next action</h3>
+              <p class="fs-inspector__value">Снять блокер и подтвердить evidence.</p>
+            </section>
+            <section class="fs-inspector__section">
+              <h3>Evidence</h3>
+              <div class="fs-evidence">
+                <a class="fs-evidence__item" href="#">
+                  <span class="fs-dot" style="--dot-color: var(--fs-info-fg)"></span>
+                  <span><span class="fs-evidence__label">PROJECT_STATUS.md</span><span class="fs-evidence__source">ce5c48aeb21269c59a6d1e79d429d334df5db442:PROJECT_STATUS.md</span></span>
+                </a>
+                <a class="fs-evidence__item" href="#">
+                  <span class="fs-dot" style="--dot-color: var(--fs-info-fg)"></span>
+                  <span><span class="fs-evidence__label">ROADMAP.md</span><span class="fs-evidence__source">423614f65e5ef7ebe1dd6d3fa2c77364b3f40519:ROADMAP.md</span></span>
+                </a>
+              </div>
+            </section>
+            <section class="fs-inspector__section">
+              <h3>Connections</h3>
+              <p class="fs-inspector__value fs-inspector__value--muted">Подтверждённых связей нет.</p>
+            </section>
+            <section class="fs-inspector__section">
+              <h3>Risks / blockers</h3>
+              <div class="fs-inspector__risk">
+                <span class="fs-badge fs-badge--critical">BLOCKER</span>
+                <p class="fs-inspector__value">Ждём подтверждения от владельца репозитория.</p>
+              </div>
+              <div class="fs-inspector__signals">
+                <div class="fs-inspector__signal">
+                  <span class="fs-badge fs-badge--attention">STALE</span>
+                  <p class="fs-inspector__value">Нет подтверждённого обновления 7+ дней</p>
+                  <span class="fs-machine-id">Murkin1980/sample-project</span>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="fs-inspector__foot">
+            <button type="button" class="fs-btn fs-btn--primary fs-btn--block" disabled>Continue недоступен</button>
+          </div>
+        </div>
+        <p class="fs-inspector__value fs-inspector__value--muted" style="margin-top: 10px; font-size: 12px">
+          HealthScore отсутствует намеренно: в <code class="fs-machine-id">ProjectState</code> нет объективной числовой
+          метрики здоровья, поэтому примитив не выводится (см. DESIGN.md §3.6).
+        </p>
+      </section>
+
+      <section>
+        <h2 class="section-title">Typography</h2>
+        <div class="fs-card" style="padding: 16px; display: grid; gap: 8px">
+          <p style="margin: 0; font-size: var(--fs-text-page); font-weight: 700; letter-spacing: -0.03em">Page title 30 / 700</p>
+          <p style="margin: 0; font-size: var(--fs-text-section); font-weight: 680">Section title 20 / 680</p>
+          <p style="margin: 0; font-size: var(--fs-text-card); font-weight: 650">Card title 16 / 650</p>
+          <p style="margin: 0; font-size: var(--fs-text-kpi); font-weight: 600; line-height: 1">42</p>
+          <p style="margin: 0; font-size: var(--fs-text-body)">Body 14 — основной текст тёплый off-white #FFF8F6, никогда не pure #FFFFFF.</p>
+          <p style="margin: 0; font-size: var(--fs-text-meta); color: var(--fs-text-secondary)">Metadata 12 / secondary #BEB2C2</p>
+          <p style="margin: 0; font-size: var(--fs-text-micro); color: var(--fs-text-muted); letter-spacing: 0.08em; text-transform: uppercase">Micro label 11 — uppercase</p>
+          <p style="margin: 0"><code class="fs-machine-id">ce5c48aeb21269c59a6d1e79d429d334df5db442:PROJECT_STATUS.md</code></p>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

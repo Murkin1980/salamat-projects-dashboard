@@ -63,6 +63,15 @@ Colour is spent on **state and action**, never on decoration.
 * The palette below is the starting palette agreed for this repository; it is not a pixel copy of any
   reference screen. The reference is intentionally *not* treated as pixel-perfect truth.
 
+**Taken from the reference (structure and behaviour only):** the dark purple-black surface ladder,
+compact outlined status chips instead of large filled pills, thin underline tabs, a docked inspector
+panel instead of a modal card, monospace machine identifiers, and the habit of showing unknown or
+unmeasured values as an explicit "not published" state instead of guessing a number.
+
+**Deliberately not taken:** brand marks, logo, product naming, marketing copy, the public score-gauge
+itself (no equivalent objective metric exists in `ProjectState` — see §3.6), and any pixel-level copy
+of a reference screen.
+
 ### 3.2 Design principles
 
 1. **Very dark, layered, not flat.** Three background levels (`page` → `primary` → `card` → `raised`)
@@ -292,6 +301,17 @@ were re-mapped for the dark canvas. All five colours remain distinct (`tests/edg
 | `reports_to` | `#20C978` green | — |
 | `diverged_from` | `#E0004F` magenta | `8 5` |
 
+### 3.12 Review artifact
+
+`docs/theme-preview.html` renders the **real** product stylesheet (`src/styles.css?direct`, no duplicated
+theme CSS) and shows every state in one place: surface ladder, all triage/source/node badges, button
+variants, progress tones, tabs, project cards and the full inspector with its six sections.
+
+It exists because the live runtime snapshot does not currently contain every state (for example
+`BLOCKED`, or a project that publishes numeric progress), and a reviewer still has to check them.
+The page is a documentation artifact: its sample values are marked as illustrative and never enter the
+product. Open it directly from the repository, or from the dev server as `/docs/theme-preview.html`.
+
 ---
 
 ## 4. Change log
@@ -299,3 +319,4 @@ were re-mapped for the dark canvas. All five colours remain distinct (`tests/edg
 | Date | Change |
 |---|---|
 | 2026-09-11 | Added §3 FreeScan Dark Control Theme: token layer (`src/styles/tokens.css`), primitives under `src/components/ui/`, `ProjectCard` + `ProjectInspector` extracted from `src/main.tsx`, inspector dock in the control-center layout, graph/report/modal surfaces migrated. Domain logic, contracts and tests unchanged. |
+| 2026-09-11 | Added `docs/theme-preview.html` — static review artifact rendering the product stylesheet so states absent from the live snapshot (`BLOCKED`, numeric progress) can be reviewed. |
