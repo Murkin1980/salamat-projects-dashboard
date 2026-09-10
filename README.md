@@ -38,6 +38,7 @@ invalid refresh is shown explicitly while the last valid state remains visible.
 6. `PROJECT_STATUS.md`
 7. `ROADMAP.md`
 8. `docs/ICON_RESEARCH.md`
+9. `DESIGN.md` (colour system, tokens, component primitives)
 
 ## Planned domain
 `projects.salamat-mebel.kz`
