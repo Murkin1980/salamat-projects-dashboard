@@ -34,6 +34,7 @@ import {
   type NodeGraph,
 } from '../graph/node-graph'
 import { edgePresentation } from '../graph/edge-presentation'
+import { InspectorFacts, InspectorSection } from './ui'
 
 const nodeTypeMeta = {
   PROJECT: { label: 'Проект', Icon: IconFolderCode },
@@ -106,7 +107,7 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
       className: `graph-edge edge-${edge.type} ${isSelected ? 'is-edge-selected' : ''}`,
       style: { stroke: presentation.color, strokeWidth: isSelected ? 4 : 2, opacity: isDimmed ? 0.14 : 1, strokeDasharray: presentation.dash },
       labelStyle: { fill: presentation.color, fontWeight: 800, opacity: isDimmed ? 0.18 : 1 },
-      labelBgStyle: { fill: '#ffffff', fillOpacity: isDimmed ? 0.45 : 0.96 },
+      labelBgStyle: { fill: '#11132A', fillOpacity: isDimmed ? 0.45 : 0.96 },
       markerEnd: { type: MarkerType.ArrowClosed, color: presentation.color, width: isSelected ? 24 : 18, height: isSelected ? 24 : 18 },
       zIndex: isSelected ? 20 : 0,
     }
@@ -177,8 +178,14 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
               maxZoom={1.5}
               proOptions={{ hideAttribution: true }}
             >
-              <Background gap={24} size={1}/>
-              <MiniMap pannable zoomable nodeColor={(node) => node.data.status === 'CONFLICT' ? '#d94949' : node.data.status === 'PASS' ? '#23966a' : '#77839a'}/>
+              <Background gap={24} size={1} color="#1F1030"/>
+              <MiniMap
+                pannable
+                zoomable
+                bgColor="#11132A"
+                maskColor="rgb(8 0 20 / 0.72)"
+                nodeColor={(node) => node.data.status === 'CONFLICT' ? '#FF5C86' : node.data.status === 'PASS' ? '#20C978' : '#8E8295'}
+              />
               <Controls showInteractive={false}/>
             </ReactFlow>
           ) : <div className="graph-empty"><IconArrowsSplit size={26}/><strong>Нет узлов по текущим фильтрам</strong><button type="button" onClick={() => setVisibleTypes(new Set(allNodeTypes))}>Показать все типы</button></div>}
@@ -191,15 +198,19 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
                 <div className="inspector-icon" style={{ color: edgePresentation[selectedEdge.type].color, background: `${edgePresentation[selectedEdge.type].color}14` }}><IconRelationOneToMany size={22}/></div>
                 <div><span>Выбранная связь</span><h3>{edgePresentation[selectedEdge.type].label}</h3></div>
               </div>
-              <div className="edge-direction" style={{ '--edge-color': edgePresentation[selectedEdge.type].color } as React.CSSProperties}>
-                <div className="edge-source-card"><small>ИСТОЧНИК</small><strong>{selectedEdgeSource.label}</strong><span>{selectedEdgeSource.detail}</span></div>
-                <div className="direction-arrow">→</div>
-                <div className="edge-target-card"><small>ПОЛУЧАТЕЛЬ</small><strong>{selectedEdgeTarget.label}</strong><span>{selectedEdgeTarget.detail}</span></div>
-              </div>
-              <p>{edgePresentation[selectedEdge.type].description}</p>
-              <div className="edge-type-key"><span style={{ background: edgePresentation[selectedEdge.type].color }}/>{selectedEdge.type.replaceAll('_', ' ')}</div>
-              <a href={selectedEdge.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence связи <IconExternalLink size={15}/></a>
-              <code>{selectedEdge.sourceId}</code>
+              <InspectorSection title="Relation">
+                <div className="edge-direction" style={{ '--edge-color': edgePresentation[selectedEdge.type].color } as React.CSSProperties}>
+                  <div className="edge-source-card"><small>ИСТОЧНИК</small><strong>{selectedEdgeSource.label}</strong><span>{selectedEdgeSource.detail}</span></div>
+                  <div className="direction-arrow">→</div>
+                  <div className="edge-target-card"><small>ПОЛУЧАТЕЛЬ</small><strong>{selectedEdgeTarget.label}</strong><span>{selectedEdgeTarget.detail}</span></div>
+                </div>
+                <p>{edgePresentation[selectedEdge.type].description}</p>
+                <div className="edge-type-key"><span style={{ background: edgePresentation[selectedEdge.type].color }}/>{selectedEdge.type.replaceAll('_', ' ')}</div>
+              </InspectorSection>
+              <InspectorSection title="Evidence">
+                <a href={selectedEdge.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence связи <IconExternalLink size={15}/></a>
+                <code>{selectedEdge.sourceId}</code>
+              </InspectorSection>
             </>
           ) : selectedNode ? (
             <>
@@ -207,18 +218,23 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
                 <div className="inspector-icon">{(() => { const Icon = nodeTypeMeta[selectedNode.type].Icon; return <Icon size={22}/> })()}</div>
                 <div><span>{nodeTypeMeta[selectedNode.type].label}</span><h3>{selectedNode.label}</h3></div>
               </div>
-              <div className={`inspector-status status-${selectedNode.status.toLowerCase()}`}>{selectedNode.status === 'CONFLICT' && <IconAlertTriangle size={15}/>} {selectedNode.status}</div>
-              <p>{selectedNode.detail}</p>
-              <dl>
-                <div><dt>Связей</dt><dd>{selectedRelations.length}</dd></div>
-                <div><dt>Режим</dt><dd>READ ONLY</dd></div>
-              </dl>
-              <div className="relation-list">
-                <strong>Связи</strong>
-                {selectedRelations.map((edge) => <span key={edge.id}>{edge.type.replaceAll('_', ' ')} · {edge.source === selectedNode.id ? graph.nodes.find((n) => n.id === edge.target)?.label : graph.nodes.find((n) => n.id === edge.source)?.label}</span>)}
-              </div>
-              <a href={selectedNode.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence <IconExternalLink size={15}/></a>
-              <code>{selectedNode.sourceId}</code>
+              <InspectorSection title="Status">
+                <div className={`inspector-status status-${selectedNode.status.toLowerCase()}`}>{selectedNode.status === 'CONFLICT' && <IconAlertTriangle size={15}/>} {selectedNode.status}</div>
+                <InspectorFacts items={[
+                  { label: 'Связей', value: selectedRelations.length },
+                  { label: 'Режим', value: 'READ ONLY' },
+                ]}/>
+                <p>{selectedNode.detail}</p>
+              </InspectorSection>
+              <InspectorSection title="Connections">
+                <div className="relation-list">
+                  {selectedRelations.map((edge) => <span key={edge.id}>{edge.type.replaceAll('_', ' ')} · {edge.source === selectedNode.id ? graph.nodes.find((n) => n.id === edge.target)?.label : graph.nodes.find((n) => n.id === edge.source)?.label}</span>)}
+                </div>
+              </InspectorSection>
+              <InspectorSection title="Evidence">
+                <a href={selectedNode.evidenceUrl} target="_blank" rel="noreferrer">Открыть evidence <IconExternalLink size={15}/></a>
+                <code>{selectedNode.sourceId}</code>
+              </InspectorSection>
             </>
           ) : <div className="inspector-empty"><IconX size={20}/>Выберите узел или связь</div>}
         </aside>

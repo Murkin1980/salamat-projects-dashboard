@@ -2,16 +2,10 @@ import { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   IconAlertTriangle,
-  IconBolt,
-  IconCircleCheck,
   IconClock,
-  IconFlask,
   IconFolderCode,
   IconLayoutDashboard,
   IconListDetails,
-  IconPlayerPause,
-  IconPlayerPlay,
-  IconRosetteDiscountCheck,
   IconRefresh,
   IconRoute,
   IconSearch,
@@ -19,24 +13,20 @@ import {
   IconSparkles,
   IconTargetArrow,
 } from '@tabler/icons-react'
-import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.github.json'
 import nodeGraphRegistry from '../config/node-graphs.json'
 import historyRegistry from '../config/project-history.json'
 import { NodeView } from './components/NodeView'
+import { ProjectCard } from './components/ProjectCard'
+import { ProjectInspector } from './components/ProjectInspector'
 import { ReportView } from './components/ReportView'
+import { StatusBadge, triageDotColor, triageMeta } from './components/StatusBadge'
 import { TaskPacketModal } from './components/TaskPacketModal'
-import {
-  parseProjectRegistry,
-  type ProjectState,
-  type TriageState,
-} from './contract/project-state'
-import {
-  isProjectAllowed,
-  isRepositoryAllowed,
-} from './contract/task-packet'
+import { Tabs, type TabItem } from './components/ui'
+import { parseProjectRegistry, type ProjectState, type TriageState } from './contract/project-state'
+import { isProjectAllowed, isRepositoryAllowed } from './contract/task-packet'
 import { useLiveRegistry } from './hooks/use-live-registry'
-import { deriveLiveProjectState } from './triage/live-triage'
+import { deriveLiveProjectState, type AttentionSignal } from './triage/live-triage'
 import { parseNodeGraphRegistry } from './graph/node-graph'
 import { parseHistoryRegistry } from './history/project-history'
 import './styles.css'
@@ -46,32 +36,6 @@ type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports'
 const initialRegistry = parseProjectRegistry(projectRegistry)
 const businessDiscoveryGraph = parseNodeGraphRegistry(nodeGraphRegistry).graphs.find((graph) => graph.id === 'business-discovery')!
 const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
-const triageIcons = {
-  bolt: IconBolt,
-  'alert-triangle': IconAlertTriangle,
-  'circle-check': IconCircleCheck,
-  'player-play': IconPlayerPlay,
-  flask: IconFlask,
-  'player-pause': IconPlayerPause,
-  'rosette-discount-check': IconRosetteDiscountCheck,
-} as const
-
-function getTriageIcon(name: string) {
-  const Icon = triageIcons[name as keyof typeof triageIcons]
-  if (!Icon) throw new Error(`Unsupported triage icon in config/icon-map.json: ${name}`)
-  return Icon
-}
-
-const triageMeta: Record<TriageState, { label: string; className: string; Icon: typeof IconBolt }> = {
-  ACTION_NOW: { label: 'ACTION NOW', className: 'status-action', Icon: getTriageIcon(iconMap.triage.ACTION_NOW) },
-  BLOCKED: { label: 'BLOCKED', className: 'status-blocked', Icon: getTriageIcon(iconMap.triage.BLOCKED) },
-  READY: { label: 'READY', className: 'status-ready', Icon: getTriageIcon(iconMap.triage.READY) },
-  IN_PROGRESS: { label: 'IN PROGRESS', className: 'status-progress', Icon: getTriageIcon(iconMap.triage.IN_PROGRESS) },
-  VALIDATION: { label: 'VALIDATION', className: 'status-validation', Icon: getTriageIcon(iconMap.triage.VALIDATION) },
-  HOLD: { label: 'HOLD', className: 'status-hold', Icon: getTriageIcon(iconMap.triage.HOLD) },
-  DONE: { label: 'DONE', className: 'status-done', Icon: getTriageIcon(iconMap.triage.DONE) },
-}
-
 const triageOrder: TriageState[] = ['ACTION_NOW', 'BLOCKED', 'READY', 'IN_PROGRESS', 'VALIDATION', 'HOLD', 'DONE']
 
 function matchesQuery(project: ProjectState, query: string) {
@@ -83,11 +47,27 @@ function matchesQuery(project: ProjectState, query: string) {
     .includes(normalized)
 }
 
+/**
+ * Presentation-only gate derived from the existing CP-09 allowlist rules.
+ * The rules themselves live in contract/task-packet.ts and are untouched.
+ */
+function continueGate(project: ProjectState): { allowed: boolean; title: string } {
+  const isAllowed = isProjectAllowed(project.id) && isRepositoryAllowed(project.repo)
+  if (!isAllowed) {
+    return { allowed: false, title: 'Эксперимент CP-09 ограничен allowlist (только salamat-projects-dashboard)' }
+  }
+  if (project.triageState === 'BLOCKED') return { allowed: false, title: 'Заблокировано: проект имеет активный блокер' }
+  if (project.triageState === null) return { allowed: false, title: 'Состояние не определено источником' }
+  return { allowed: true, title: 'Сформировать и экспортировать Task Packet (CP-09 Baseline)' }
+}
+
 function App() {
   const [view, setView] = useState<View>('triage')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<TriageState | 'ALL'>('ALL')
   const [activeTaskProject, setActiveTaskProject] = useState<ProjectState | null>(null)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialRegistry.projects[0]?.id ?? null)
+  const [inspectorOpen, setInspectorOpen] = useState(false)
   const { registry, refresh, refreshState, error, lastSuccessAt } = useLiveRegistry(initialRegistry)
   const liveProjects = useMemo(
     () => registry.projects.map((project) => deriveLiveProjectState(project, new Date())),
@@ -95,6 +75,11 @@ function App() {
   )
   const projects = useMemo(
     () => liveProjects.map(({ project, effectiveTriageState }) => ({ ...project, triageState: effectiveTriageState })),
+    [liveProjects],
+  )
+
+  const attentionById = useMemo(
+    () => new Map(liveProjects.map(({ project, attention }) => [project.id, attention] as const)),
     [liveProjects],
   )
 
@@ -116,6 +101,30 @@ function App() {
   const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [projects, query])
 
   const attentionProjects = useMemo(() => liveProjects.filter(({ attention }) => attention.length > 0), [liveProjects])
+
+  const selectedProject = useMemo(
+    () => projects.find((project) => project.id === selectedProjectId) ?? null,
+    [projects, selectedProjectId],
+  )
+  const selectedAttention: AttentionSignal[] = selectedProject ? attentionById.get(selectedProject.id) ?? [] : []
+
+  function selectProject(projectId: string) {
+    setSelectedProjectId(projectId)
+    setInspectorOpen(true)
+  }
+
+  const filterTabs: TabItem<TriageState | 'ALL'>[] = [
+    { id: 'ALL', label: 'ALL', count: projects.length },
+    ...triageOrder.map((state) => ({
+      id: state,
+      label: triageMeta[state].label,
+      count: counts[state],
+      dotColor: triageDotColor(state),
+    })),
+  ]
+
+  const overviewVisible = view !== 'nodes' && view !== 'reports'
+  const inspectorHosted = view === 'triage' || view === 'portfolio' || view === 'attention'
 
   return (
     <div className="app-shell">
@@ -149,7 +158,7 @@ function App() {
             <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : 'History & Reports'}</h1>
             <p>{view === 'nodes' ? 'Карта реальных связей проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
-          {view !== 'nodes' && view !== 'reports' && <div className="header-actions">
+          {overviewVisible && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
@@ -164,42 +173,70 @@ function App() {
           </div>}
         </header>
 
-        {view !== 'nodes' && view !== 'reports' && <section className="summary-grid" aria-label="Сводка">
+        {overviewVisible && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Можно запускать" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
         </section>}
 
-        {view === 'triage' && (
-          <>
-            <section className="triage-tabs" aria-label="Фильтр по готовности">
-              <button className={filter === 'ALL' ? 'selected' : ''} onClick={() => setFilter('ALL')}>ALL <span>{projects.length}</span></button>
-              {triageOrder.map((state) => {
-                const meta = triageMeta[state]
-                return <button key={state} className={`${filter === state ? 'selected' : ''} ${meta.className}`} onClick={() => setFilter(state)}>{meta.label} <span>{counts[state]}</span></button>
-              })}
-            </section>
-            <ProjectGrid projects={visibleProjects} onOpenTaskPacket={setActiveTaskProject} />
-          </>
-        )}
+        {inspectorHosted && (
+          <div className="control-columns">
+            <div className="control-columns__main">
+              {view === 'triage' && (
+                <Tabs
+                  items={filterTabs}
+                  value={filter}
+                  onChange={setFilter}
+                  ariaLabel="Фильтр по готовности"
+                  idPrefix="triage-tab"
+                  controls="project-panel"
+                />
+              )}
 
-        {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} onOpenTaskPacket={setActiveTaskProject} />}
-
-        {view === 'attention' && (
-          <section className="attention-list">
-            {attentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
-              <article key={project.id} className="attention-row">
-                <StatusBadge state={effectiveTriageState} resolution={project.triageSource.status}/>
-                <div>
-                  <strong>{project.name}</strong>
-                  <p>{attention.map((signal) => signal.label).join(' · ')}</p>
-                  <small>Источник: {attention.map((signal) => signal.sourceId).join(' · ')}</small>
+              {view !== 'attention' ? (
+                <div id="project-panel" role="tabpanel" aria-labelledby={`triage-tab-${filter}`}>
+                  <ProjectGrid
+                    projects={view === 'triage' ? visibleProjects : portfolioProjects}
+                    attentionById={attentionById}
+                    selectedProjectId={selectedProjectId}
+                    onSelect={selectProject}
+                    onOpenTaskPacket={setActiveTaskProject}
+                  />
                 </div>
-                <span className="attention-stage">{attention.map((signal) => signal.kind.replaceAll('_', ' ')).join(' / ')}</span>
-              </article>
-            ))}
-          </section>
+              ) : (
+                <section className="attention-list" aria-label="Проекты, требующие внимания">
+                  {attentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
+                    <button
+                      type="button"
+                      key={project.id}
+                      className={`attention-row ${selectedProjectId === project.id ? 'is-selected' : ''}`}
+                      onClick={() => selectProject(project.id)}
+                    >
+                      <StatusBadge state={effectiveTriageState} resolution={project.triageSource.status}/>
+                      <div>
+                        <strong>{project.name}</strong>
+                        <p>{attention.map((signal) => signal.label).join(' · ')}</p>
+                        <small>Источник: {attention.map((signal) => signal.sourceId).join(' · ')}</small>
+                      </div>
+                      <span className="attention-stage">{attention.map((signal) => signal.kind.replaceAll('_', ' ')).join(' / ')}</span>
+                    </button>
+                  ))}
+                </section>
+              )}
+            </div>
+
+            <div className={`inspector-dock ${inspectorOpen ? 'is-open' : ''}`}>
+              <ProjectInspector
+                project={selectedProject}
+                attention={selectedAttention}
+                canContinue={selectedProject ? continueGate(selectedProject).allowed : false}
+                continueTitle={selectedProject ? continueGate(selectedProject).title : 'Проект не выбран'}
+                onOpenTaskPacket={setActiveTaskProject}
+                onClose={() => setInspectorOpen(false)}
+              />
+            </div>
+          </div>
         )}
 
         {view === 'nodes' && <NodeView graph={businessDiscoveryGraph}/>}
@@ -222,83 +259,37 @@ function SummaryCard({ label, value, detail, tone = 'neutral' }: { label: string
 
 function ProjectGrid({
   projects,
+  attentionById,
+  selectedProjectId,
+  onSelect,
   onOpenTaskPacket,
 }: {
   projects: ProjectState[]
+  attentionById: Map<string, AttentionSignal[]>
+  selectedProjectId: string | null
+  onSelect: (projectId: string) => void
   onOpenTaskPacket: (project: ProjectState) => void
 }) {
   if (!projects.length) return <div className="empty-state">Ничего не найдено по текущему фильтру.</div>
   return (
     <section className="project-grid">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} onOpenTaskPacket={onOpenTaskPacket} />
-      ))}
+      {projects.map((project) => {
+        const gate = continueGate(project)
+        return (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            attention={attentionById.get(project.id) ?? []}
+            selected={selectedProjectId === project.id}
+            canContinue={gate.allowed}
+            continueTitle={gate.title}
+            onSelect={onSelect}
+            onOpenTaskPacket={onOpenTaskPacket}
+          />
+        )
+      })}
     </section>
   )
-}
-
-function ProjectCard({
-  project,
-  onOpenTaskPacket,
-}: {
-  project: ProjectState
-  onOpenTaskPacket: (project: ProjectState) => void
-}) {
-  const isAllowed = isProjectAllowed(project.id) && isRepositoryAllowed(project.repo)
-  const canContinue = isAllowed && project.triageState !== 'BLOCKED' && project.triageState !== null
-
-  return (
-    <article className="project-card">
-      <div className="project-card-head">
-        <div className="project-icon"><IconFolderCode size={22}/></div>
-        <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
-      </div>
-      <div className="project-body">
-        <h2>{project.name}</h2>
-        <p>{project.summary}</p>
-      </div>
-      <dl className="project-meta">
-        <div><dt>Текущий этап</dt><dd>{project.stage ?? 'Не определено источником'}</dd></div>
-        <div><dt>Следующее действие</dt><dd>{project.nextAction ?? 'Не определено источником'}</dd></div>
-      </dl>
-      <div className="project-footer">
-        <span><IconClock size={16}/> {project.source.id} · {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
-        {canContinue ? (
-          <button
-            type="button"
-            className="btn-continue-active"
-            onClick={() => onOpenTaskPacket(project)}
-            title="Сформировать и экспортировать Task Packet (CP-09 Baseline)"
-          >
-            Continue
-          </button>
-        ) : (
-          <button
-            type="button"
-            disabled
-            title={
-              !isAllowed
-                ? 'Эксперимент CP-09 ограничен allowlist (только salamat-projects-dashboard)'
-                : project.triageState === 'BLOCKED'
-                  ? 'Заблокировано: проект имеет активный блокер'
-                  : 'Состояние не определено'
-            }
-          >
-            Continue
-          </button>
-        )}
-      </div>
-    </article>
-  )
-}
-
-function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | null; resolution?: 'KNOWN' | 'UNKNOWN' | 'CONFLICT' }) {
-  if (state === null) {
-    return <span className="status-badge status-hold"><IconAlertTriangle size={15}/>{resolution === 'CONFLICT' ? 'SOURCE CONFLICT' : 'STATUS UNKNOWN'}</span>
-  }
-  const meta = triageMeta[state]
-  const Icon = meta.Icon
-  return <span className={`status-badge ${meta.className}`}><Icon size={15}/>{meta.label}</span>
 }
 
 export default App
