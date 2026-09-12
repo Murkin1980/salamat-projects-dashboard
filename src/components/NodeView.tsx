@@ -17,6 +17,7 @@ import {
   IconArrowsSplit,
   IconBox,
   IconCheck,
+  IconCircleCheck,
   IconClock,
   IconExternalLink,
   IconFileCheck,
@@ -65,7 +66,13 @@ function BlueprintNode({ data, selected }: NodeProps<Node<GraphNodeData>>) {
 const nodeTypes = { blueprint: BlueprintNode }
 
 export function NodeView({ graph }: { graph: NodeGraph }) {
-  const [selectedId, setSelectedId] = useState<string | null>('auditor')
+  // Default selection stays graph-driven: the previous default node when it exists,
+  // otherwise the project node, otherwise nothing (safe for graphs without it).
+  const [selectedId, setSelectedId] = useState<string | null>(() => (
+    graph.nodes.find((node) => node.id === 'auditor')?.id
+    ?? graph.nodes.find((node) => node.type === 'PROJECT')?.id
+    ?? null
+  ))
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
   const [visibleTypes, setVisibleTypes] = useState<Set<GraphNodeType>>(() => new Set(allNodeTypes))
   const [relationship, setRelationship] = useState<GraphEdgeType | 'ALL'>('ALL')
@@ -134,7 +141,9 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
           <h2 id="nodes-heading">{graph.name}</h2>
           <p>{graph.description}</p>
         </div>
-        <span className="graph-source-state"><IconAlertTriangle size={16}/> SOURCE {graph.sourceState}</span>
+        <span className={`graph-source-state state-${graph.sourceState.toLowerCase()}`}>
+          {graph.sourceState === 'KNOWN' ? <IconCircleCheck size={16}/> : <IconAlertTriangle size={16}/>} SOURCE {graph.sourceState}
+        </span>
       </header>
 
       <div className="graph-filters" aria-label="Фильтры графа">
@@ -159,7 +168,7 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
       </ul>
 
       <div className="nodes-layout">
-        <div className="graph-canvas" aria-label="Интерактивная карта узлов Business Discovery">
+        <div className="graph-canvas" aria-label={`Интерактивная карта узлов: ${graph.name}`}>
           {nodes.length ? (
             <ReactFlow
               nodes={nodes}

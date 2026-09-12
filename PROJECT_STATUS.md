@@ -132,6 +132,45 @@ Evidence:
 - mobile document width equals the viewport width (`390px`), with no horizontal page overflow;
 - no graph editing, repository write-back, task execution or workflow orchestration was introduced.
 
+### CP-06 extension — Multi-project Nodes (2026-09-13)
+
+Disposition: `EXTEND_EXISTING` — the existing Nodes view now selects among five
+evidence-backed graphs instead of one hard-coded graph; no new registry format,
+schema version, service, backend or workflow runtime was added.
+
+Evidence:
+
+- `config/node-graphs.json` holds five strictly validated graphs: `business-discovery`
+  (unchanged, 18 nodes / 17 edges), `murat-project-engineer`, `minibase-cloudflare`,
+  `salamat-projects-dashboard` and `ai-microtask-factory`;
+- every new node and edge carries `sourceId` plus a commit-pinned `evidenceUrl` from a
+  readable repository;
+- the Nodes view renders a compact project switcher driven only by registry graph entries
+  (projects without graph data are never offered), with WAI-ARIA tab semantics and
+  `ArrowLeft` / `ArrowRight` / `Home` / `End` keyboard navigation;
+- switching the active project immediately re-renders the existing `NodeView` without a
+  page reload; existing node-type and relationship filters and the read-only inspector
+  keep working;
+- a missing or empty graph resolves to an explicit empty state instead of failing;
+- `ai-microtask-factory` is recorded with `sourceState UNKNOWN` because its repository is
+  not readable from this session: only MPE portfolio evidence is represented, and the
+  unverified Task Packet / Runner / Execution / QC / Artifacts subsystems were deliberately
+  not invented;
+- `minibase-cloudflare` shows the documented conflict between its `ROADMAP.md` counter
+  ("CP-04 of 10") and the merged CP-05 / CP-06 commits instead of a guessed progress value;
+- `minibase-cloudflare` and `ai-microtask-factory` were added to the project registry as
+  explicit `triageSource: UNKNOWN` entries so graph project ids resolve; the GitHub source
+  adapter configuration was not changed and no project status was asserted;
+- 60 automated tests pass, including five new node-graph checks;
+- production TypeScript / Vite build passes;
+- a scratch jsdom harness (not committed, no new project dependency) verified 19/19
+  behaviours: selector source, click and keyboard switching, source-state rendering,
+  preserved filters and the safe empty state;
+- no graph generation from `projects.github.json`, no editing, no write-back and no
+  execution authority were introduced.
+
+See `docs/CP06_MULTI_PROJECT_NODE_GRAPHS.md`.
+
 ## CP-07 — History & Reports
 Status: `PASS`
 
@@ -195,4 +234,4 @@ Evaluate Codex App Server integration under Murat review and experiment gates wi
 ## Blocker
 None.
 
-Last updated: 2026-09-03
+Last updated: 2026-09-13

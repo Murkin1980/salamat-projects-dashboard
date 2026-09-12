@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "version": 1,
-  "updatedAt": "2026-08-26",
+  "version": 2,
+  "updatedAt": "2026-09-13",
   "projects": [
     {
       "schemaVersion": "1.0.0",
@@ -211,6 +211,87 @@
       "tools": [],
       "approvals": [],
       "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "minibase-cloudflare",
+      "name": "MiniBase Cloudflare",
+      "summary": "Compact multi-project BaaS on Cloudflare Workers, D1 and R2.",
+      "repo": "Murkin1980/minibase-cloudflare",
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "No canonical Status label: the repository has no PROJECT_STATUS.md or STATUS.md artifact, and triage is not derived from ROADMAP.md alone"
+      },
+      "stage": "MB9 vNext — CP-06",
+      "checkpoint": "CP-06 — Files & Artifact Model",
+      "progress": null,
+      "lastUpdated": "2026-09-06",
+      "blocker": null,
+      "nextAction": "Hold feature growth until a real consumer pull; deployment stays a separate owner-approved step.",
+      "evidenceLinks": [
+        {
+          "label": "ROADMAP.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/ROADMAP.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:ROADMAP.md"
+        },
+        {
+          "label": "CP06_AUDIT.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/CP06_AUDIT.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:CP06_AUDIT.md"
+        },
+        {
+          "label": "docs/SCALABILITY.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/docs/SCALABILITY.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:docs/SCALABILITY.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/minibase-cloudflare"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "ai-microtask-factory",
+      "name": "AI Microtask Factory",
+      "summary": "Microtask pipeline with controlled acceptance and execution handoff.",
+      "repo": null,
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "Repository Murkin1980/ai-microtask-factory is not readable from this dashboard session, so no canonical status artifact is verified; evidence is limited to the MPE portfolio snapshot of 07.09.2026"
+      },
+      "stage": "Stage 4 — Spreadsheet Cleanup",
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-09-07",
+      "blocker": null,
+      "nextAction": "Reach real orders through a human-in-the-loop pilot instead of new UI features.",
+      "evidenceLinks": [
+        {
+          "label": "MPE portfolio snapshot 07.09.2026",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/9c0c39b4b651f000fbc8d410abe81b6295660525/dashboard/public/index.html",
+          "sourceId": "9c0c39b4b651f000fbc8d410abe81b6295660525:dashboard/public/index.html"
+        },
+        {
+          "label": "docs/OPERATING_MODEL.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/9c0c39b4b651f000fbc8d410abe81b6295660525/docs/OPERATING_MODEL.md",
+          "sourceId": "9c0c39b4b651f000fbc8d410abe81b6295660525:docs/OPERATING_MODEL.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "MPE",
+        "id": "Murkin1980/murat-project-engineer:dashboard/public/index.html"
+      },
       "staleAfterDays": 7
     }
   ]

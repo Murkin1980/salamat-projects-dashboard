@@ -9,7 +9,7 @@ const runtimePath = fileURLToPath(new URL('../public/project-state.json', import
 test('live registry fetch validates and returns the runtime snapshot', async () => {
   const payload = JSON.parse(await readFile(runtimePath, 'utf8'))
   const registry = await fetchLiveRegistry(async () => new Response(JSON.stringify(payload)))
-  assert.equal(registry.projects.length, 10)
+  assert.equal(registry.projects.length, 12)
 })
 
 test('live registry fetch fails explicitly on HTTP error', async () => {

@@ -18,9 +18,9 @@ function cloneRegistry(): ProjectRegistry {
   return structuredClone(parseProjectRegistry(validRegistry))
 }
 
-test('all ten normalized project fixtures pass deterministic validation', () => {
+test('all twelve normalized project fixtures pass deterministic validation', () => {
   const registry = parseProjectRegistry(validRegistry)
-  assert.equal(registry.projects.length, 10)
+  assert.equal(registry.projects.length, 12)
 })
 
 test('real GitHub cache is valid and preserves UNKNOWN and CONFLICT source states', () => {
