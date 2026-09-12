@@ -113,6 +113,16 @@ function App() {
     })
   }, [filter, projects, query])
 
+  // Triage reads in operational priority order: actionable states first,
+  // unresolved (null) states last. Presentation-only, data is unchanged.
+  const triageOrderedProjects = useMemo(() => {
+    return [...visibleProjects].sort((a, b) => {
+      const rankA = a.triageState ? triageOrder.indexOf(a.triageState) : triageOrder.length
+      const rankB = b.triageState ? triageOrder.indexOf(b.triageState) : triageOrder.length
+      return rankA - rankB
+    })
+  }, [visibleProjects])
+
   const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [projects, query])
 
   const attentionProjects = useMemo(() => liveProjects.filter(({ attention }) => attention.length > 0), [liveProjects])
@@ -159,7 +169,7 @@ function App() {
             </div>
             <label className="search-box">
               <IconSearch size={19}/>
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" aria-label="Поиск проектов" />
             </label>
           </div>}
         </header>
@@ -180,7 +190,7 @@ function App() {
                 return <button key={state} className={`${filter === state ? 'selected' : ''} ${meta.className}`} onClick={() => setFilter(state)}>{meta.label} <span>{counts[state]}</span></button>
               })}
             </section>
-            <ProjectGrid projects={visibleProjects} onOpenTaskPacket={setActiveTaskProject} />
+            <ProjectGrid projects={triageOrderedProjects} onOpenTaskPacket={setActiveTaskProject} />
           </>
         )}
 
@@ -258,8 +268,8 @@ function ProjectCard({
         <p>{project.summary}</p>
       </div>
       <dl className="project-meta">
-        <div><dt>Текущий этап</dt><dd>{project.stage ?? 'Не определено источником'}</dd></div>
-        <div><dt>Следующее действие</dt><dd>{project.nextAction ?? 'Не определено источником'}</dd></div>
+        <div><dt>Текущий этап</dt><dd className={project.stage ? undefined : 'meta-unknown'}>{project.stage ?? 'Не определено источником'}</dd></div>
+        <div><dt>Следующее действие</dt><dd className={project.nextAction ? undefined : 'meta-unknown'}>{project.nextAction ?? 'Не определено источником'}</dd></div>
       </dl>
       <div className="project-footer">
         <span><IconClock size={16}/> {project.source.id} · {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
