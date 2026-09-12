@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+// Default React import: see NodeView.tsx — required by the tsx test runner's
+// classic JSX transform, tree-shaken by the automatic-runtime build.
+import React, { useCallback, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { IconAlertTriangle, IconRoute } from '@tabler/icons-react'
 import {
   listNodeGraphProjects,
