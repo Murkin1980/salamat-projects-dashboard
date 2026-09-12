@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   IconAlertTriangle,
   IconCheck,
@@ -27,6 +27,14 @@ interface TaskPacketModalProps {
 
 export function TaskPacketModal({ project, onClose }: TaskPacketModalProps) {
   const [copied, setCopied] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+
+  // Move focus into the dialog on open and restore it on close.
+  useEffect(() => {
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    dialogRef.current?.focus()
+    return () => previous?.focus()
+  }, [])
 
   // Handle ESC key to cancel/close
   useEffect(() => {
@@ -94,8 +102,8 @@ export function TaskPacketModal({ project, onClose }: TaskPacketModalProps) {
   }
 
   return (
-    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className="task-packet-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop" onClick={onClose}>
+      <div ref={dialogRef} className="task-packet-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="modal-title" tabIndex={-1}>
         <header className="modal-header">
           <div className="modal-header-text">
             <div className="modal-tag">
@@ -136,7 +144,7 @@ export function TaskPacketModal({ project, onClose }: TaskPacketModalProps) {
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">Triage State</span>
-                  <span className="meta-value status-badge status-ready">{packet.triageState}</span>
+                  <span className="meta-value code-font">{packet.triageState}</span>
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">ID задачи</span>
