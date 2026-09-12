@@ -221,10 +221,59 @@ body { margin: 0; min-height: 100vh; }
 .edge-type-key { display: flex; align-items: center; gap: 7px; border-top: 1px solid #e8ebf0; border-bottom: 1px solid #e8ebf0; padding: 12px 0; color: #536174; font-size: 10px; font-weight: 900; text-transform: uppercase; }
 .edge-type-key span { width: 28px; height: 4px; border-radius: 999px; }
 
-.mobile-node-list { display: none; }
 .edge-direction .edge-source-card { border-left-color: #1d4ed8; }
 .edge-direction .edge-target-card { border-left-color: #0f766e; }
-.mobile-edge-list { display: none; }
+
+/*
+  Dedicated Nodes branches. `NodeView` picks exactly one via matchMedia:
+  `.nodes-mobile-view` at <= 760px, `.nodes-desktop-view` (React Flow) above.
+  The two never coexist in the DOM, so no display:none switching is involved.
+*/
+.nodes-desktop-view { min-width: 0; }
+.nodes-mobile-view { display: flex; flex-direction: column; min-width: 0; padding-bottom: 8px; }
+.mobile-section-heading { margin: 0; padding: 14px 16px 8px; color: #3f4f66; font-size: 12px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.mobile-empty-hint { margin: 0; padding: 0 16px 12px; color: #7c8796; font-size: 12px; line-height: 1.45; }
+.mobile-node-cards, .mobile-edge-cards { display: grid; gap: 8px; padding: 0 12px 4px; min-width: 0; }
+.mobile-node-card, .mobile-edge-card { display: flex; align-items: flex-start; gap: 11px; width: 100%; min-width: 0; min-height: 48px; border: 1px solid #dfe4eb; border-radius: 12px; padding: 10px 12px; background: #fff; color: #304158; text-align: left; cursor: pointer; }
+.mobile-node-card:active, .mobile-edge-card:active { background: #f2f6fc; }
+.mobile-node-card.selected { border-color: #2d6fc2; background: #eef4fd; box-shadow: inset 3px 0 0 #2d6fc2; }
+.mobile-edge-card.selected { border-color: var(--edge-color, #2d6fc2); background: #eef4fd; box-shadow: inset 3px 0 0 var(--edge-color, #2d6fc2); }
+.mobile-node-icon { flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: #edf2f9; color: #2b4a77; }
+.mobile-node-card-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mobile-node-card-body strong { font-size: 13.5px; line-height: 1.25; overflow-wrap: anywhere; }
+.mobile-node-card-body small { color: #788394; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+.mobile-node-detail { color: #67748a; font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.mobile-node-status { flex: 0 0 auto; margin-top: 2px; border-radius: 999px; padding: 4px 8px; background: #eef0f3; color: #56606d; font-size: 9px; font-weight: 900; letter-spacing: 0.04em; white-space: nowrap; }
+.mobile-node-status.status-pass { background: #e3f5eb; color: #23794f; }
+.mobile-node-status.status-conflict { background: #f8e3e5; color: #9a2830; }
+.mobile-node-status.status-in_progress { background: #e5eefb; color: #2c5fa7; }
+.mobile-node-status.status-future { background: #eceef1; color: #636d79; }
+.mobile-node-status.status-neutral { background: #eef0f3; color: #56606d; }
+.mobile-selected-detail { display: flex; flex-direction: column; padding: 4px 12px; min-width: 0; }
+.mobile-detail-card { display: grid; gap: 9px; margin-bottom: 8px; border: 1px solid #d9e2ee; border-radius: 14px; padding: 13px 14px; background: #fff; min-width: 0; }
+.mobile-detail-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mobile-detail-icon { flex: 0 0 auto; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: #eaf0f8; color: #214d83; }
+.mobile-detail-title { flex: 1 1 auto; min-width: 0; }
+.mobile-detail-title small { display: block; color: #7a8595; font-size: 9px; font-weight: 850; text-transform: uppercase; letter-spacing: 0.08em; }
+.mobile-detail-title strong { display: block; font-size: 15px; line-height: 1.25; overflow-wrap: anywhere; }
+.mobile-detail-card > p { margin: 0; color: #67748a; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.mobile-detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.mobile-detail-meta div { border: 1px solid #e5e9ef; border-radius: 10px; padding: 8px 10px; }
+.mobile-detail-meta dt { color: #8892a0; font-size: 9px; text-transform: uppercase; }
+.mobile-detail-meta dd { margin: 3px 0 0; font-size: 12px; font-weight: 800; }
+.mobile-detail-card a { justify-self: start; display: inline-flex; align-items: center; gap: 6px; color: #1e64b7; font-size: 12px; font-weight: 750; }
+.mobile-detail-card code { padding: 7px 8px; border-radius: 8px; background: #f4f6f9; color: #687386; font-size: 9px; overflow-wrap: anywhere; }
+.mobile-edge-direction { display: grid; gap: 6px; min-width: 0; }
+.mobile-edge-endpoint { border-left: 4px solid var(--edge-color, #77839a); border-radius: 9px; padding: 8px 10px; background: #f7f9fc; min-width: 0; }
+.mobile-edge-endpoint small { display: block; color: #788599; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; }
+.mobile-edge-endpoint strong { display: block; color: #1d2d43; font-size: 13px; overflow-wrap: anywhere; }
+.mobile-edge-source { border-left-color: #1d4ed8; }
+.mobile-edge-target { border-left-color: #0f766e; }
+.mobile-direction-arrow { color: var(--edge-color, #77839a); font-size: 20px; font-weight: 900; line-height: 1; text-align: center; }
+.mobile-edge-color { flex: 0 0 auto; width: 7px; height: 38px; border-radius: 999px; background: var(--edge-color); }
+.mobile-edge-card-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mobile-edge-card-body strong { font-size: 12.5px; line-height: 1.3; overflow-wrap: anywhere; }
+.mobile-edge-card-body small { color: #788394; font-size: 10px; font-weight: 800; }
 
 .reports-workspace { border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 18px 55px rgba(34, 48, 70, 0.07); }
 .reports-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 22px; border-bottom: 1px solid #e3e7ee; }
@@ -618,25 +667,21 @@ body { margin: 0; min-height: 100vh; }
   .nodes-project-tab { min-height: 48px; padding: 9px 12px; }
   .nodes-project-tab small { font-size: 9px; }
   .nodes-empty-state { padding: 30px 16px; }
-  .nodes-toolbar { flex-direction: column; gap: 10px; }
-  .graph-filters { align-items: stretch; flex-direction: column; }
-  .graph-filters label { justify-content: space-between; }
-  .graph-filters select { flex: 1; }
-  .clear-filters { justify-content: center; }
+  /*
+    Below 760px `NodeView` mounts the dedicated `.nodes-mobile-view` branch
+    (see base styles); the React Flow canvas and inspector are not in the DOM
+    at all, so no display:none rules are needed for them here. The shared
+    toolbar/filters/legend stay visible but compact so node cards are reached
+    quickly.
+  */
+  .nodes-toolbar { flex-direction: column; gap: 10px; padding: 16px 14px 12px; }
+  .nodes-toolbar h2 { font-size: 20px; }
+  .graph-filters { flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; }
+  .type-filters { flex: 1 1 100%; }
+  .graph-filters label { flex: 1 1 auto; min-width: 0; justify-content: space-between; }
+  .graph-filters select { flex: 1; min-width: 0; }
+  .clear-filters { flex: 0 0 auto; }
   .relationship-legend { gap: 14px; padding: 9px 12px; }
-  .nodes-layout { display: block; min-width: 0; min-height: 0; }
-  .graph-canvas { display: none; }
-  .node-inspector { min-width: 0; padding: 16px 12px; border-left: 0; border-bottom: 1px solid #e1e6ed; }
-  .mobile-node-list, .mobile-edge-list { display: grid; gap: 8px; min-width: 0; padding: 12px; }
-  .mobile-node-list button, .mobile-edge-list button { display: flex; align-items: center; gap: 11px; width: 100%; min-width: 0; min-height: 58px; border: 1px solid #dfe4eb; border-radius: 12px; padding: 10px 12px; background: #fff; color: #304158; text-align: left; }
-  .mobile-node-list button > svg, .mobile-edge-list button > svg { flex: 0 0 auto; }
-  .mobile-node-list button.selected { border-color: #2d6fc2; background: #eef4fd; box-shadow: inset 3px 0 0 #2d6fc2; }
-  .mobile-edge-list button.selected { border-color: var(--edge-color, #2d6fc2); background: #eef4fd; box-shadow: inset 3px 0 0 var(--edge-color, #2d6fc2); }
-  .mobile-node-list span, .mobile-edge-list span { display: block; min-width: 0; }
-  .mobile-node-list strong, .mobile-node-list small, .mobile-edge-list strong, .mobile-edge-list small { display: block; overflow-wrap: anywhere; }
-  .mobile-node-list small, .mobile-edge-list small { margin-top: 3px; color: #788394; font-size: 10px; }
-  .mobile-edge-list > strong { margin-top: 6px; color: #687386; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .mobile-edge-list .mobile-edge-color { width: 7px; height: 36px; flex: 0 0 auto; border-radius: 999px; background: var(--edge-color); }
   .reports-heading { flex-direction: column; gap: 10px; }
   .report-metrics { grid-template-columns: 1fr; padding: 12px; }
   .history-filters { padding: 11px 12px; }

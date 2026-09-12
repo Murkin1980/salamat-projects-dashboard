@@ -39,6 +39,9 @@ import { useLiveRegistry } from './hooks/use-live-registry'
 import { deriveLiveProjectState } from './triage/live-triage'
 import { parseNodeGraphRegistry } from './graph/node-graph'
 import { parseHistoryRegistry } from './history/project-history'
+// React Flow base styles are imported at the app entry (not inside NodeView)
+// so the Nodes components stay importable from tooling that cannot load CSS.
+import '@xyflow/react/dist/style.css'
 import './styles.css'
 
 type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports'
