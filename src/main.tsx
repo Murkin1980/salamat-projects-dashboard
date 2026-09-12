@@ -23,7 +23,7 @@ import iconMap from '../config/icon-map.json'
 import projectRegistry from '../config/projects.github.json'
 import nodeGraphRegistry from '../config/node-graphs.json'
 import historyRegistry from '../config/project-history.json'
-import { NodeView } from './components/NodeView'
+import { NodesView } from './components/NodesView'
 import { ReportView } from './components/ReportView'
 import { TaskPacketModal } from './components/TaskPacketModal'
 import {
@@ -44,7 +44,8 @@ import './styles.css'
 type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
-const businessDiscoveryGraph = parseNodeGraphRegistry(nodeGraphRegistry).graphs.find((graph) => graph.id === 'business-discovery')!
+// The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
+const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
 const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
 const triageIcons = {
   bolt: IconBolt,
@@ -157,7 +158,7 @@ function App() {
           <div>
             <p className="eyebrow">Operational portfolio</p>
             <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : 'History & Reports'}</h1>
-            <p>{view === 'nodes' ? 'Карта реальных связей проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
+            <p>{view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
           {view !== 'nodes' && view !== 'reports' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
@@ -212,7 +213,7 @@ function App() {
           </section>
         )}
 
-        {view === 'nodes' && <NodeView graph={businessDiscoveryGraph}/>}
+        {view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
         {view === 'reports' && <ReportView history={dashboardHistory}/>}
 
         {activeTaskProject && (

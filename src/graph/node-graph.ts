@@ -63,8 +63,39 @@ export type GraphNodeData = z.infer<typeof GraphNodeSchema>
 export type GraphEdgeData = z.infer<typeof GraphEdgeSchema>
 export type NodeGraph = z.infer<typeof NodeGraphSchema>
 
+export interface NodeGraphProjectOption {
+  graphId: string
+  projectId: string
+  name: string
+  sourceState: NodeGraph['sourceState']
+}
+
 export function parseNodeGraphRegistry(input: unknown) {
   return NodeGraphRegistrySchema.parse(input)
+}
+
+/**
+ * Selector options are derived from the parsed registry only: a project without a
+ * graph entry never appears in the Nodes switcher.
+ */
+export function listNodeGraphProjects(graphs: readonly NodeGraph[]): NodeGraphProjectOption[] {
+  return graphs.map((graph) => ({
+    graphId: graph.id,
+    projectId: graph.projectId,
+    name: graph.name,
+    sourceState: graph.sourceState,
+  }))
+}
+
+/**
+ * Resolves the graph for the active project id. Unknown or empty selections return
+ * `null` so the view can render an explicit empty state instead of failing.
+ */
+export function resolveActiveNodeGraph(
+  graphs: readonly NodeGraph[],
+  activeProjectId: string,
+): NodeGraph | null {
+  return graphs.find((graph) => graph.projectId === activeProjectId) ?? null
 }
 
 export function filterNodeGraph(
