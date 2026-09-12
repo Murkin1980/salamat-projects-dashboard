@@ -167,6 +167,21 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
         {allEdgeTypes.map((type) => <li key={type}><span style={{ '--edge-color': edgePresentation[type].color } as React.CSSProperties}/><strong>{edgePresentation[type].label}</strong></li>)}
       </ul>
 
+      {/*
+        Mobile-first ordering: the node list is rendered *before* `.nodes-layout`
+        so that on viewports <= 760px (where `.graph-canvas` is hidden and the
+        inspector is the only visible child of `.nodes-layout`) the nodes are the
+        first thing after the legend instead of being pushed below the inspector.
+        Desktop is unaffected: both mobile lists stay `display: none` there.
+      */}
+      <div className="mobile-node-list" aria-label="Список узлов">
+        {filtered.nodes.map((node) => {
+          const Icon = nodeTypeMeta[node.type].Icon
+          const isSelected = selectedId === node.id
+          return <button type="button" key={node.id} onClick={() => { setSelectedId(node.id); setSelectedEdgeId(null) }} aria-pressed={isSelected} className={isSelected ? 'selected' : ''}><Icon size={19}/><span><strong>{node.label}</strong><small>{nodeTypeMeta[node.type].label} · {node.status}</small></span></button>
+        })}
+      </div>
+
       <div className="nodes-layout">
         <div className="graph-canvas" aria-label={`Интерактивная карта узлов: ${graph.name}`}>
           {nodes.length ? (
@@ -233,12 +248,6 @@ export function NodeView({ graph }: { graph: NodeGraph }) {
         </aside>
       </div>
 
-      <div className="mobile-node-list" aria-label="Список узлов">
-        {filtered.nodes.map((node) => {
-          const Icon = nodeTypeMeta[node.type].Icon
-          return <button type="button" key={node.id} onClick={() => { setSelectedId(node.id); setSelectedEdgeId(null) }} className={selectedId === node.id ? 'selected' : ''}><Icon size={19}/><span><strong>{node.label}</strong><small>{nodeTypeMeta[node.type].label} · {node.status}</small></span></button>
-        })}
-      </div>
       <div className="mobile-edge-list" aria-label="Список связей">
         <strong>Связи</strong>
         {filtered.edges.map((edge) => <button type="button" key={edge.id} onClick={() => { setSelectedEdgeId(edge.id); setSelectedId(null) }} className={selectedEdgeId === edge.id ? 'selected' : ''} style={{ '--edge-color': edgePresentation[edge.type].color } as React.CSSProperties}>
