@@ -36,3 +36,9 @@ Deploy and bind `projects.salamat-mebel.kz`, verify mobile and desktop.
 
 ## CP-09 — Codex App Server Experiment
 Only after separate experiment gate. Evaluate Continue-from-project / agent workstream integration without moving source-of-truth authority into the dashboard.
+UI surface removed in CP-10; the retained contract and harness are recorded as an MPE migration candidate, not dashboard functionality.
+
+## CP-10 — Monitoring-Only Cleanup
+Restore the product boundary `Salamat Projects Dashboard = Portfolio Monitoring UI`.
+Remove every execution control from the UI (Continue, Task Packet modal, RAW JSON / Copy JSON / Export JSON, Codex/Arena references), keep and tidy all monitoring fields (name, repository, operational status, stage, progress, blocker, next step, last updated, evidence links, history), and leave the dashboard strictly read-only.
+Exit: no execution control renders in any view at desktop or mobile; monitoring data intact; tests, build and boundary verification pass.

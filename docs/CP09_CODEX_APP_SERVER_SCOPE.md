@@ -2,6 +2,13 @@
 
 Primary disposition: `EXTEND_EXISTING`
 
+> **Status note (CP-10).** Historical record — do not rewrite. The dashboard UI surface
+> described here (Task Packet preview modal, Continue button, JSON copy/export) was removed
+> in CP-10 to restore the `Portfolio Monitoring UI` boundary. The `TaskPacket` contract and
+> the stdio harness were **not** deleted: they are recorded as an MPE migration candidate
+> and are no longer imported by any dashboard UI code.
+> See `docs/CP10_MONITORING_ONLY_CLEANUP.md`.
+
 ## New Idea Filter
 
 1. Existing overlap: CP-00 through CP-08 established a read-only operational portfolio dashboard with verifiable source evidence.

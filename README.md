@@ -3,7 +3,16 @@
 Operational portfolio dashboard for `projects.salamat-mebel.kz`.
 
 ## Purpose
-A live control surface for Murat's active projects: triage, readiness, blockers, checkpoints, roadmap, reports and a node-based view of tools/plugins/services.
+A read-only **Portfolio Monitoring UI** for Murat's active projects: triage, readiness, blockers, checkpoints, roadmap, reports and a node-based view of tools/plugins/services.
+
+## Product boundary
+The dashboard observes and visualizes. It does not execute.
+
+- Shows: project name, repository, operational status, stage, progress, blocker, next step, last updated, evidence links and change history.
+- Does not do: task execution, agent/model/runner controls, Task Packet generation or export, Codex/Arena integration, write-back to repositories.
+
+Decisions, Task Packets, execution, evidence and Arena/Codex integration belong to `murat-project-engineer`.
+`READY` means a project is ready for the next work — never that an executor, agent or model is available.
 
 ## Source of truth
 This repository is the UI/control-plane repository. It must NOT become the canonical source of project truth.
