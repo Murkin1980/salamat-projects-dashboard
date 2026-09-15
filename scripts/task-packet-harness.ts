@@ -1,3 +1,7 @@
+/**
+ * MPE MIGRATION CANDIDATE — see `src/contract/task-packet.ts`.
+ * Kept as a CLI-only one-shot validator; it is not part of the dashboard UI.
+ */
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'

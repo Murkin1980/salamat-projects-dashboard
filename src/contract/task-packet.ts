@@ -1,3 +1,15 @@
+/**
+ * MPE MIGRATION CANDIDATE — NOT DASHBOARD UI CODE.
+ *
+ * Since CP-10 the dashboard is a read-only Portfolio Monitoring UI and no
+ * longer renders any Task Packet control. This contract is intentionally kept,
+ * but it is unwired: nothing under `src/components` may import it.
+ *
+ * Forming a Task Packet is an `murat-project-engineer` responsibility, so this
+ * module awaits an explicit owner decision — migrate it to MPE or delete it.
+ * Do not re-introduce it into the dashboard UI. See
+ * `docs/CP10_MONITORING_ONLY_CLEANUP.md`.
+ */
 import { z } from 'zod'
 import { TriageStateSchema, type ProjectState, type TriageState } from './project-state.js'
 

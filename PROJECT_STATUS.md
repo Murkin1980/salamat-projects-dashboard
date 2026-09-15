@@ -1,9 +1,9 @@
 # PROJECT STATUS
 
-Decision: `REUSE_COMPONENT`
+Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-09 — Codex App Server Experiment`
-Status: `IN_PROGRESS` (Baseline complete)
+Current checkpoint: `CP-10 — Monitoring-Only Cleanup`
+Status: `PASS` (awaiting merge)
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -228,10 +228,64 @@ Evidence:
 - 55 automated unit and negative tests pass;
 - production build (`tsc -b && vite build`) passes.
 
+## CP-10 — Monitoring-Only Cleanup
+Status: `PASS` (awaiting merge)
+
+Disposition:
+- `EXTEND_EXISTING` — the existing dashboard was cleaned in place. No new repository,
+  control plane, backend, design system or MPE integration. Deep-change gate not
+  triggered: UI removal only, no source-of-truth change, no data-model change, no write path.
+
+Product boundary:
+- `Salamat Projects Dashboard = Portfolio Monitoring UI` — the dashboard observes and
+  visualizes; it does not execute work.
+
+Removed from the UI:
+- the `Continue` button on every project card (both the enabled and the disabled variant);
+- the Task Packet modal and its Task Packet preview;
+- `Raw JSON Payload`, `Копировать JSON` (Copy JSON) and `Экспорт JSON` (Export JSON);
+- Codex App Server wording and the `CP-09 Codex App Server Experiment` sidebar badge;
+- the `Можно запускать` KPI wording that implied launching work;
+- `src/components/TaskPacketModal.tsx` and all styling that belonged to the removed UI.
+
+Kept and tidied on the project card:
+- project name, repository (with an explicit "Не привязан к репозиторию" state),
+  operational status, current stage, progress, blocker, next step, last updated,
+  source attribution and read-only evidence links;
+- unresolved sources still render explicitly as `STATUS UNKNOWN` / `SOURCE CONFLICT`;
+- History & Reports still carries significant-change history.
+
+Evidence:
+- 73 automated tests pass, including 4 new boundary regression tests
+  (`tests/dashboard-monitoring-boundary.test.ts`) that render the real shell in a DOM at
+  1440px and 390px and assert zero execution controls and full monitoring fields;
+- production build (`tsc -b && vite build`) passes; CSS shrank from 47.94 kB to 43.00 kB
+  and the client bundle from 568.81 kB to 557.53 kB;
+- the retained Task Packet contract, harness and tests (MPE migration candidate) are no
+  longer imported by any UI code;
+- repository-wide search for `Continue`, `Task Packet`, `RAW JSON`, `Copy JSON`,
+  `Export JSON`, `Arena`, `Codex`, `executor`, `execution`, `model selector`,
+  `prompt editor`, `run task` leaves only legitimate documentation/history, project data
+  and the retained migration candidate.
+
+Retained migration candidate (owner decision required):
+- `src/contract/task-packet.ts`, `scripts/task-packet-harness.ts`, `tests/task-packet.test.ts`
+  and the `task-packet:harness` npm script. Forming a Task Packet is an MPE function, so
+  the code was not migrated automatically and is not wired into the UI.
+- `config/node-graphs.json` still holds the evidence-pinned `task-packet-builder` and
+  `stage-cp09` nodes of the dashboard's own graph snapshot (historical evidence, pinned to
+  commit `a62c7a94`); regenerating that snapshot is a separate follow-up.
+
+Known gap (not introduced, not fixed here):
+- no portfolio tier field (`P0` / `SUPPORT` / `HOLD` / `ARCHIVE`) exists in the `ProjectState`
+  contract. Adding one changes the data contract and therefore needs explicit owner
+  approval under the deep-change gate.
+
 ## Next
-Evaluate Codex App Server integration under Murat review and experiment gates without violating dashboard read-only boundaries.
+Keep the dashboard monitoring-only: decide whether the retained Task Packet contract moves
+to `murat-project-engineer` or is deleted, and whether a portfolio tier field is approved.
 
 ## Blocker
 None.
 
-Last updated: 2026-09-13
+Last updated: 2026-09-14

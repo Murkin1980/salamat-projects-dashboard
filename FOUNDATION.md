@@ -11,6 +11,10 @@ It answers five questions immediately:
 5. How are projects, agents, tools, plugins and services connected?
 
 ## 2. Product invariants
+- The dashboard is a **Portfolio Monitoring UI**: it observes and visualizes portfolio state and never executes work.
+- Execution authority (task packets, agents, runners, models, Codex/Arena integration) belongs to `murat-project-engineer`, never to the dashboard UI.
+- `READY` describes a project that is ready for the next work; it never describes executor, agent or model availability.
+- Operational status and portfolio tier are separate concepts and must not be merged.
 - GitHub/MPE project artifacts remain the source of truth.
 - Dashboard state is derived, normalized and cached; it must not silently invent project status.
 - Triage is the primary working view.
