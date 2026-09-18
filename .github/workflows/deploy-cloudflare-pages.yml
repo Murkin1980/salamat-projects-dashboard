@@ -1,0 +1,75 @@
+name: Deploy Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salamat-projects-dashboard-production
+  cancel-in-progress: false
+
+jobs:
+  verify-and-deploy:
+    name: Verify and deploy production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify Cloudflare credentials are configured
+        shell: bash
+        run: |
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" ]]; then
+            echo "::error::Missing CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID repository secret."
+            exit 1
+          fi
+
+      - name: Deploy existing Cloudflare Pages project
+        run: npx wrangler pages deploy dist --project-name salamat-projects-dashboard --branch main
+
+      - name: Verify production snapshot
+        shell: bash
+        run: |
+          expected="$(sha256sum public/project-state.json | awk '{print $1}')"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location \
+              "https://projects.salamat-mebel.kz/project-state.json?deploy=${GITHUB_SHA}" \
+              --output /tmp/project-state.json; then
+              actual="$(sha256sum /tmp/project-state.json | awk '{print $1}')"
+              if [[ "$actual" == "$expected" ]]; then
+                echo "Production snapshot matches commit ${GITHUB_SHA}."
+                exit 0
+              fi
+            fi
+            echo "Production has not converged yet (attempt ${attempt}/12)."
+            sleep 10
+          done
+
+          echo "::error::Production project-state.json does not match the committed snapshot after deployment."
+          exit 1
