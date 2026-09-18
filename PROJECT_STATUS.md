@@ -211,6 +211,19 @@ Evidence:
 - browser console inspection produced no critical errors;
 - no Worker, D1, KV, R2, Pages Functions, write-back or automatic synchronization was added.
 
+### CP-08 extension — Automatic main deployment (2026-09-18)
+Status: `PASS`
+
+Evidence:
+- GitHub Actions workflow `.github/workflows/deploy-cloudflare-pages.yml` runs on every push to `main` and supports manual dispatch;
+- workflow uses repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`; no secret values are committed;
+- first production-triggering merge was PR #11, main commit `263a883308fb173e2448e360220ef4d70415b723`;
+- GitHub Actions run `35341306057` completed successfully;
+- `npm ci`, 73/73 tests, TypeScript/Vite build, credential presence check and Wrangler Pages deployment all completed successfully;
+- deployment reused the existing Cloudflare Pages project `salamat-projects-dashboard`; no new Worker, Pages project, database or backend was created;
+- the workflow's production verification fetched `https://projects.salamat-mebel.kz/project-state.json` after deployment and confirmed its SHA-256 matched the committed `public/project-state.json`;
+- automatic production deployment from `main` is therefore active and verified.
+
 ## CP-09 — Codex App Server Experiment (Baseline)
 Status: `BASELINE_COMPLETE`
 
@@ -286,10 +299,10 @@ Keep the dashboard monitoring-only: decide whether the retained Task Packet cont
 to `murat-project-engineer` or is deleted, and whether a portfolio tier field is approved.
 
 ## Blocker
-CP-11 deployment step is blocked in the connector environment: wrangler has no
-`CLOUDFLARE_API_TOKEN`/OAuth session, so `npm run deploy:cloudflare` cannot run and
-production still serves the pre-CP-10 12-project build. Local verification of CP-11
-(73/73 tests, build, `git diff --check`, monitoring-only boundary) is green.
+No Cloudflare deployment credential blocker remains. Automatic main deployment is verified.
+CP-11 remains in `VALIDATION` only until the post-deploy desktop/mobile visual smoke is
+recorded; registry, tests, build, monitoring-only boundary and production snapshot verification
+are green.
 
 Last updated: 2026-09-18
 
@@ -340,15 +353,13 @@ External verification (2026-09-18, connector environment, base `2460d19`):
   refresh only), the retained Task Packet contract is not imported by any UI code, and
   the CP-10 boundary regression tests at 1440px and 390px pass.
 
-Blocker (deployment and production verification not completed):
-- `npm run deploy:cloudflare` fails in the connector environment: wrangler `4.128.0`
-  reports `In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN
-  environment variable` — no Cloudflare API token or OAuth session is available here;
-- production `https://projects.salamat-mebel.kz` therefore still serves the pre-CP-10
-  build: 12-project runtime snapshot (`updatedAt: 2026-09-13`) and the old UI still
-  rendering `Continue` buttons; the refreshed 15-project snapshot is not deployed;
-- desktop/mobile production smoke (1440×1000 / 390×844) for CP-11 cannot be evidenced
-  until a credentialed redeployment happens;
-- no new Worker, Pages project, backend or infrastructure was created; CP-11 stays in
-  `VALIDATION` until the existing Cloudflare-only deploy succeeds and production smoke
-  passes.
+Deployment follow-up:
+- the credential blocker is resolved through GitHub repository secrets;
+- PR #11 merged to main at `263a883308fb173e2448e360220ef4d70415b723`;
+- GitHub Actions run `35341306057` completed the Cloudflare Pages deployment successfully;
+- production `project-state.json` matched the committed refreshed snapshot after deploy,
+  proving the 15-project runtime snapshot reached production;
+- desktop/mobile visual smoke (1440×1000 / 390×844) is still pending as the final CP-11
+  validation item;
+- no new Worker, Pages project, backend or infrastructure was created; CP-11 remains
+  `VALIDATION` until that visual smoke is recorded.
