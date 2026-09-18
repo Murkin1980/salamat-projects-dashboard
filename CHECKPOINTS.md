@@ -34,6 +34,10 @@ State transition history, blocker changes, checkpoint movement.
 ## CP-08 — Cloudflare Production
 Deploy and bind `projects.salamat-mebel.kz`, verify mobile and desktop.
 
+### CP-08 extension — Automatic main deployment
+Use the existing Cloudflare Pages project only. A GitHub Actions workflow runs on every push to `main`, executes tests/build, deploys with Wrangler, and verifies that production `project-state.json` matches the committed runtime snapshot. Credentials must be supplied only through GitHub repository secrets (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`); no secret values may be committed.
+Exit: a push to `main` completes verify → deploy → production snapshot verification without manual Wrangler execution.
+
 ## CP-09 — Codex App Server Experiment
 Only after separate experiment gate. Evaluate Continue-from-project / agent workstream integration without moving source-of-truth authority into the dashboard.
 UI surface removed in CP-10; the retained contract and harness are recorded as an MPE migration candidate, not dashboard functionality.
