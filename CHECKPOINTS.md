@@ -42,3 +42,8 @@ UI surface removed in CP-10; the retained contract and harness are recorded as a
 Restore the product boundary `Salamat Projects Dashboard = Portfolio Monitoring UI`.
 Remove every execution control from the UI (Continue, Task Packet modal, RAW JSON / Copy JSON / Export JSON, Codex/Arena references), keep and tidy all monitoring fields (name, repository, operational status, stage, progress, blocker, next step, last updated, evidence links, history), and leave the dashboard strictly read-only.
 Exit: no execution control renders in any view at desktop or mobile; monitoring data intact; tests, build and boundary verification pass.
+
+## CP-11 — Portfolio Refresh
+Refresh the committed normalized portfolio snapshot from current project/repository evidence without changing the monitoring-only product boundary.
+Scope: update active project cards, repository links, current checkpoints/blockers/next actions where attributable, and add newly active repositories to the portfolio.
+Exit: normalized registries remain schema-valid, public runtime snapshot matches the committed cache, no execution/write controls are introduced, and the refresh is recorded in project status/roadmap.
