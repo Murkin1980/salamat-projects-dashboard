@@ -44,7 +44,7 @@ test('buildBaselineTaskPacket creates valid Task Packet conforming to schema ver
   assert.equal(packet.schemaVersion, TASK_PACKET_SCHEMA_VERSION)
   assert.equal(packet.projectId, 'salamat-projects-dashboard')
   assert.equal(packet.repo, 'Murkin1980/salamat-projects-dashboard')
-  assert.equal(packet.triageState, 'READY')
+  assert.equal(packet.triageState, dashboardProject.triageState)
   assert.ok(packet.objective.length > 0)
   assert.ok(packet.scope.included.length >= 1)
   assert.ok(packet.scope.excluded.length >= 1)

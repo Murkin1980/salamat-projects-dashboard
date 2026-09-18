@@ -93,6 +93,9 @@ test('conflicting triage requires null state and at least two attributed sources
 
 test('freshness calculation is deterministic with an injected clock', () => {
   const project = cloneRegistry().projects[0]
-  assert.equal(getFreshness(project, new Date('2026-09-01T00:00:00Z')), 'FRESH')
-  assert.equal(getFreshness(project, new Date('2026-09-02T00:00:00Z')), 'STALE')
+  const lastUpdated = new Date(`${project.lastUpdated}T00:00:00Z`).getTime()
+  const freshClock = new Date(lastUpdated + (project.staleAfterDays - 1) * 86_400_000)
+  const staleClock = new Date(lastUpdated + project.staleAfterDays * 86_400_000)
+  assert.equal(getFreshness(project, freshClock), 'FRESH')
+  assert.equal(getFreshness(project, staleClock), 'STALE')
 })
