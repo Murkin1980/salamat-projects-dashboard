@@ -1,0 +1,111 @@
+name: Create house subdomain
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/create-house-subdomain.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-house-dns:
+    name: Create house.salamat-mebel.kz
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ZONE_NAME: salamat-mebel.kz
+      RECORD_NAME: house.salamat-mebel.kz
+      RECORD_TARGET: salamat-mebel.kz
+
+    steps:
+      - name: Verify credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+
+      - name: Create or verify DNS record
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json")
+
+          zone_json="$(curl --fail-with-body --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME&account.id=$CLOUDFLARE_ACCOUNT_ID")"
+
+          success="$(jq -r '.success' <<<"$zone_json")"
+          if [[ "$success" != "true" ]]; then
+            jq '.errors' <<<"$zone_json"
+            exit 1
+          fi
+
+          zone_id="$(jq -r '.result[0].id // empty' <<<"$zone_json")"
+          if [[ -z "$zone_id" ]]; then
+            echo "::error::Cloudflare zone $ZONE_NAME not found for configured account."
+            exit 1
+          fi
+
+          records_json="$(curl --fail-with-body --silent --show-error "${auth[@]}"             "$api/zones/$zone_id/dns_records?name=$RECORD_NAME")"
+
+          count="$(jq '.result | length' <<<"$records_json")"
+
+          if [[ "$count" -gt 0 ]]; then
+            type="$(jq -r '.result[0].type' <<<"$records_json")"
+            content="$(jq -r '.result[0].content' <<<"$records_json")"
+            proxied="$(jq -r '.result[0].proxied // false' <<<"$records_json")"
+
+            if [[ "$type" == "CNAME" && "$content" == "$RECORD_TARGET" && "$proxied" == "true" ]]; then
+              echo "DNS record already correct: $RECORD_NAME CNAME $RECORD_TARGET (proxied)."
+              exit 0
+            fi
+
+            echo "::error::$RECORD_NAME already exists as $type -> $content (proxied=$proxied). Refusing destructive replacement."
+            exit 1
+          fi
+
+          payload="$(jq -n             --arg name "$RECORD_NAME"             --arg content "$RECORD_TARGET"             '{
+              type: "CNAME",
+              name: $name,
+              content: $content,
+              ttl: 1,
+              proxied: true,
+              comment: "Temporary Murat House placeholder; CP-10 will bind this hostname to Murat House Pages."
+            }')"
+
+          create_json="$(curl --fail-with-body --silent --show-error -X POST "${auth[@]}"             "$api/zones/$zone_id/dns_records"             --data "$payload")"
+
+          if [[ "$(jq -r '.success' <<<"$create_json")" != "true" ]]; then
+            jq '.errors' <<<"$create_json"
+            exit 1
+          fi
+
+          jq -r '.result | "Created: \(.name) \(.type) \(.content), proxied=\(.proxied), ttl=\(.ttl)"' <<<"$create_json"
+
+      - name: Verify DNS record through Cloudflare API
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+
+          zone_id="$(curl --fail --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME&account.id=$CLOUDFLARE_ACCOUNT_ID" | jq -r '.result[0].id')"
+
+          record="$(curl --fail --silent --show-error "${auth[@]}"             "$api/zones/$zone_id/dns_records?name=$RECORD_NAME")"
+
+          jq -e --arg target "$RECORD_TARGET" '
+            .success == true and
+            (.result | length) == 1 and
+            .result[0].type == "CNAME" and
+            .result[0].content == $target and
+            .result[0].proxied == true
+          ' <<<"$record" >/dev/null
+
+          jq -r '.result[0] | "Verified: \(.name) -> \(.content), proxied=\(.proxied)"' <<<"$record"
