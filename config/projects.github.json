@@ -42,10 +42,14 @@
       "name": "Business Discovery",
       "summary": "Evidence-backed business discovery and audit engine.",
       "repo": "Murkin1980/business-discovery",
-      "triageState": "ACTION_NOW",
+      "triageState": null,
       "triageSource": {
-        "status": "KNOWN",
-        "sourceId": "fixture-registry"
+        "status": "CONFLICT",
+        "sourceIds": [
+          "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md",
+          "dfef377613e6d16768b8c417010077648a11df5c:PROJECT_STATUS.md"
+        ],
+        "reason": "Status documents differ between main and codex/stage-5-auditor"
       },
       "stage": "Stage 5 — Auditor MVP + Progressive Workspace MVP",
       "checkpoint": null,
@@ -53,7 +57,13 @@
       "lastUpdated": "2026-09-17",
       "blocker": null,
       "nextAction": "Resolve the current Stage 5 scope and continue the human-centered operating-advisor path.",
-      "evidenceLinks": [],
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/business-discovery/blob/main/PROJECT_STATUS.md",
+          "sourceId": "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
@@ -83,7 +93,7 @@
       "evidenceLinks": [
         {
           "label": "PROJECT_STATUS.md",
-          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/checkpoint/cp-11-portfolio-refresh/PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
           "sourceId": "566480b2af1337d9163f44746584423ea3b1507b:PROJECT_STATUS.md"
         }
       ],
