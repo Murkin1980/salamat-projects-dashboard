@@ -39,7 +39,7 @@ jobs:
           api="https://api.cloudflare.com/client/v4"
           auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json")
 
-          zone_json="$(curl --fail-with-body --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME&account.id=$CLOUDFLARE_ACCOUNT_ID")"
+          zone_json="$(curl --fail-with-body --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME")"
 
           success="$(jq -r '.success' <<<"$zone_json")"
           if [[ "$success" != "true" ]]; then
@@ -96,7 +96,7 @@ jobs:
           api="https://api.cloudflare.com/client/v4"
           auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
 
-          zone_id="$(curl --fail --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME&account.id=$CLOUDFLARE_ACCOUNT_ID" | jq -r '.result[0].id')"
+          zone_id="$(curl --fail --silent --show-error "${auth[@]}"             "$api/zones?name=$ZONE_NAME" | jq -r '.result[0].id')"
 
           record="$(curl --fail --silent --show-error "${auth[@]}"             "$api/zones/$zone_id/dns_records?name=$RECORD_NAME")"
 
