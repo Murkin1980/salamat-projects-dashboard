@@ -286,7 +286,10 @@ Keep the dashboard monitoring-only: decide whether the retained Task Packet cont
 to `murat-project-engineer` or is deleted, and whether a portfolio tier field is approved.
 
 ## Blocker
-None.
+CP-11 deployment step is blocked in the connector environment: wrangler has no
+`CLOUDFLARE_API_TOKEN`/OAuth session, so `npm run deploy:cloudflare` cannot run and
+production still serves the pre-CP-10 12-project build. Local verification of CP-11
+(73/73 tests, build, `git diff --check`, monitoring-only boundary) is green.
 
 Last updated: 2026-09-18
 
@@ -313,3 +316,39 @@ Validation:
 - registry shape and invariants are checked before merge;
 - `config/projects.github.json` and `public/project-state.json` must be byte-equivalent after the refresh;
 - full npm test/build and Cloudflare production deployment remain external verification steps for this data-only checkpoint in the current connector-only environment.
+
+External verification (2026-09-18, connector environment, base `2460d19`):
+- snapshot checks PASS: 15 projects in `config/projects.json`, `config/projects.github.json`
+  and `public/project-state.json` (schemaVersion `1.0.0`, generatedAt `2026-09-18`);
+  `config/projects.github.json` and `public/project-state.json` are byte-identical
+  (md5 `9f5a8a439ef59600d443c4d0538ddc4c`); Murat Ads Control `BLOCKED`,
+  Murat House `READY`, Murat AI Orchestrator `READY`, Business Discovery
+  `SOURCE CONFLICT`; UNKNOWN/CONFLICT states preserved with source attribution,
+  nothing replaced by assumptions;
+- three data-dependent test assertions left stale by the merged refresh were aligned
+  with the committed snapshot (test-only changes, no product code touched):
+  `tests/live-registry.test.ts` project count `12 → 15`;
+  `tests/project-state.test.ts` injected-clock freshness dates now derive from the
+  fixture `lastUpdated` + `staleAfterDays` boundary;
+  `tests/task-packet.test.ts` now asserts the packet carries the registry triage state
+  (currently `VALIDATION`) instead of a hard-coded `READY`;
+- `npm ci` + `npm test`: 73/73 pass (0 fail);
+- `npm run build` (`tsc -b && vite build`): PASS (CSS 43.00 kB, JS 561.73 kB);
+- `git diff --check`: clean;
+- monitoring-only boundary PASS: no Continue / Task Packet / Run / executor controls in
+  any rendered view, no write-back calls in `src/` (read-only `GET /project-state.json`
+  refresh only), the retained Task Packet contract is not imported by any UI code, and
+  the CP-10 boundary regression tests at 1440px and 390px pass.
+
+Blocker (deployment and production verification not completed):
+- `npm run deploy:cloudflare` fails in the connector environment: wrangler `4.128.0`
+  reports `In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN
+  environment variable` — no Cloudflare API token or OAuth session is available here;
+- production `https://projects.salamat-mebel.kz` therefore still serves the pre-CP-10
+  build: 12-project runtime snapshot (`updatedAt: 2026-09-13`) and the old UI still
+  rendering `Continue` buttons; the refreshed 15-project snapshot is not deployed;
+- desktop/mobile production smoke (1440×1000 / 390×844) for CP-11 cannot be evidenced
+  until a credentialed redeployment happens;
+- no new Worker, Pages project, backend or infrastructure was created; CP-11 stays in
+  `VALIDATION` until the existing Cloudflare-only deploy succeeds and production smoke
+  passes.
