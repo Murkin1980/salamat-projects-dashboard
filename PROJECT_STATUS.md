@@ -2,8 +2,8 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-10 — Monitoring-Only Cleanup`
-Status: `PASS` (awaiting merge)
+Current checkpoint: `CP-11 — Portfolio Refresh`
+Status: `VALIDATION`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -229,7 +229,7 @@ Evidence:
 - production build (`tsc -b && vite build`) passes.
 
 ## CP-10 — Monitoring-Only Cleanup
-Status: `PASS` (awaiting merge)
+Status: `PASS` (merged 2026-09-15)
 
 Disposition:
 - `EXTEND_EXISTING` — the existing dashboard was cleaned in place. No new repository,
@@ -288,4 +288,28 @@ to `murat-project-engineer` or is deleted, and whether a portfolio tier field is
 ## Blocker
 None.
 
-Last updated: 2026-09-14
+Last updated: 2026-09-18
+
+## CP-11 — Portfolio Refresh
+Status: `VALIDATION`
+
+Disposition:
+- `EXTEND_EXISTING` — refresh the existing monitoring data and source coverage. No new repository, runtime, backend, workflow engine or write path.
+
+Refresh scope:
+- bring the committed portfolio snapshot forward to 2026-09-18;
+- attach current repositories/evidence to active projects that were still represented as fixtures;
+- add Murat House, Murat AI Orchestrator and Grand Mebel Document Control as explicit portfolio projects;
+- update Murat Ads Control to its current CP-004 diagnostic state and blocker;
+- update AI Microtask Factory from the stale MPE-only snapshot to direct repository evidence;
+- preserve unresolved states as UNKNOWN/CONFLICT instead of inventing status;
+- keep legacy portfolio cards unchanged when no newer attributable evidence is available.
+
+Boundary:
+- monitoring-only UI remains unchanged;
+- no Task Packet, executor, agent/model control, repository write-back or autonomous action is introduced.
+
+Validation:
+- registry shape and invariants are checked before merge;
+- `config/projects.github.json` and `public/project-state.json` must be byte-equivalent after the refresh;
+- full npm test/build and Cloudflare production deployment remain external verification steps for this data-only checkpoint in the current connector-only environment.

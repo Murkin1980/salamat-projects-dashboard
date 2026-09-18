@@ -1,27 +1,39 @@
 {
   "schemaVersion": "1.0.0",
-  "version": 2,
-  "updatedAt": "2026-09-13",
+  "version": 4,
+  "updatedAt": "2026-09-18",
   "projects": [
     {
       "schemaVersion": "1.0.0",
       "id": "murat-project-engineer",
       "name": "Murat Project Engineer",
       "summary": "Portfolio engineering, gates, experiments and project governance.",
-      "repo": null,
-      "triageState": "ACTION_NOW",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
-      "stage": null,
+      "repo": "Murkin1980/murat-project-engineer",
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "STATUS.md documents Stage 2 as ACTIVE but has no canonical `Status:` label; triage is not inferred from narrative text."
+      },
+      "stage": "Stage 2 — ACTIVE — 20-run evidence experiment",
       "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-08-26",
+      "lastUpdated": "2026-09-17",
       "blocker": null,
-      "nextAction": "Advance the current checkpoint / experiment from the active roadmap.",
-      "evidenceLinks": [],
+      "nextAction": "Continue Stage 2 evidence work and Pilot Batch 1 when its preconditions are satisfied.",
+      "evidenceLinks": [
+        {
+          "label": "STATUS.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md",
+          "sourceId": "ab63df5f8a5405e294a7a8553fbd652e90706336:STATUS.md"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-project-engineer"
+      },
       "staleAfterDays": 7
     },
     {
@@ -29,20 +41,36 @@
       "id": "business-discovery",
       "name": "Business Discovery",
       "summary": "Evidence-backed business discovery and audit engine.",
-      "repo": null,
-      "triageState": "ACTION_NOW",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
-      "stage": "Stage 5 — Auditor MVP",
+      "repo": "Murkin1980/business-discovery",
+      "triageState": null,
+      "triageSource": {
+        "status": "CONFLICT",
+        "sourceIds": [
+          "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md",
+          "dfef377613e6d16768b8c417010077648a11df5c:PROJECT_STATUS.md"
+        ],
+        "reason": "Status documents differ between main and codex/stage-5-auditor"
+      },
+      "stage": "Stage 5 — Auditor MVP + Progressive Workspace MVP",
       "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-08-26",
+      "lastUpdated": "2026-09-17",
       "blocker": null,
-      "nextAction": "Build Auditor MVP, then run Replay Pilot.",
-      "evidenceLinks": [],
+      "nextAction": "Resolve the current Stage 5 scope and continue the human-centered operating-advisor path.",
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/business-discovery/blob/main/PROJECT_STATUS.md",
+          "sourceId": "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/business-discovery"
+      },
       "staleAfterDays": 7
     },
     {
@@ -50,20 +78,32 @@
       "id": "salamat-projects-dashboard",
       "name": "Salamat Projects Dashboard",
       "summary": "Live portfolio triage and node-flow dashboard.",
-      "repo": null,
-      "triageState": "ACTION_NOW",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
-      "stage": "CP-03 — Project State Contract",
-      "checkpoint": null,
+      "repo": "Murkin1980/salamat-projects-dashboard",
+      "triageState": "VALIDATION",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "566480b2af1337d9163f44746584423ea3b1507b:PROJECT_STATUS.md"
+      },
+      "stage": "CP-11 — Portfolio Refresh",
+      "checkpoint": "CP-11 — Portfolio Refresh",
       "progress": null,
-      "lastUpdated": "2026-08-26",
+      "lastUpdated": "2026-09-18",
       "blocker": null,
-      "nextAction": "Verify the ProjectState contract, then proceed to CP-04 source adapters.",
-      "evidenceLinks": [],
+      "nextAction": "Validate the refreshed registry, merge CP-11, then deploy the updated static snapshot to Cloudflare Pages.",
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
+          "sourceId": "566480b2af1337d9163f44746584423ea3b1507b:PROJECT_STATUS.md"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/salamat-projects-dashboard"
+      },
       "staleAfterDays": 7
     },
     {
@@ -73,7 +113,10 @@
       "summary": "Furniture workflow and design automation experiments.",
       "repo": null,
       "triageState": "IN_PROGRESS",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
       "stage": null,
       "checkpoint": null,
       "progress": null,
@@ -84,7 +127,10 @@
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
       "staleAfterDays": 7
     },
     {
@@ -92,20 +138,32 @@
       "id": "murat-ads-control",
       "name": "Murat Ads Control",
       "summary": "Google Ads control and optimization layer for furniture brands.",
-      "repo": null,
-      "triageState": "IN_PROGRESS",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
-      "stage": null,
-      "checkpoint": null,
+      "repo": "Murkin1980/murat-ads-control",
+      "triageState": "BLOCKED",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "e50c7d13717c7e049a88d5470e8619c741f8c075:docs/CHECKPOINTS.md"
+      },
+      "stage": "CP-004 — Bek Mebel real diagnostic / EXP-001 decision",
+      "checkpoint": "CP-004 — Bek Mebel real diagnostic / EXP-001 decision",
       "progress": null,
-      "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Continue real campaign validation and control-loop work.",
-      "evidenceLinks": [],
+      "lastUpdated": "2026-09-17",
+      "blocker": "Repository-native Google Ads E2E still needs runtime credentials; the external connector quota is exhausted for the current billing period.",
+      "nextAction": "Inject runtime credentials in a safe execution environment, rerun READ → NORMALIZE → DIAGNOSE → REPORT, then decide EXP-001.",
+      "evidenceLinks": [
+        {
+          "label": "docs/CHECKPOINTS.md",
+          "url": "https://github.com/Murkin1980/murat-ads-control/blob/main/docs/CHECKPOINTS.md",
+          "sourceId": "e50c7d13717c7e049a88d5470e8619c741f8c075:docs/CHECKPOINTS.md"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-ads-control"
+      },
       "staleAfterDays": 7
     },
     {
@@ -115,7 +173,10 @@
       "summary": "Interactive commercial proposals and Qulpinay Style offers.",
       "repo": null,
       "triageState": "IN_PROGRESS",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
       "stage": null,
       "checkpoint": null,
       "progress": null,
@@ -126,7 +187,10 @@
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
       "staleAfterDays": 7
     },
     {
@@ -136,7 +200,10 @@
       "summary": "Furniture legal/document workflow for Kazakhstan.",
       "repo": null,
       "triageState": "VALIDATION",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
       "stage": null,
       "checkpoint": null,
       "progress": null,
@@ -147,7 +214,10 @@
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
       "staleAfterDays": 7
     },
     {
@@ -157,7 +227,10 @@
       "summary": "AI sales assistant for WhatsApp furniture leads.",
       "repo": null,
       "triageState": "VALIDATION",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
       "stage": null,
       "checkpoint": null,
       "progress": null,
@@ -168,7 +241,10 @@
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
       "staleAfterDays": 7
     },
     {
@@ -176,20 +252,32 @@
       "id": "tender-assistant",
       "name": "Tender Assistant",
       "summary": "Furniture tender monitoring and entrepreneur assistance.",
-      "repo": null,
-      "triageState": "READY",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
-      "stage": null,
+      "repo": "Murkin1980/tender-assistant",
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "No canonical PROJECT_STATUS.md or STATUS.md is verified; operational triage is not inferred from repository activity alone."
+      },
+      "stage": "Foundation + CI quality gates",
       "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-08-26",
+      "lastUpdated": "2026-09-12",
       "blocker": null,
-      "nextAction": "Start monitoring-first MVP for Almaty furniture tenders.",
-      "evidenceLinks": [],
+      "nextAction": "Record a canonical project status, then continue the monitoring-first MVP for Almaty furniture tenders.",
+      "evidenceLinks": [
+        {
+          "label": "Latest main commit",
+          "url": "https://github.com/Murkin1980/tender-assistant/commit/1f2bc7bfe99960bcb91295dfc8537cae154b7276",
+          "sourceId": "1f2bc7bfe99960bcb91295dfc8537cae154b7276"
+        }
+      ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/tender-assistant"
+      },
       "staleAfterDays": 7
     },
     {
@@ -199,7 +287,10 @@
       "summary": "Market research exploration for Etsy opportunities.",
       "repo": null,
       "triageState": "HOLD",
-      "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "fixture-registry"
+      },
       "stage": null,
       "checkpoint": null,
       "progress": null,
@@ -210,7 +301,10 @@
       "dependencies": [],
       "tools": [],
       "approvals": [],
-      "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
       "staleAfterDays": 7
     },
     {
@@ -261,36 +355,135 @@
       "id": "ai-microtask-factory",
       "name": "AI Microtask Factory",
       "summary": "Microtask pipeline with controlled acceptance and execution handoff.",
-      "repo": null,
+      "repo": "Murkin1980/ai-microtask-factory",
       "triageState": null,
       "triageSource": {
         "status": "UNKNOWN",
-        "reason": "Repository Murkin1980/ai-microtask-factory is not readable from this dashboard session, so no canonical status artifact is verified; evidence is limited to the MPE portfolio snapshot of 07.09.2026"
+        "reason": "PROJECT_STATUS.md records verified local/non-production work but has no canonical `Status:` label; triage is not inferred."
       },
-      "stage": "Stage 4 — Spreadsheet Cleanup",
+      "stage": "Stage 4 — Spreadsheet Cleanup / Acceptance → Execution Report",
       "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-09-07",
+      "lastUpdated": "2026-09-16",
       "blocker": null,
-      "nextAction": "Reach real orders through a human-in-the-loop pilot instead of new UI features.",
+      "nextAction": "Continue the human-in-the-loop pilot path and close production gates before broader spreadsheet capability expansion.",
       "evidenceLinks": [
         {
-          "label": "MPE portfolio snapshot 07.09.2026",
-          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/9c0c39b4b651f000fbc8d410abe81b6295660525/dashboard/public/index.html",
-          "sourceId": "9c0c39b4b651f000fbc8d410abe81b6295660525:dashboard/public/index.html"
-        },
-        {
-          "label": "docs/OPERATING_MODEL.md",
-          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/9c0c39b4b651f000fbc8d410abe81b6295660525/docs/OPERATING_MODEL.md",
-          "sourceId": "9c0c39b4b651f000fbc8d410abe81b6295660525:docs/OPERATING_MODEL.md"
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/ai-microtask-factory/blob/main/PROJECT_STATUS.md",
+          "sourceId": "fafd8ba187f64d82cdf06245e372e6bf07a828d8:PROJECT_STATUS.md"
         }
       ],
       "dependencies": [],
       "tools": [],
       "approvals": [],
       "source": {
-        "kind": "MPE",
-        "id": "Murkin1980/murat-project-engineer:dashboard/public/index.html"
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/ai-microtask-factory"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "murat-house",
+      "name": "Murat House",
+      "summary": "Public project journal about how Murat's projects, decisions, lessons and skills are built.",
+      "repo": "Murkin1980/Murat-house",
+      "triageState": "READY",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
+      },
+      "stage": "CP-05 — House Navigation",
+      "checkpoint": "CP-05 — House Navigation",
+      "progress": null,
+      "lastUpdated": "2026-09-18",
+      "blocker": null,
+      "nextAction": "Start CP-06 after the merged CP-05 navigation checkpoint.",
+      "evidenceLinks": [
+        {
+          "label": "CP-05 merge",
+          "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
+          "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/Murat-house"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "murat-ai-orchestrator",
+      "name": "Murat AI Orchestrator",
+      "summary": "Bounded orchestration layer for Murat AI with governed routing, fallback and durable execution checkpoints.",
+      "repo": "Murkin1980/murat-ai-orchestrator",
+      "triageState": "READY",
+      "triageSource": {
+        "status": "KNOWN",
+        "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
+      },
+      "stage": "CP-06 — Bounded Fallback & Quality Escalation v1",
+      "checkpoint": "CP-06 — Bounded Fallback & Quality Escalation v1",
+      "progress": null,
+      "lastUpdated": "2026-09-18",
+      "blocker": null,
+      "nextAction": "Execute CP-07 — Durable Execution using the committed Arena checkpoint instruction.",
+      "evidenceLinks": [
+        {
+          "label": "CP-06 merge",
+          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
+          "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
+        },
+        {
+          "label": "CP-07 instruction",
+          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
+          "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-ai-orchestrator"
+      },
+      "staleAfterDays": 7
+    },
+    {
+      "schemaVersion": "1.0.0",
+      "id": "grand-mebel-document-control",
+      "name": "Grand Mebel Document Control",
+      "summary": "Document-control workspace for invoices, waybills, ESF tracking and registry operations.",
+      "repo": "Murkin1980/grand-mebel-document-control",
+      "triageState": null,
+      "triageSource": {
+        "status": "UNKNOWN",
+        "reason": "No canonical PROJECT_STATUS.md or STATUS.md is verified; current project state is not inferred from UI commits."
+      },
+      "stage": "Document control workspace",
+      "checkpoint": null,
+      "progress": null,
+      "lastUpdated": "2026-09-12",
+      "blocker": null,
+      "nextAction": "Continue the document registry and invoice → waybill → ESF workflow from canonical project records.",
+      "evidenceLinks": [
+        {
+          "label": "Latest main merge",
+          "url": "https://github.com/Murkin1980/grand-mebel-document-control/commit/58fbddaa84e2cacb9cd03cb3862c30011e2d4224",
+          "sourceId": "58fbddaa84e2cacb9cd03cb3862c30011e2d4224"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/grand-mebel-document-control"
       },
       "staleAfterDays": 7
     }
