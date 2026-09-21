@@ -373,7 +373,7 @@ Disposition:
 
 Implemented:
 - strict DiscoverySnapshot contract and known crawler registry;
-- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` with 168h request / 24h fallback;
+- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` using a bounded 24-hour analytics window;
 - explicit UNAVAILABLE state on missing permission or source failure;
 - Discovery view with Googlebot, Bingbot, AI crawler totals, crawler table and top paths;
 - six-hour refresh added to the existing Cloudflare Pages production workflow;
