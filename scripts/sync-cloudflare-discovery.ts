@@ -54,14 +54,14 @@ async function resolveZoneId(token: string): Promise<string> {
   const payload = await response.json() as ZoneListResponse
   const zoneId = payload.result?.[0]?.id
   if (!payload.success || !zoneId) {
-    throw new Error(payload.errors?.[0]?.message ?? `zone ${zoneName} not found`)
+    throw new Error(payload.errors?.[0]?.message ?? `zone ${zoneName} not visible to this token; Zone Read / Analytics Read may be missing`)
   }
   return zoneId
 }
 
 function graphqlQuery(): string {
   const filters = CRAWLER_DEFINITIONS
-    .map((crawler) => `{ userAgent_like: "%${crawler.userAgent.replaceAll('"', '\\"')}%" }`)
+    .map((crawler) => `{ userAgent_like: "%${crawler.userAgent.replace(/"/g, '\\"')}%" }`)
     .join('\n')
 
   return `
