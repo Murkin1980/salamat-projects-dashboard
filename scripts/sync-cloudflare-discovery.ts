@@ -17,10 +17,7 @@ const graphqlUrl = `${apiBase}/graphql`
 
 const zoneName = process.env.CLOUDFLARE_ZONE_NAME ?? 'salamat-mebel.kz'
 const hostname = process.env.DISCOVERY_HOSTNAME ?? 'house.salamat-mebel.kz'
-const requestedWindowHours = Math.min(
-  168,
-  Math.max(1, Number(process.env.DISCOVERY_WINDOW_HOURS ?? '168') || 168),
-)
+const windowHours = 24
 
 interface ZoneListResponse {
   success: boolean
@@ -47,6 +44,9 @@ function headers(token: string) {
 }
 
 async function resolveZoneId(token: string): Promise<string> {
+  const explicitZoneId = process.env.CLOUDFLARE_ZONE_ID?.trim()
+  if (explicitZoneId) return explicitZoneId
+
   const response = await fetch(`${apiBase}/zones?name=${encodeURIComponent(zoneName)}`, {
     headers: headers(token),
   })
@@ -69,13 +69,15 @@ function graphqlQuery(): string {
       viewer {
         zones(filter: { zoneTag: $zoneTag }) {
           groups: httpRequestsAdaptiveGroups(
-            limit: 10000
+            limit: 5000
             orderBy: [count_DESC]
             filter: {
               datetime_geq: $start
               datetime_lt: $end
               requestSource: "eyeball"
               clientRequestHTTPHost: $host
+              edgeResponseStatus_geq: 200
+              edgeResponseStatus_lt: 400
               OR: [
                 ${filters}
               ]
@@ -119,24 +121,6 @@ async function fetchRows(token: string, zoneId: string, windowHours: number): Pr
   return payload.data?.viewer?.zones?.[0]?.groups ?? []
 }
 
-async function queryWithWindowFallback(token: string, zoneId: string) {
-  try {
-    return {
-      rows: await fetchRows(token, zoneId, requestedWindowHours),
-      windowHours: requestedWindowHours,
-    }
-  } catch (error) {
-    if (requestedWindowHours <= 24) throw error
-    process.stderr.write(
-      `sync-cloudflare-discovery: ${requestedWindowHours}h query failed; retrying 24h: ${error instanceof Error ? error.message : String(error)}\n`,
-    )
-    return {
-      rows: await fetchRows(token, zoneId, 24),
-      windowHours: 24,
-    }
-  }
-}
-
 async function writeSnapshot(snapshot: DiscoverySnapshot) {
   await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8')
 }
@@ -151,7 +135,7 @@ async function main() {
 
   try {
     const zoneId = await resolveZoneId(token)
-    const { rows, windowHours } = await queryWithWindowFallback(token, zoneId)
+    const rows = await fetchRows(token, zoneId, windowHours)
     const snapshot = buildDiscoverySnapshot({
       rows,
       generatedAt: new Date().toISOString(),
