@@ -12,7 +12,8 @@
     "sync:github:watch": "tsx scripts/sync-github-projects.ts --output config/projects.github.json --watch 60",
     "deploy:cloudflare": "npm run build && wrangler pages deploy dist --project-name salamat-projects-dashboard --branch main",
     "deploy:cloudflare:list": "wrangler pages deployment list --project-name salamat-projects-dashboard",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:discovery": "tsx scripts/sync-cloudflare-discovery.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.34.1",
