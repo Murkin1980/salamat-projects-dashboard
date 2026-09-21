@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-11 — Portfolio Refresh`
+Current checkpoint: `CP-12 — Discovery Monitoring`
 Status: `VALIDATION`
 
 ## CP-00 — Repository Foundation
@@ -363,3 +363,27 @@ Deployment follow-up:
   validation item;
 - no new Worker, Pages project, backend or infrastructure was created; CP-11 remains
   `VALIDATION` until that visual smoke is recorded.
+
+
+## CP-12 — Discovery Monitoring
+Status: `VALIDATION`
+
+Disposition:
+- `EXTEND_EXISTING` — owner explicitly requested crawler/search visibility inside the existing Salamat Projects Dashboard; no new repository or product was created.
+
+Implemented:
+- strict DiscoverySnapshot contract and known crawler registry;
+- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` with 168h request / 24h fallback;
+- explicit UNAVAILABLE state on missing permission or source failure;
+- Discovery view with Googlebot, Bingbot, AI crawler totals, crawler table and top paths;
+- six-hour refresh added to the existing Cloudflare Pages production workflow;
+- production discovery snapshot verification;
+- dedicated contract tests and checkpoint PR validation workflow.
+
+Boundary:
+- monitoring only; no crawler blocking, robots.txt/WAF editing, Cloudflare setting mutation, backend, database or credential persistence.
+
+Evidence pending:
+- branch CI test/build;
+- live Cloudflare analytics permission/result;
+- production deploy and responsive smoke after merge.
