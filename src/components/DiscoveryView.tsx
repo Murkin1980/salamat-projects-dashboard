@@ -7,14 +7,13 @@ import {
   IconRoute,
   IconShieldCheck,
 } from '@tabler/icons-react'
-import initialSnapshotJson from '../../public/discovery-analytics.json'
 import {
-  parseDiscoverySnapshot,
+  unavailableDiscoverySnapshot,
   type DiscoverySnapshot,
 } from '../discovery/discovery-analytics'
 import { useDiscoverySnapshot } from '../hooks/use-discovery-analytics'
 
-const initialSnapshot = parseDiscoverySnapshot(initialSnapshotJson)
+const initialSnapshot = unavailableDiscoverySnapshot('Discovery snapshot is loading.')
 
 function formatTimestamp(value: string | null) {
   if (!value) return 'Не зафиксирован'
