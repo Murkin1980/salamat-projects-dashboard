@@ -373,7 +373,7 @@ Disposition:
 
 Implemented:
 - strict DiscoverySnapshot contract and known crawler registry;
-- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` using a bounded 24-hour analytics window;
+- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` with a requested 168-hour window and explicit 24-hour fallback;
 - explicit UNAVAILABLE state on missing permission or source failure;
 - Discovery view with Googlebot, Bingbot, AI crawler totals, crawler table and top paths;
 - six-hour refresh added to the existing Cloudflare Pages production workflow;
@@ -383,7 +383,13 @@ Implemented:
 Boundary:
 - monitoring only; no crawler blocking, robots.txt/WAF editing, Cloudflare setting mutation, backend, database or credential persistence.
 
-Evidence pending:
-- branch CI test/build;
-- live Cloudflare analytics permission/result;
-- production deploy and responsive smoke after merge.
+Validation evidence:
+- branch Project Validation run passed 78/78 automated tests;
+- TypeScript/Vite production build passed;
+- read-only Cloudflare collector executed in CI without exposing credentials;
+- live source check returned UNAVAILABLE because the current Dashboard repository token cannot see zone `salamat-mebel.kz`; Zone Read / Analytics Read permission is therefore a real external blocker, not interpreted as zero crawler traffic.
+
+Remaining:
+- merge and production deployment;
+- production Discovery snapshot verification;
+- desktop/mobile visual smoke after deployment.
