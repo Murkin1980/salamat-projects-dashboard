@@ -25,6 +25,7 @@ import {
   IconListDetails,
   IconPlayerPause,
   IconPlayerPlay,
+  IconRadar,
   IconRosetteDiscountCheck,
   IconRefresh,
   IconRoute,
@@ -38,6 +39,7 @@ import nodeGraphRegistry from '../../config/node-graphs.json'
 import historyRegistry from '../../config/project-history.json'
 import { NodesView } from './NodesView'
 import { ReportView } from './ReportView'
+import { DiscoveryView } from './DiscoveryView'
 import {
   parseProjectRegistry,
   type ProjectState,
@@ -48,7 +50,7 @@ import { deriveLiveProjectState } from '../triage/live-triage'
 import { parseNodeGraphRegistry } from '../graph/node-graph'
 import { parseHistoryRegistry } from '../history/project-history'
 
-type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports'
+type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports' | 'discovery'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
 // The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
@@ -151,6 +153,7 @@ function App() {
           <button className={view === 'nodes' ? 'active' : ''} onClick={() => setView('nodes')}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
           <button className={view === 'reports' ? 'active' : ''} onClick={() => setView('reports')}><IconListDetails size={20}/> Reports</button>
+          <button className={view === 'discovery' ? 'active' : ''} onClick={() => setView('discovery')}><IconRadar size={20}/> Discovery</button>
           <button disabled title="Настройки появятся позже"><IconSettings size={20}/> Settings</button>
         </nav>
         <div className="sidebar-note">
@@ -163,10 +166,10 @@ function App() {
         <header className="page-header">
           <div>
             <p className="eyebrow">Operational portfolio</p>
-            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : 'History & Reports'}</h1>
-            <p>{view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
+            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : view === 'reports' ? 'History & Reports' : 'Discovery'}</h1>
+            <p>{view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
-          {view !== 'nodes' && view !== 'reports' && <div className="header-actions">
+          {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
@@ -181,7 +184,7 @@ function App() {
           </div>}
         </header>
 
-        {view !== 'nodes' && view !== 'reports' && <section className="summary-grid" aria-label="Сводка">
+        {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Готовы к следующему этапу" value={counts.READY} detail="READY" tone="positive" />
@@ -221,6 +224,7 @@ function App() {
 
         {view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
         {view === 'reports' && <ReportView history={dashboardHistory}/>}
+        {view === 'discovery' && <DiscoveryView/>}
       </main>
     </div>
   )
