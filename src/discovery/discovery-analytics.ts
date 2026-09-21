@@ -121,7 +121,7 @@ export function buildDiscoverySnapshot(input: {
     pathCounts.set(path, (pathCounts.get(path) ?? 0) + count)
   }
 
-  const crawlers = [...crawlerMap.values()].sort((a, b) =>
+  const crawlers = Array.from(crawlerMap.values()).sort((a, b) =>
     b.requests - a.requests || a.name.localeCompare(b.name),
   )
   const requests = crawlers.reduce((sum, crawler) => sum + crawler.requests, 0)
@@ -150,7 +150,7 @@ export function buildDiscoverySnapshot(input: {
     },
     lastSeen: { googlebot, bingbot },
     crawlers,
-    topPaths: [...pathCounts.entries()]
+    topPaths: Array.from(pathCounts.entries())
       .map(([path, count]) => ({ path, requests: count }))
       .sort((a, b) => b.requests - a.requests || a.path.localeCompare(b.path))
       .slice(0, 10),
