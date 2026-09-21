@@ -15,7 +15,7 @@ This remains portfolio/discovery monitoring. The dashboard does not control craw
 ```text
 Cloudflare zone analytics
   -> read-only GraphQL collector in CI
-  -> validated discovery-state.json
+  -> validated discovery-analytics.json
   -> Discovery view
 ```
 
@@ -26,9 +26,10 @@ Secrets stay in GitHub Actions environment and are never shipped to the browser.
 Cloudflare GraphQL Analytics for:
 - zone: `salamat-mebel.kz`
 - hostname: `house.salamat-mebel.kz`
-- rolling window: 24 hours
+- requested rolling window: up to 168 hours;
+- fallback window: 24 hours if the plan/API rejects the wider query.
 
-The 24-hour window is deliberate because Cloudflare AI Crawl Control on Free plans exposes a maximum 24-hour detailed analytics window.
+The snapshot records the actual window used, so the UI never labels 24-hour data as seven-day data.
 
 Detection for this checkpoint uses self-identifying User-Agent strings and must be labelled as such. It is useful monitoring evidence, not cryptographic proof of crawler identity.
 
@@ -90,7 +91,7 @@ The UI remains static/read-only and only reads the deployed snapshot.
 - no database;
 - no Worker/backend;
 - no browser-side Cloudflare token;
-- no invented 7-day history when the source plan only exposes 24 hours.
+- no invented 7-day history when the source falls back to 24 hours.
 
 ## PASS
 
@@ -99,5 +100,5 @@ CP-12 passes when:
 2. UI renders Discovery on desktop/mobile without execution controls;
 3. source failure renders UNAVAILABLE honestly;
 4. CI collector never exposes credentials to the browser;
-5. production deploy serves a schema-valid `discovery-state.json`;
+5. production deploy serves a schema-valid `discovery-analytics.json`;
 6. dashboard remains monitoring-only.
