@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "UNAVAILABLE",
+  "generatedAt": null,
+  "windowHours": 24,
+  "source": {
+    "kind": "CLOUDFLARE_GRAPHQL",
+    "zone": "salamat-mebel.kz",
+    "hostname": "house.salamat-mebel.kz",
+    "detection": "USER_AGENT",
+    "qualityNote": "No analytics snapshot is available yet."
+  },
+  "totals": {
+    "requests": 0,
+    "searchEngineRequests": 0,
+    "aiRequests": 0
+  },
+  "lastSeen": {
+    "googlebot": null,
+    "bingbot": null
+  },
+  "crawlers": [],
+  "topPaths": [],
+  "message": "Cloudflare discovery analytics have not been synchronized yet."
+}
