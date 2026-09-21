@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -39,9 +41,6 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build
-        run: npm run build
-
       - name: Verify Cloudflare credentials are configured
         shell: bash
         run: |
@@ -49,6 +48,12 @@ jobs:
             echo "::error::Missing CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID repository secret."
             exit 1
           fi
+
+      - name: Refresh Murat House discovery analytics
+        run: npm run sync:discovery
+
+      - name: Build
+        run: npm run build
 
       - name: Deploy existing Cloudflare Pages project
         run: npx wrangler pages deploy dist --project-name salamat-projects-dashboard --branch main
@@ -72,4 +77,25 @@ jobs:
           done
 
           echo "::error::Production project-state.json does not match the committed snapshot after deployment."
+          exit 1
+
+      - name: Verify production discovery snapshot
+        shell: bash
+        run: |
+          expected="$(sha256sum public/discovery-analytics.json | awk '{print $1}')"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location \
+              "https://projects.salamat-mebel.kz/discovery-analytics.json?deploy=${GITHUB_SHA}" \
+              --output /tmp/discovery-analytics.json; then
+              actual="$(sha256sum /tmp/discovery-analytics.json | awk '{print $1}')"
+              if [[ "$actual" == "$expected" ]]; then
+                echo "Production discovery snapshot matches this deployment."
+                exit 0
+              fi
+            fi
+            echo "Production discovery snapshot has not converged yet (attempt ${attempt}/12)."
+            sleep 10
+          done
+
+          echo "::error::Production discovery-analytics.json does not match this deployment."
           exit 1
