@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-11 — Portfolio Refresh`
+Current checkpoint: `CP-12 — Discovery Monitoring`
 Status: `VALIDATION`
 
 ## CP-00 — Repository Foundation
@@ -363,3 +363,32 @@ Deployment follow-up:
   validation item;
 - no new Worker, Pages project, backend or infrastructure was created; CP-11 remains
   `VALIDATION` until that visual smoke is recorded.
+
+
+## CP-12 — Discovery Monitoring
+Status: `VALIDATION`
+
+Disposition:
+- `EXTEND_EXISTING` — owner explicitly requested crawler/search visibility inside the existing Salamat Projects Dashboard; no new repository or product was created.
+
+Implemented:
+- strict DiscoverySnapshot contract and known crawler registry;
+- read-only Cloudflare GraphQL sync for `house.salamat-mebel.kz` using a bounded 24-hour analytics window;
+- explicit UNAVAILABLE state on missing permission or source failure;
+- Discovery view with Googlebot, Bingbot, AI crawler totals, crawler table and top paths;
+- six-hour refresh added to the existing Cloudflare Pages production workflow;
+- production discovery snapshot verification;
+- dedicated contract tests and checkpoint PR validation workflow.
+
+Validation evidence:
+- Project Validation run `35566893213`: tests PASS, read-only Discovery sync exercise PASS, TypeScript/Vite build PASS;
+- current Dashboard Cloudflare token cannot resolve the zone, so the collector correctly writes `UNAVAILABLE` instead of fake zero traffic;
+- live crawler counts require Cloudflare Zone Read/Analytics access (or a safely configured Zone ID) before the source can become `OK`.
+
+Boundary:
+- monitoring only; no crawler blocking, robots.txt/WAF editing, Cloudflare setting mutation, backend, database or credential persistence.
+
+Evidence pending:
+- production deploy after merge;
+- live Cloudflare analytics permission/result;
+- responsive production smoke.

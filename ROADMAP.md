@@ -12,5 +12,6 @@
 10. CP-09 Codex App Server Experiment — BASELINE_PASS / UI surface removed in CP-10 (contract retained as MPE migration candidate)
 11. CP-10 Monitoring-Only Cleanup — PASS (merged 2026-09-15)
 12. CP-11 Portfolio Refresh — VALIDATION (production snapshot deployed; desktop/mobile visual smoke pending)
+13. CP-12 Discovery Monitoring — VALIDATION (owner-approved read-only Murat House crawler analytics extension)
 
 No later checkpoint starts by silently expanding the scope of an earlier checkpoint.

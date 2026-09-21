@@ -51,3 +51,8 @@ Exit: no execution control renders in any view at desktop or mobile; monitoring 
 Refresh the committed normalized portfolio snapshot from current project/repository evidence without changing the monitoring-only product boundary.
 Scope: update active project cards, repository links, current checkpoints/blockers/next actions where attributable, and add newly active repositories to the portfolio.
 Exit: normalized registries remain schema-valid, public runtime snapshot matches the committed cache, no execution/write controls are introduced, and the refresh is recorded in project status/roadmap.
+
+
+## CP-12 — Discovery Monitoring
+Add read-only Murat House search/AI crawler visibility from Cloudflare analytics. Show last observed Googlebot/Bingbot activity, AI crawler request totals, crawler identities and top requested paths. User-Agent detection quality must be disclosed; unavailable source data must remain UNAVAILABLE rather than becoming fake zero traffic. No crawler controls, WAF changes, backend or execution authority.
+Exit: strict snapshot contract, scheduled read-only sync, responsive Discovery view, full tests/build and production snapshot verification pass.

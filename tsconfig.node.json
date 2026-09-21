@@ -5,13 +5,20 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ]
   },
   "include": [
     "vite.config.ts",
     "scripts/**/*.ts",
     "src/adapters/github-source.ts",
     "src/contract/project-state.ts",
-    "src/contract/task-packet.ts"
+    "src/contract/task-packet.ts",
+    "src/discovery/discovery-analytics.ts"
   ]
 }
