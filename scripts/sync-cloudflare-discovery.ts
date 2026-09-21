@@ -65,7 +65,7 @@ function graphqlQuery(): string {
     .join('\n')
 
   return `
-    query DiscoveryAnalytics($zoneTag: string!, $start: Time!, $end: Time!, $host: string!) {
+    query DiscoveryAnalytics($zoneTag: String!, $start: Time!, $end: Time!, $host: String!) {
       viewer {
         zones(filter: { zoneTag: $zoneTag }) {
           groups: httpRequestsAdaptiveGroups(
