@@ -430,3 +430,20 @@ body { margin: 0; min-height: 100vh; }
   .discovery-panel, .discovery-source-card, .discovery-metric { border-radius: 12px; }
   .discovery-panel { padding: 14px; }
 }
+
+/* Issue #22 — read-only canonical MPE experiment snapshot. */
+.experiments-view { min-width: 0; }
+.experiment-source { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+.experiment-source a, .experiment-links a { color: var(--accent-strong); }
+.experiment-list { display: grid; gap: 10px; }
+.experiment-row { min-width: 0; display: flex; justify-content: space-between; gap: 18px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-l); background: var(--panel); }
+.experiment-row h2 { margin: 8px 0 4px; font-size: 17px; }
+.experiment-row p { margin: 5px 0; color: var(--muted); font-size: 13px; }
+.experiment-row p strong { color: var(--text); }
+.experiment-status { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 10px; font-weight: 800; letter-spacing: .04em; background: #e9eef5; color: #42566e; }
+.experiment-pass, .experiment-adopted { background: #dff4e6; color: #14713d; }
+.experiment-ready_to_test, .experiment-running { background: #e3efff; color: #155aa0; }
+.experiment-hold, .experiment-fail { background: #f8e7dc; color: #9b4a22; }
+.experiment-links { flex: 0 0 auto; display: grid; align-content: space-between; justify-items: end; gap: 10px; font-size: 12px; }
+.experiment-links a { display: inline-flex; gap: 4px; align-items: center; }
+@media (max-width: 640px) { .experiment-row { display: grid; gap: 12px; } .experiment-links { justify-items: start; } }

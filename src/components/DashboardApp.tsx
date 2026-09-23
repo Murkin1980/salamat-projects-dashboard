@@ -37,6 +37,7 @@ import iconMap from '../../config/icon-map.json'
 import projectRegistry from '../../config/projects.github.json'
 import nodeGraphRegistry from '../../config/node-graphs.json'
 import historyRegistry from '../../config/project-history.json'
+import experimentRegistry from '../../config/experiments.github.json'
 import { NodesView } from './NodesView'
 import { ReportView } from './ReportView'
 import { DiscoveryView } from './DiscoveryView'
@@ -49,13 +50,16 @@ import { useLiveRegistry } from '../hooks/use-live-registry'
 import { deriveLiveProjectState } from '../triage/live-triage'
 import { parseNodeGraphRegistry } from '../graph/node-graph'
 import { parseHistoryRegistry } from '../history/project-history'
+import { parseExperimentRegistry, type ExperimentStatus } from '../contract/experiment-registry'
 
-type View = 'triage' | 'portfolio' | 'attention' | 'nodes' | 'reports' | 'discovery'
+type View = 'triage' | 'portfolio' | 'experiments' | 'attention' | 'nodes' | 'reports' | 'discovery'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
 // The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
 const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
 const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
+const experiments = parseExperimentRegistry(experimentRegistry)
+const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned' }
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
@@ -97,6 +101,7 @@ function App() {
   const [view, setView] = useState<View>('triage')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<TriageState | 'ALL'>('ALL')
+  const [experimentFilter, setExperimentFilter] = useState<ExperimentStatus | 'ALL'>('ALL')
   const { registry, refresh, refreshState, error, lastSuccessAt } = useLiveRegistry(initialRegistry)
   const liveProjects = useMemo(
     () => registry.projects.map((project) => deriveLiveProjectState(project, new Date())),
@@ -149,6 +154,7 @@ function App() {
         <nav className="nav-list">
           <button className={view === 'triage' ? 'active' : ''} onClick={() => setView('triage')}><IconLayoutDashboard size={20}/> Triage</button>
           <button className={view === 'portfolio' ? 'active' : ''} onClick={() => setView('portfolio')}><IconFolderCode size={20}/> Portfolio</button>
+          <button className={view === 'experiments' ? 'active' : ''} onClick={() => setView('experiments')}><IconFlask size={20}/> Experiments</button>
           <button className={view === 'attention' ? 'active' : ''} onClick={() => setView('attention')}><IconAlertTriangle size={20}/> Attention</button>
           <button className={view === 'nodes' ? 'active' : ''} onClick={() => setView('nodes')}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
@@ -166,8 +172,8 @@ function App() {
         <header className="page-header">
           <div>
             <p className="eyebrow">Operational portfolio</p>
-            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : view === 'reports' ? 'History & Reports' : 'Discovery'}</h1>
-            <p>{view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
+            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'experiments' ? 'Experiments' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : view === 'reports' ? 'History & Reports' : 'Discovery'}</h1>
+            <p>{view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
           </div>
           {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
@@ -205,6 +211,8 @@ function App() {
         )}
 
         {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} />}
+
+        {view === 'experiments' && <ExperimentsView filter={experimentFilter} onFilter={setExperimentFilter} />}
 
         {view === 'attention' && (
           <section className="attention-list">
@@ -307,6 +315,16 @@ function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | nul
   const meta = triageMeta[state]
   const Icon = meta.Icon
   return <span className={`status-badge ${meta.className}`}><Icon size={15}/>{meta.label}</span>
+}
+
+function ExperimentsView({ filter, onFilter }: { filter: ExperimentStatus | 'ALL'; onFilter: (filter: ExperimentStatus | 'ALL') => void }) {
+  const filters: Array<ExperimentStatus | 'ALL'> = ['ALL', 'READY_TO_TEST', 'RUNNING', 'PASS', 'FAIL', 'HOLD', 'ADOPTED']
+  const visible = experiments.experiments.filter((experiment) => filter === 'ALL' || experiment.status === filter)
+  return <section className="experiments-view" aria-label="MPE experiments">
+    <p className="experiment-source">Source: <a href={experiments.source_url} target="_blank" rel="noreferrer">{experiments.source}</a> · snapshot {experiments.updated_at}</p>
+    <div className="triage-tabs" aria-label="Experiment status filter">{filters.map((value) => <button key={value} className={filter === value ? 'selected' : ''} onClick={() => onFilter(value)}>{experimentFilterLabels[value]} <span>{value === 'ALL' ? experiments.experiments.length : experiments.experiments.filter((item) => item.status === value).length}</span></button>)}</div>
+    <div className="experiment-list">{visible.map((experiment) => <article className="experiment-row" key={experiment.experiment_id}><div><span className={`experiment-status experiment-${experiment.status.toLowerCase()}`}>{experiment.status.replaceAll('_', ' ')}</span><h2>{experiment.name}</h2><p>{experiment.owning_project} · {experiment.repo}</p><p><strong>Next:</strong> {experiment.next_action}</p></div><div className="experiment-links"><time>{experiment.updated_at}</time><a href={experiment.evidence_url} target="_blank" rel="noreferrer"><IconExternalLink size={14}/> Evidence</a></div></article>)}</div>
+  </section>
 }
 
 export { App }
