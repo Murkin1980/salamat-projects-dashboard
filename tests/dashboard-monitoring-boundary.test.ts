@@ -95,6 +95,7 @@ async function renderDashboard(width: number, mutate?: (registry: Registry) => v
 
   return {
     container,
+    act,
     // Unmounting clears the live-registry poll interval and closing the window
     // stops jsdom's visual loop, so the test process can exit.
     cleanup: async () => {
@@ -178,6 +179,21 @@ test('dashboard renders no execution controls at 390px (mobile)', async (t) => {
     'mobile project cards must not contain any button',
   )
   assert.ok(container.querySelectorAll('.project-card').length > 0, 'project cards must render on mobile')
+})
+
+test('mobile Experiments view is read-only and Portfolio remains available', async (t) => {
+  const { container, cleanup, act } = await renderDashboard(390)
+  t.after(cleanup)
+  const experimentsButton = [...container.querySelectorAll('button')].find((button) => button.textContent?.includes('Experiments'))!
+  await act(async () => { experimentsButton.click() })
+  assert.ok(container.textContent?.includes('Firecrawl Alexandria source discovery'))
+  assert.ok(container.querySelectorAll('.experiment-row').length >= 17)
+  assert.equal(container.querySelectorAll('.experiment-row button').length, 0)
+  assert.ok(container.textContent?.includes('Source:'))
+
+  const portfolioButton = [...container.querySelectorAll('button')].find((button) => button.textContent?.includes('Portfolio'))!
+  await act(async () => { portfolioButton.click() })
+  assert.ok(container.querySelectorAll('.project-card').length > 0, 'Projects view remains unchanged and available')
 })
 
 test('project cards keep every monitoring field visible', async (t) => {
