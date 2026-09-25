@@ -1,6 +1,6 @@
 # CP-12 — Discovery Monitoring
 
-Status: IMPLEMENTATION  
+Status: PASS
 Decision: EXTEND_EXISTING  
 Date: 2026-09-21
 
@@ -102,3 +102,11 @@ CP-12 passes when:
 4. CI collector never exposes credentials to the browser;
 5. production deploy serves a schema-valid `discovery-analytics.json`;
 6. dashboard remains monitoring-only.
+
+## Final evidence — 2026-09-25
+
+- GitHub Actions deployment `36096477147` succeeded for main commit `bcfa51c` and verified the deployed project and discovery snapshots.
+- Production `discovery-analytics.json` returns HTTP 200 and validates as an explicit `UNAVAILABLE` snapshot because the Cloudflare token lacks Zone Read / Analytics Read.
+- Desktop `1440×1000` and mobile `390×844` production smoke passed with no horizontal overflow or critical console errors.
+- The local suite passed 80/80 tests and the TypeScript/Vite build passed after `npm ci`.
+- Missing analytics access remains visible as unavailable and is never represented as zero crawler traffic.

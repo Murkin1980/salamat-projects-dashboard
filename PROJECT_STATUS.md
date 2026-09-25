@@ -3,7 +3,7 @@
 Decision: `EXTEND_EXISTING`
 
 Current checkpoint: `CP-12 — Discovery Monitoring`
-Status: `VALIDATION`
+Status: `PASS`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -295,19 +295,19 @@ Known gap (not introduced, not fixed here):
   approval under the deep-change gate.
 
 ## Next
-Keep the dashboard monitoring-only: decide whether the retained Task Packet contract moves
-to `murat-project-engineer` or is deleted, and whether a portfolio tier field is approved.
+No new checkpoint is approved. Keep the dashboard monitoring-only. The retained Task Packet
+contract migration/deletion and any portfolio tier field remain separate owner decisions.
 
 ## Blocker
 No Cloudflare deployment credential blocker remains. Automatic main deployment is verified.
-CP-11 remains in `VALIDATION` only until the post-deploy desktop/mobile visual smoke is
-recorded; registry, tests, build, monitoring-only boundary and production snapshot verification
-are green.
+No active checkpoint blocker. Cloudflare crawler counts remain explicitly `UNAVAILABLE` until
+the production token receives Zone Read / Analytics Read; the UI and collector fail closed and
+never present missing analytics as zero traffic.
 
-Last updated: 2026-09-18
+Last updated: 2026-09-25
 
 ## CP-11 — Portfolio Refresh
-Status: `VALIDATION`
+Status: `PASS`
 
 Disposition:
 - `EXTEND_EXISTING` — refresh the existing monitoring data and source coverage. No new repository, runtime, backend, workflow engine or write path.
@@ -359,14 +359,17 @@ Deployment follow-up:
 - GitHub Actions run `35341306057` completed the Cloudflare Pages deployment successfully;
 - production `project-state.json` matched the committed refreshed snapshot after deploy,
   proving the 15-project runtime snapshot reached production;
-- desktop/mobile visual smoke (1440×1000 / 390×844) is still pending as the final CP-11
-  validation item;
-- no new Worker, Pages project, backend or infrastructure was created; CP-11 remains
-  `VALIDATION` until that visual smoke is recorded.
+- no new Worker, Pages project, backend or infrastructure was created.
+
+Final production validation (2026-09-25):
+- desktop `1440×1000` rendered all 15 portfolio projects with document width `1440/1440`;
+- mobile `390×844` rendered the complete Portfolio view with document width `390/390`;
+- no critical browser console errors were observed;
+- CP-11 post-deploy visual evidence is complete.
 
 
 ## CP-12 — Discovery Monitoring
-Status: `VALIDATION`
+Status: `PASS`
 
 Disposition:
 - `EXTEND_EXISTING` — owner explicitly requested crawler/search visibility inside the existing Salamat Projects Dashboard; no new repository or product was created.
@@ -388,7 +391,13 @@ Validation evidence:
 Boundary:
 - monitoring only; no crawler blocking, robots.txt/WAF editing, Cloudflare setting mutation, backend, database or credential persistence.
 
-Evidence pending:
-- production deploy after merge;
-- live Cloudflare analytics permission/result;
-- responsive production smoke.
+Known external limitation:
+- live Cloudflare crawler counts remain unavailable until the token receives Zone Read / Analytics Read; this is surfaced as `UNAVAILABLE`, not as fake zero traffic.
+
+Final production validation (2026-09-25):
+- deployment workflow run `36096477147` succeeded for main commit `bcfa51c` and verified both production snapshots;
+- `https://projects.salamat-mebel.kz/discovery-analytics.json` returns HTTP 200 and a schema-valid `UNAVAILABLE` snapshot with the permission limitation stated explicitly;
+- Discovery rendered its explicit unavailable state at desktop `1440×1000` and mobile `390×844`;
+- document widths matched both viewports (`1440/1440`, `390/390`) with no horizontal overflow;
+- no critical browser console errors were observed;
+- full local suite passed 80/80 tests and the production TypeScript/Vite build passed after dependency sync.
