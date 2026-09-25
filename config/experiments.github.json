@@ -102,7 +102,7 @@
       "next_action": "Freeze the labelled decision dataset, run the deterministic baseline, then compare Laya and AnyJev on the same cases.",
       "updated_at": "2026-09-25",
       "repo": "Murkin1980/murat-project-engineer",
-      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/experiment/exp-14-anyjev/experiments/exp-14-laya-system-one/README.md"
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-14-laya-system-one/README.md"
     },
     {
       "experiment_id": "EXP-15",
