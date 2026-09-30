@@ -13,5 +13,6 @@
 11. CP-10 Monitoring-Only Cleanup — PASS (merged 2026-09-15)
 12. CP-11 Portfolio Refresh — PASS (production snapshot and desktop/mobile visual smoke verified 2026-09-25)
 13. CP-12 Discovery Monitoring — PASS (production fail-closed monitoring verified; live counts remain UNAVAILABLE pending Cloudflare analytics permission)
+14. CP-13 Automatic Portfolio Sync — PASS (scheduled GitHub sync before build on the unchanged 17 */6 * * * cadence; 4 of 10 portfolio repositories synchronized, 6 recorded as explicit gaps)
 
 No later checkpoint starts by silently expanding the scope of an earlier checkpoint.

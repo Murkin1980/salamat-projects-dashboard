@@ -56,3 +56,7 @@ Exit: normalized registries remain schema-valid, public runtime snapshot matches
 ## CP-12 — Discovery Monitoring
 Add read-only Murat House search/AI crawler visibility from Cloudflare analytics. Show last observed Googlebot/Bingbot activity, AI crawler request totals, crawler identities and top requested paths. User-Agent detection quality must be disclosed; unavailable source data must remain UNAVAILABLE rather than becoming fake zero traffic. No crawler controls, WAF changes, backend or execution authority.
 Exit: strict snapshot contract, scheduled read-only sync, responsive Discovery view, full tests/build and production snapshot verification pass.
+
+## CP-13 — Automatic Portfolio Sync
+Refresh the committed portfolio snapshot from GitHub inside the existing Cloudflare Pages production workflow, before the build, on the unchanged six-hour schedule. Keep one synchronization mechanism, keep the browser runtime snapshot byte-identical to the committed cache, and keep the last valid snapshot when GitHub is temporarily unavailable. Record every portfolio repository that has no canonical status source as an explicit gap instead of inventing data. Do not change the portfolio boundary, the sync frequency or the monitoring-only product boundary.
+Exit: the scheduled workflow runs tests → GitHub credentials check → `sync:github` → snapshot verification → discovery sync → build → deploy → production verification; source coverage is machine-checked; no credentials reach generated artifacts or the frontend.

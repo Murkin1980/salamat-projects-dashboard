@@ -18,6 +18,11 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 
+/** Committed reviewable cache: the single normalized snapshot this repository owns. */
+export const CANONICAL_CACHE_RELATIVE_PATH = path.join('config', 'projects.github.json')
+/** Browser runtime snapshot served next to the static build output. */
+export const RUNTIME_SNAPSHOT_RELATIVE_PATH = path.join('public', 'project-state.json')
+
 interface AlternateStatusConfig {
   ref: string
   path: string
@@ -31,9 +36,25 @@ interface SourceRepoConfig {
   alternateStatus?: AlternateStatusConfig
 }
 
+/**
+ * Portfolio repository that has no reliable canonical status source.
+ * Recorded as a gap instead of inventing a status artifact for it.
+ */
+export interface SourceGapConfig {
+  projectId: string
+  repo: string
+  reason: string
+}
+
 interface SourceRepositoriesConfig {
   version: number
   sources: SourceRepoConfig[]
+  gaps?: SourceGapConfig[]
+}
+
+export interface SyncOptions {
+  /** Repository root holding `config/` and `public/`; defaults to this checkout. */
+  repoRoot?: string
 }
 
 // --- GitHub REST client ----------------------------------------------------
@@ -67,17 +88,25 @@ class NotFoundError extends Error {
   }
 }
 
-function getToken(): string | null {
-  return process.env.GH_TOKEN ?? process.env.GITHUB_TOKEN ?? null
+/** Fail-closed error; the CLI boundary turns it into stderr output and exit code 1. */
+export class SyncError extends Error {}
+
+/**
+ * Reads the read-only GitHub token from the environment. Empty or whitespace-only
+ * values count as absent, so an unset secret can never silently disable authentication.
+ */
+export function getToken(): string | null {
+  for (const candidate of [process.env.GH_TOKEN, process.env.GITHUB_TOKEN]) {
+    if (candidate && candidate.trim().length > 0) return candidate.trim()
+  }
+  return null
 }
 
 function failClosed(message: string, cause?: unknown): never {
   if (cause instanceof Error) {
-    process.stderr.write(`sync-github-projects: ${message}: ${cause.message}\n`)
-  } else {
-    process.stderr.write(`sync-github-projects: ${message}\n`)
+    throw new SyncError(`${message}: ${cause.message}`)
   }
-  process.exit(1)
+  throw new SyncError(message)
 }
 
 async function githubRequest(
@@ -156,7 +185,7 @@ async function firstExistingArtifact(
 
 // --- Sync ------------------------------------------------------------------
 
-function mergeSelected(
+export function mergeSelected(
   registry: ProjectRegistry,
   selected: ProjectState[],
 ): ProjectRegistry {
@@ -174,7 +203,7 @@ function mergeSelected(
   }
 }
 
-function parseArgs(argv: string[]): { outputPath: string | null; watchSeconds: number | null } {
+export function parseArgs(argv: string[]): { outputPath: string | null; watchSeconds: number | null } {
   let outputPath: string | null = null
   let watchSeconds: number | null = null
   for (let i = 0; i < argv.length; i += 1) {
@@ -203,9 +232,9 @@ function parseArgs(argv: string[]): { outputPath: string | null; watchSeconds: n
   return { outputPath, watchSeconds }
 }
 
-function resolveSafeOutput(outputPath: string): string {
-  const resolved = path.resolve(repoRoot, outputPath)
-  const canonicalCache = path.join(repoRoot, 'config', 'projects.github.json')
+export function resolveSafeOutput(outputPath: string, root: string = repoRoot): string {
+  const resolved = path.resolve(root, outputPath)
+  const canonicalCache = path.join(root, CANONICAL_CACHE_RELATIVE_PATH)
   const allowedTempRoots = [path.resolve(tmpdir()), path.resolve('C:\\tmp')]
   const isInTemp = allowedTempRoots.some((tempRoot) => {
     const relativeToTemp = path.relative(tempRoot, resolved)
@@ -218,20 +247,29 @@ function resolveSafeOutput(outputPath: string): string {
   return resolved
 }
 
-async function writeAtomic(outputPath: string, json: string): Promise<void> {
+export async function writeAtomic(outputPath: string, json: string): Promise<void> {
   const temporaryPath = `${outputPath}.next`
   await writeFile(temporaryPath, json, 'utf8')
   await rename(temporaryPath, outputPath)
 }
 
-async function syncOnce(outputPath: string | null, token: string | null): Promise<void> {
+export async function syncOnce(
+  outputPath: string | null,
+  token: string | null,
+  options: SyncOptions = {},
+): Promise<void> {
+  const root = options.repoRoot ?? repoRoot
+
+  // Validate the destination before doing any network work: a rejected output
+  // path must never leave a partially refreshed snapshot behind.
+  const resolvedOutput = outputPath ? resolveSafeOutput(outputPath, root) : null
 
   const sourceConfig = JSON.parse(
-    await readFile(path.join(repoRoot, 'config', 'source-repositories.json'), 'utf8'),
+    await readFile(path.join(root, 'config', 'source-repositories.json'), 'utf8'),
   ) as SourceRepositoriesConfig
   const registry = parseProjectRegistry(
     JSON.parse(
-      await readFile(path.join(repoRoot, 'config', 'projects.json'), 'utf8'),
+      await readFile(path.join(root, 'config', 'projects.json'), 'utf8'),
     ),
   )
 
@@ -303,11 +341,12 @@ async function syncOnce(outputPath: string | null, token: string | null): Promis
   const validated = parseProjectRegistry(merged)
   const json = `${JSON.stringify(validated, null, 2)}\n`
 
-  if (outputPath) {
-    const resolvedOutput = resolveSafeOutput(outputPath)
+  if (resolvedOutput) {
     await writeAtomic(resolvedOutput, json)
-    if (resolvedOutput === path.join(repoRoot, 'config', 'projects.github.json')) {
-      await writeAtomic(path.join(repoRoot, 'public', 'project-state.json'), json)
+    // Publishing the canonical cache must also refresh the browser runtime
+    // snapshot: one synchronization, two committed artifacts, never two mechanisms.
+    if (resolvedOutput === path.join(root, CANONICAL_CACHE_RELATIVE_PATH)) {
+      await writeAtomic(path.join(root, RUNTIME_SNAPSHOT_RELATIVE_PATH), json)
     }
   } else {
     process.stdout.write(json)
@@ -318,11 +357,22 @@ async function main(): Promise<void> {
   const { outputPath, watchSeconds } = parseArgs(process.argv.slice(2))
   const token = getToken()
   do {
-    await syncOnce(outputPath, token)
+    try {
+      await syncOnce(outputPath, token)
+    } catch (error) {
+      failClosed('sync failed', error)
+    }
     if (watchSeconds === null) return
     process.stderr.write(`sync-github-projects: refreshed; next run in ${watchSeconds}s\n`)
     await new Promise((resolve) => setTimeout(resolve, watchSeconds * 1_000))
   } while (true)
 }
 
-main().catch((error) => failClosed('sync failed', error))
+// Stdio runner
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main().catch((error) => {
+    const detail = error instanceof Error ? error.message : String(error)
+    process.stderr.write(`sync-github-projects: ${detail}\n`)
+    process.exit(1)
+  })
+}

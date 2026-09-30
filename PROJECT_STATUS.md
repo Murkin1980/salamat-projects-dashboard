@@ -304,7 +304,7 @@ No active checkpoint blocker. Cloudflare crawler counts remain explicitly `UNAVA
 the production token receives Zone Read / Analytics Read; the UI and collector fail closed and
 never present missing analytics as zero traffic.
 
-Last updated: 2026-09-25
+Last updated: 2026-09-30
 
 ## CP-11 — Portfolio Refresh
 Status: `PASS`
@@ -401,3 +401,119 @@ Final production validation (2026-09-25):
 - document widths matched both viewports (`1440/1440`, `390/390`) with no horizontal overflow;
 - no critical browser console errors were observed;
 - full local suite passed 80/80 tests and the production TypeScript/Vite build passed after dependency sync.
+
+## CP-13 — Automatic Portfolio Sync
+Status: `PASS`
+
+Disposition:
+- `EXTEND_EXISTING` — the existing read-only GitHub source adapter, the committed
+  `config/projects.github.json` cache, the browser runtime snapshot and the
+  existing Cloudflare Pages workflow were extended in place. No new repository,
+  service, backend, database, Worker, API, runtime or second synchronization
+  mechanism was created.
+
+Implemented:
+- `config/source-repositories.json` now records explicit `gaps` for every portfolio
+  repository that has no canonical status source, so coverage is machine-checkable
+  and cannot be padded with invented repositories;
+- the scheduled Cloudflare Pages workflow refreshes portfolio state from GitHub
+  **before** `npm run build`, on the unchanged `17 */6 * * *` schedule;
+- `npm run verify:snapshot` (`scripts/verify-project-state.ts`) proves the published
+  snapshot is schema valid, byte-identical between `config/projects.github.json` and
+  `public/project-state.json`, and free of credential material;
+- 26 new automated tests cover source coverage, the GitHub sync engine, snapshot
+  generation, artifact identity, secret absence, the scheduled workflow sequence and
+  existing dashboard behaviour;
+- browser polling of the runtime snapshot is unchanged (60 s, last valid state kept
+  on error).
+
+Chain now active:
+
+```text
+GitHub repositories
+→ npm run sync:github -- --output config/projects.github.json
+→ config/projects.github.json
+→ public/project-state.json   (same run, byte-identical)
+→ npm run build
+→ Cloudflare Pages
+→ Dashboard (browser polls project-state.json)
+```
+
+### Source coverage
+
+15 portfolio projects; 10 have a canonical GitHub repository; 5 are fixture-only
+(`mebelflow-ai`, `interactive-kp`, `mebellegal-kz`, `whatsapp-sales-agent`,
+`etsy-market-research`) and were deliberately left without a repository claim.
+
+Synchronized through the read-only adapter (4):
+
+| projectId | repository | canonical status artifact | resolution |
+| --- | --- | --- | --- |
+| `murat-project-engineer` | `Murkin1980/murat-project-engineer` | `STATUS.md` (fallback) | `UNKNOWN` — no canonical `Status:` label |
+| `business-discovery` | `Murkin1980/business-discovery` | `PROJECT_STATUS.md` (main + `codex/stage-5-auditor`) | `CONFLICT` |
+| `salamat-projects-dashboard` | `Murkin1980/salamat-projects-dashboard` | `PROJECT_STATUS.md` | derived from the artifact label |
+| `ai-microtask-factory` | `Murkin1980/ai-microtask-factory` | `PROJECT_STATUS.md` | `UNKNOWN` — no canonical `Status:` label |
+
+Recorded as gaps and intentionally **not** synchronized (6), with reasons stored in
+`config/source-repositories.json`:
+
+- `murat-ads-control` — no `PROJECT_STATUS.md`/`STATUS.md`; `docs/CHECKPOINTS.md` is a
+  checkpoint log without a canonical `Status:` label. Adding it would replace the
+  attributed `BLOCKED` / CP-004 state with an `UNKNOWN` state carrying no evidence.
+- `tender-assistant` — no `PROJECT_STATUS.md`/`STATUS.md`; only `docs/checkpoints/CP-*.md`
+  milestone records exist.
+- `minibase-cloudflare` — only `ROADMAP.md` (supporting evidence) and
+  `docs/PRODUCTION_STATUS.md` (operational runbook); `ROADMAP.md` cannot establish status.
+- `murat-house`, `murat-ai-orchestrator`, `grand-mebel-document-control` — private
+  repositories whose canonical status artifacts could not be verified from an
+  authorized read-only session; commit evidence alone cannot establish triage.
+
+### Credentials
+
+- `GH_TOKEN` (optional repository secret) takes precedence, then the workflow's own
+  `GITHUB_TOKEN` installation token;
+- tokens are read from the environment only, are never printed, never written to the
+  repository, never stored in JSON and never reach the frontend;
+- the sync script treats an empty or whitespace-only credential as absent so an unset
+  secret can never silently disable authentication.
+
+### Failure behavior
+
+- `scripts/sync-github-projects.ts` fails closed: on any GitHub error it exits non-zero
+  and writes nothing, because publication happens only after schema validation;
+- the workflow runs the sync with `continue-on-error: true`, emits a
+  `::warning::` when it fails, and then runs `npm run verify:snapshot`, which hard-fails
+  the deployment if either artifact is missing, empty, schema invalid, non-identical or
+  credential-bearing;
+- therefore a temporary GitHub outage deploys the last valid committed snapshot instead
+  of damaged or empty data, and the browser keeps rendering that snapshot.
+
+Validation evidence:
+- `npm test`: 106/106 pass (80 before this checkpoint; +26 new);
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: OK — schemaVersion `1.0.0`, version 4, `updatedAt`
+  `2026-09-18`, 15 projects, no credentials detected;
+- a real read-only synchronization was exercised in a scratch checkout with the
+  committed configuration restricted to the repositories readable from this session;
+  it published byte-identical cache and runtime artifacts and refreshed the derived
+  project state (evidence SHAs, checkpoint labels, `lastUpdated`);
+- the committed snapshot keeps its 2026-09-18 refresh because the private portfolio
+  repositories are not readable from this session; the scheduled workflow performs the
+  full refresh in CI where the token has repository access.
+
+Known limitations (external, not introduced here):
+- the private portfolio repositories need either the workflow `GITHUB_TOKEN` or an
+  optional `GH_TOKEN` repository secret with repository read access; otherwise the sync
+  fails closed and the previous snapshot is preserved;
+- adapter-derived refreshes are intentionally lossy where the source artifact does not
+  carry a canonical label (for example `murat-project-engineer` loses its curated
+  `stage`/`nextAction`, because `STATUS.md` has no canonical `Status:`/`Next` labels);
+  this is the honest adapter result and was not papered over;
+- no production deployment was triggered from this checkpoint branch; the scheduled
+  workflow performs and verifies the deployment on `main`.
+
+Boundary:
+- monitoring only; no write-back to GitHub, no Worker, no database, no new API, no
+  runtime, no agent execution, no Task Packet generation/export in the UI, and MPE
+  remains the decision system while GitHub remains the source of factual state.

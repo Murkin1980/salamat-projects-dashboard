@@ -41,6 +41,45 @@ jobs:
       - name: Run tests
         run: npm test
 
+      # Read-only GitHub credentials. An optional GH_TOKEN repository secret with
+      # private-repository access takes precedence; otherwise the workflow's own
+      # GITHUB_TOKEN installation token is used. Values are never printed.
+      - name: Verify GitHub credentials are configured
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [[ -z "$GH_TOKEN" && -z "$GITHUB_TOKEN" ]]; then
+            echo "::error::Neither GH_TOKEN nor GITHUB_TOKEN is available for the read-only GitHub portfolio sync."
+            exit 1
+          fi
+          echo "GitHub credentials are available for the read-only portfolio sync."
+
+      # Portfolio state must be refreshed from GitHub before the build so the
+      # deployed snapshot is current. The sync fails closed and writes nothing on
+      # error, so a temporary GitHub outage keeps the last valid committed
+      # snapshot instead of publishing damaged or empty data.
+      - name: Sync GitHub portfolio state
+        id: github-sync
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run sync:github -- --output config/projects.github.json
+
+      # Never let a damaged or empty snapshot reach the build: both published
+      # artifacts must stay schema valid, byte-identical and credential free.
+      - name: Verify published portfolio snapshot
+        shell: bash
+        env:
+          SYNC_OUTCOME: ${{ steps.github-sync.outcome }}
+        run: |
+          if [[ "$SYNC_OUTCOME" == "failure" ]]; then
+            echo "::warning::GitHub portfolio sync failed; the last valid committed snapshot is preserved for this deployment."
+          fi
+          npm run verify:snapshot
+
       - name: Verify Cloudflare credentials are configured
         shell: bash
         run: |

@@ -18,9 +18,14 @@ Decisions, Task Packets, execution, evidence and Arena/Codex integration belong 
 This repository is the UI/control-plane repository. It must NOT become the canonical source of project truth.
 Canonical project state remains in the project repositories and Murat Project Engineer (MPE) artifacts.
 
-CP-04/CP-11 consume a committed normalized GitHub snapshot. The current portfolio snapshot was refreshed on 2026-09-18 and now includes 15 projects. Refresh it with a
+CP-04/CP-11/CP-13 consume a committed normalized GitHub snapshot. The current portfolio snapshot was refreshed on 2026-09-18 and now includes 15 projects. Refresh it with a
 temporary `GH_TOKEN` or `GITHUB_TOKEN`; tokens and raw private content are never
 persisted. See `docs/GITHUB_SOURCE_ADAPTER.md`.
+
+Production refreshes itself: the Cloudflare Pages workflow runs on the unchanged
+`17 */6 * * *` schedule, runs `npm run sync:github` **before** the build, verifies
+the published snapshot and deploys. A failed sync keeps the last valid snapshot
+instead of publishing damaged data.
 
 ## Live triage
 

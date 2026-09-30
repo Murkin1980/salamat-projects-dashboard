@@ -10,6 +10,7 @@
     "task-packet:harness": "tsx scripts/task-packet-harness.ts",
     "sync:github": "tsx scripts/sync-github-projects.ts",
     "sync:github:watch": "tsx scripts/sync-github-projects.ts --output config/projects.github.json --watch 60",
+    "verify:snapshot": "tsx scripts/verify-project-state.ts",
     "deploy:cloudflare": "npm run build && wrangler pages deploy dist --project-name salamat-projects-dashboard --branch main",
     "deploy:cloudflare:list": "wrangler pages deployment list --project-name salamat-projects-dashboard",
     "preview": "vite preview",
