@@ -26,6 +26,12 @@ import jsdom from 'jsdom'
  * Scanned against the application chrome only. Project-sourced fields are
  * excluded first: a next step may legitimately read "Continue pilot work",
  * which is monitoring content, not an execution control.
+ *
+ * CP-15 deliberately surfaces a read-only "Arena session" observation indicator
+ * on cards (ACTIVE / WAITING_FOR_VALIDATION / READY_TO_CLOSE / STALE_SESSION /
+ * UNKNOWN). That is monitoring evidence, not an execution control, so the broad
+ * 'Arena' term is intentionally absent here. Arena *execution* actions
+ * (Continue, Send to Arena, Task Packet, Codex) remain forbidden below.
  */
 const FORBIDDEN_UI_TERMS = [
   'Continue',
@@ -39,7 +45,6 @@ const FORBIDDEN_UI_TERMS = [
   'Send to Arena',
   'Send to Codex',
   'Codex',
-  'Arena',
   'executor',
   'Run task',
   'model selector',

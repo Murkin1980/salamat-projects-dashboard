@@ -12,6 +12,7 @@
 // classic JSX transform, tree-shaken by the automatic-runtime build.
 import React, { useMemo, useState } from 'react'
 import {
+  IconActivity,
   IconAlertTriangle,
   IconBolt,
   IconCircleCheck,
@@ -21,10 +22,12 @@ import {
   IconFlask,
   IconFolderCode,
   IconGitBranch,
+  IconHourglass,
   IconLayoutDashboard,
   IconListDetails,
   IconPlayerPause,
   IconPlayerPlay,
+  IconQuestionMark,
   IconRadar,
   IconRosetteDiscountCheck,
   IconRefresh,
@@ -43,6 +46,8 @@ import { ReportView } from './ReportView'
 import { DiscoveryView } from './DiscoveryView'
 import {
   parseProjectRegistry,
+  type ArenaSession,
+  type ArenaSessionState,
   type ProjectState,
   type TriageState,
 } from '../contract/project-state'
@@ -51,6 +56,15 @@ import { deriveLiveProjectState } from '../triage/live-triage'
 import { parseNodeGraphRegistry } from '../graph/node-graph'
 import { parseHistoryRegistry } from '../history/project-history'
 import { parseExperimentRegistry, type ExperimentStatus } from '../contract/experiment-registry'
+import {
+  ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS,
+  getActivityFreshness,
+} from '../monitoring/derived-state'
+import {
+  compareByPriorityThenActivity,
+  orderByRecentActivity,
+  shouldShowSessionIndicator,
+} from '../monitoring/portfolio-ordering'
 
 type View = 'triage' | 'portfolio' | 'experiments' | 'attention' | 'nodes' | 'reports' | 'discovery'
 
@@ -127,19 +141,33 @@ function App() {
     })
   }, [filter, projects, query])
 
-  // Triage reads in operational priority order: actionable states first,
-  // unresolved (null) states last. Presentation-only, data is unchanged.
-  const triageOrderedProjects = useMemo(() => {
-    return [...visibleProjects].sort((a, b) => {
-      const rankA = a.triageState ? triageOrder.indexOf(a.triageState) : triageOrder.length
-      const rankB = b.triageState ? triageOrder.indexOf(b.triageState) : triageOrder.length
-      return rankA - rankB
-    })
-  }, [visibleProjects])
+  // Triage keeps operational priority authoritative; recency only breaks ties
+  // inside the same operational state, so ACTION NOW / BLOCKED are never hidden.
+  const triageOrderedProjects = useMemo(
+    () => [...visibleProjects].sort((a, b) =>
+      compareByPriorityThenActivity(a, a.triageState, b, b.triageState)),
+    [visibleProjects],
+  )
 
-  const portfolioProjects = useMemo(() => projects.filter((project) => matchesQuery(project, query)), [projects, query])
+  // Portfolio orders by recent meaningful activity (most recent first) with
+  // deterministic tie-breakers; unattributable activity sorts last.
+  const portfolioProjects = useMemo(
+    () => orderByRecentActivity(projects.filter((project) => matchesQuery(project, query))),
+    [projects, query],
+  )
 
-  const attentionProjects = useMemo(() => liveProjects.filter(({ attention }) => attention.length > 0), [liveProjects])
+  const attentionProjects = useMemo(
+    () => liveProjects.filter(({ attention }) => attention.length > 0),
+    [liveProjects],
+  )
+
+  // Attention preserves operational priority first, then uses recent activity as
+  // a secondary ordering signal; it never elevates a quiet project over a blocker.
+  const orderedAttentionProjects = useMemo(
+    () => [...attentionProjects].sort((a, b) =>
+      compareByPriorityThenActivity(a.project, a.effectiveTriageState, b.project, b.effectiveTriageState)),
+    [attentionProjects],
+  )
 
   return (
     <div className="app-shell">
@@ -210,13 +238,22 @@ function App() {
           </>
         )}
 
-        {view === 'portfolio' && <ProjectGrid projects={portfolioProjects} />}
+        {view === 'portfolio' && (
+          <>
+            <p className="view-caption">
+              Порядок — по дате последней значимой активности. Отметка <strong>Arena</strong> рядом со статусом проекта
+              показывает состояние сессии (порог устаревшей сессии — {ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS} ч) и не
+              заменяет операционный статус проекта.
+            </p>
+            <ProjectGrid projects={portfolioProjects} />
+          </>
+        )}
 
         {view === 'experiments' && <ExperimentsView filter={experimentFilter} onFilter={setExperimentFilter} />}
 
         {view === 'attention' && (
           <section className="attention-list">
-            {attentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
+            {orderedAttentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
               <article key={project.id} className="attention-row">
                 <StatusBadge state={effectiveTriageState} resolution={project.triageSource.status}/>
                 <div>
@@ -264,8 +301,12 @@ function ProjectCard({ project }: { project: ProjectState }) {
     <article className="project-card">
       <div className="project-card-head">
         <div className="project-icon"><IconFolderCode size={22}/></div>
-        <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
+        <div className="project-head-badges">
+          <StatusBadge state={project.triageState} resolution={project.triageSource.status}/>
+          <SessionIndicator session={project.session}/>
+        </div>
       </div>
+      <ActivityFreshness project={project}/>
       <div className="project-body">
         <h2>{project.name}</h2>
         <p>{project.summary}</p>
@@ -315,6 +356,72 @@ function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | nul
   const meta = triageMeta[state]
   const Icon = meta.Icon
   return <span className={`status-badge ${meta.className}`}><Icon size={15}/>{meta.label}</span>
+}
+
+/**
+ * Compact Arena session indicator. It is shown only for the five states that
+ * need attention or are genuine gaps (ACTIVE, WAITING_FOR_VALIDATION,
+ * READY_TO_CLOSE, STALE_SESSION, UNKNOWN). `NOT_ACTIVE` and `CLOSED` are settled
+ * states and get no indicator. The indicator is deliberately a separate element
+ * with its own dashed border and "Arena ·" prefix so it never reads as, or
+ * replaces, the operational project status badge.
+ */
+const sessionMeta: Record<ArenaSessionState, { short: string; className: string; Icon: typeof IconClock }> = {
+  ACTIVE: { short: 'ACTIVE', className: 'session-active', Icon: IconActivity },
+  WAITING_FOR_VALIDATION: { short: 'WAIT VALIDATION', className: 'session-waiting', Icon: IconHourglass },
+  READY_TO_CLOSE: { short: 'READY TO CLOSE', className: 'session-ready', Icon: IconCircleCheck },
+  STALE_SESSION: { short: 'STALE', className: 'session-stale', Icon: IconAlertTriangle },
+  UNKNOWN: { short: 'UNKNOWN', className: 'session-unknown', Icon: IconQuestionMark },
+  // Settled states are never surfaced as an indicator; entries kept for totality.
+  NOT_ACTIVE: { short: '', className: '', Icon: IconClock },
+  CLOSED: { short: '', className: '', Icon: IconClock },
+}
+
+function SessionIndicator({ session }: { session: ArenaSession }) {
+  if (!shouldShowSessionIndicator(session.sessionState)) return null
+  const meta = sessionMeta[session.sessionState]
+  const Icon = meta.Icon
+  const thresholdNote = session.sessionState === 'STALE_SESSION'
+    ? ` · порог бездействия ${ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS}ч`
+    : ''
+  return (
+    <span
+      className={`session-indicator ${meta.className}`}
+      title={`Arena session: ${session.sessionState} — ${session.sessionStateReason}${thresholdNote}`}
+    >
+      <Icon size={13} />
+      <span>Arena · {meta.short}</span>
+    </span>
+  )
+}
+
+function formatActivityTimestamp(at: string): string {
+  return new Intl.DateTimeFormat('ru-RU', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'UTC',
+  }).format(new Date(at))
+}
+
+/**
+ * Freshness on the card, derived from the snapshot's own generation time (never
+ * a browser clock) so ordering stays explainable and the dashboard stays a
+ * periodic read-only observer rather than a realtime monitor.
+ */
+function ActivityFreshness({ project }: { project: ProjectState }) {
+  const now = new Date(project.activity.snapshotGeneratedAt.at)
+  const freshness = getActivityFreshness(project.activity.lastMeaningfulActivity, now, project.staleAfterDays)
+  const label = freshness === 'FRESH' ? 'СВЕЖАЯ' : freshness === 'STALE' ? 'УСТАРЕЛА' : 'НЕИЗВЕСТНО'
+  const activity = project.activity.lastMeaningfulActivity
+  const when = activity.status === 'KNOWN'
+    ? `Активность: ${formatActivityTimestamp(activity.at)}`
+    : 'Активность: нет данных'
+  return (
+    <div className="project-activity">
+      <span className={`freshness-chip freshness-${freshness.toLowerCase()}`}>{label}</span>
+      <span className="activity-when">{when}</span>
+    </div>
+  )
 }
 
 function ExperimentsView({ filter, onFilter }: { filter: ExperimentStatus | 'ALL'; onFilter: (filter: ExperimentStatus | 'ALL') => void }) {
