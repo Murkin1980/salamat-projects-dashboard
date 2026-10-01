@@ -1,10 +1,10 @@
 {
-  "schemaVersion": "1.1.0",
-  "version": 5,
+  "schemaVersion": "1.2.0",
+  "version": 6,
   "updatedAt": "2026-10-01",
   "projects": [
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-project-engineer",
       "name": "Murat Project Engineer",
       "summary": "Portfolio engineering, gates, experiments and project governance.",
@@ -12,29 +12,12 @@
       "triageState": null,
       "triageSource": {
         "status": "UNKNOWN",
-        "reason": "STATUS.md documents Stage 2 as ACTIVE but has no canonical `Status:` label; triage is not inferred from narrative text."
+        "reason": "No canonical Status label found in STATUS.md"
       },
-      "stage": "Stage 2 — ACTIVE — 20-run evidence experiment",
+      "stage": null,
       "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-09-17",
-      "blocker": null,
-      "nextAction": "Continue Stage 2 evidence work and Pilot Batch 1 when its preconditions are satisfied.",
-      "evidenceLinks": [
-        {
-          "label": "STATUS.md",
-          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md",
-          "sourceId": "ab63df5f8a5405e294a7a8553fbd652e90706336:STATUS.md"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/murat-project-engineer"
-      },
-      "staleAfterDays": 7,
+      "lastUpdated": "2026-10-01",
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -48,12 +31,13 @@
           "reason": "No canonical status artifact carried an attributable \"Last updated\" value"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T10:50:25Z",
+          "at": "2026-10-01T14:24:51Z",
           "source": "SNAPSHOT",
           "sourceId": "config/projects.github.json"
         }
       },
       "session": {
+        "sessionState": "UNKNOWN",
         "sessionCheckpoint": null,
         "sessionStartedAt": {
           "status": "UNAVAILABLE",
@@ -63,6 +47,7 @@
           "status": "UNAVAILABLE",
           "reason": "No attributable Arena session activity timestamp was found"
         },
+        "sessionClosureStatus": "UNKNOWN",
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [
           {
@@ -71,13 +56,373 @@
             "sourceId": "033f49e0c39f3af0056fb506c2b9371bc492ab94:STATUS.md"
           }
         ],
-        "sessionState": "UNKNOWN",
-        "sessionClosureStatus": "UNKNOWN",
         "sessionStateReason": "No Arena session evidence found in STATUS.md"
-      }
+      },
+      "history": {
+        "status": "KNOWN",
+        "limits": {
+          "commits": 15,
+          "pullRequests": 10,
+          "statusRevisions": 10
+        },
+        "events": [
+          {
+            "id": "COMMIT:532d2ec6189b587d77d1597d1d561f434982c27a",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T10:29:26Z",
+            "timeBasis": "EVENT",
+            "summary": "governance: require post-merge status and portfolio reconciliation",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "532d2ec6189b587d77d1597d1d561f434982c27a",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/532d2ec6189b587d77d1597d1d561f434982c27a"
+          },
+          {
+            "id": "COMMIT:6c65a76f82e96549e57d4669d27792681b51830f",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T03:45:27Z",
+            "timeBasis": "EVENT",
+            "summary": "chore: retire redundant and currently unnecessary experiments",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "6c65a76f82e96549e57d4669d27792681b51830f",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/6c65a76f82e96549e57d4669d27792681b51830f"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#47",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T03:37:52Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #47 EXP-14 Laya / System One Decision Layer — checkpoint EXP-14-CP-01 closed: RESULT = FAIL",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#47",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/47"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#47",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T02:56:38Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #47 EXP-14 Laya / System One Decision Layer — checkpoint EXP-14-CP-01 closed: RESULT = FAIL",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#47",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/47"
+          },
+          {
+            "id": "COMMIT:d2ec64531e4cac4f5076263f8317dfaaa36e2a9f",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T18:47:36Z",
+            "timeBasis": "EVENT",
+            "summary": "registry: close EXP-15 as PASS",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "d2ec64531e4cac4f5076263f8317dfaaa36e2a9f",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/d2ec64531e4cac4f5076263f8317dfaaa36e2a9f"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#46",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-30T18:47:30Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #46 EXP-15: controlled MVP experiment for bounded project memory layer",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#46",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/46"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#46",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T18:37:27Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #46 EXP-15: controlled MVP experiment for bounded project memory layer",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#46",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/46"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#45",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-30T18:24:34Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #45 EXP-UX-UI-SKILLS: record BLOCKED run 2026-09-30 (fixture ai-microtask-factory unavailable)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#45",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/45"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#45",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T17:58:18Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #45 EXP-UX-UI-SKILLS: record BLOCKED run 2026-09-30 (fixture ai-microtask-factory unavailable)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#45",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/45"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#44",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-30T11:48:02Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #44 EXP-09: close Stage-2 boundary findings",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#44",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/44"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#44",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T08:59:36Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #44 EXP-09: close Stage-2 boundary findings",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#44",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/44"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#43",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T06:21:34Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #43 EXP-13: execute low-cost evaluation harness pilot batch 1",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#43",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/43"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#42",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T05:49:14Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #42 Adopt EXP-18 model artifact resilience practice",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#42",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/42"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#41",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-30T05:39:44Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #41 EXP-18: correct the registration/PR provenance note in FINDINGS.md",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#41",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/41"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#41",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T05:39:26Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #41 EXP-18: correct the registration/PR provenance note in FINDINGS.md",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#41",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/41"
+          },
+          {
+            "id": "COMMIT:c26986c4b207bff3182ac559c8518a6fca42cc08",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:39:20Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: correct the registration/PR provenance note in FINDINGS.md",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "c26986c4b207bff3182ac559c8518a6fca42cc08",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/c26986c4b207bff3182ac559c8518a6fca42cc08"
+          },
+          {
+            "id": "PULL_REQUEST_CLOSED:Murkin1980/murat-project-engineer#31",
+            "type": "PULL_REQUEST_CLOSED",
+            "occurredAt": "2026-09-30T05:39:09Z",
+            "timeBasis": "EVENT",
+            "summary": "Closed without merge #31 EXP-18: Pirate Face model resilience experiment",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#31",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/31"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#40",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-30T05:38:21Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #40 EXP-18: Pirate Face model resilience — execution evidence (PASS with one recorded deviation)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#40",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/40"
+          },
+          {
+            "id": "COMMIT:38e4e2211d3b62fdcfd1817521430304e4b18e3b",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:37:34Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: register canonical PASS result in the experiment registry",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "38e4e2211d3b62fdcfd1817521430304e4b18e3b",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/38e4e2211d3b62fdcfd1817521430304e4b18e3b"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#40",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T05:27:11Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #40 EXP-18: Pirate Face model resilience — execution evidence (PASS with one recorded deviation)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#40",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/40"
+          },
+          {
+            "id": "COMMIT:acdea5986e717fffe464881f6187ec5b821fb238",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:26:27Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: record findings; retire the temporary CI wrapper",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "acdea5986e717fffe464881f6187ec5b821fb238",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/acdea5986e717fffe464881f6187ec5b821fb238"
+          },
+          {
+            "id": "COMMIT:fd7ef42c5c0b0bc85adeb25f1143db624ae7d436",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:24:13Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: harness evidence (run 36672975009)",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "fd7ef42c5c0b0bc85adeb25f1143db624ae7d436",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/fd7ef42c5c0b0bc85adeb25f1143db624ae7d436"
+          },
+          {
+            "id": "COMMIT:e40871719044199f90082f439baa97d359898346",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:20:42Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: record the failed run 36672153216 as a defect record and fix the RPC sampler",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "e40871719044199f90082f439baa97d359898346",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/e40871719044199f90082f439baa97d359898346"
+          },
+          {
+            "id": "COMMIT:798ba3742c5d5c3a6bc5f91b648c8fe3a4747909",
+            "type": "COMMIT",
+            "occurredAt": "2026-09-30T05:19:02Z",
+            "timeBasis": "EVENT",
+            "summary": "EXP-18: harness evidence (run 36672153216)",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "798ba3742c5d5c3a6bc5f91b648c8fe3a4747909",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/798ba3742c5d5c3a6bc5f91b648c8fe3a4747909"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/murat-project-engineer#39",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-09-29T13:38:14Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #39 Cloudflare deploy readiness for the MPE portfolio dashboard (build/output dir, checks, manual deploy doc)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#39",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/39"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#39",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-29T13:32:57Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #39 Cloudflare deploy readiness for the MPE portfolio dashboard (build/output dir, checks, manual deploy doc)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#39",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/39"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/murat-project-engineer#31",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-29T05:27:03Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #31 EXP-18: Pirate Face model resilience experiment",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/murat-project-engineer#31",
+            "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/pull/31"
+          }
+        ],
+        "gaps": [
+          {
+            "area": "SESSION",
+            "reason": "No Arena session evidence found in STATUS.md"
+          }
+        ]
+      },
+      "blocker": null,
+      "nextAction": null,
+      "evidenceLinks": [
+        {
+          "label": "STATUS.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md",
+          "sourceId": "033f49e0c39f3af0056fb506c2b9371bc492ab94:STATUS.md"
+        },
+        {
+          "label": "STAGE2_EXPERIMENT_PLAN.md",
+          "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STAGE2_EXPERIMENT_PLAN.md",
+          "sourceId": "27a49347fa3f657864f586b1dc40865371ff3106:STAGE2_EXPERIMENT_PLAN.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-project-engineer"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "business-discovery",
       "name": "Business Discovery",
       "summary": "Evidence-backed business discovery and audit engine.",
@@ -95,23 +440,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-09-17",
-      "blocker": null,
-      "nextAction": "Resolve the current Stage 5 scope and continue the human-centered operating-advisor path.",
-      "evidenceLinks": [
-        {
-          "label": "PROJECT_STATUS.md",
-          "url": "https://github.com/Murkin1980/business-discovery/blob/main/PROJECT_STATUS.md",
-          "sourceId": "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/business-discovery"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "UNAVAILABLE",
@@ -148,30 +476,528 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh, so no commit, pull request, status or session history was collected"
+      },
+      "blocker": null,
+      "nextAction": "Resolve the current Stage 5 scope and continue the human-centered operating-advisor path.",
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/business-discovery/blob/main/PROJECT_STATUS.md",
+          "sourceId": "6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/business-discovery"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "salamat-projects-dashboard",
       "name": "Salamat Projects Dashboard",
       "summary": "Live portfolio triage and node-flow dashboard.",
       "repo": "Murkin1980/salamat-projects-dashboard",
-      "triageState": "VALIDATION",
+      "triageState": "DONE",
       "triageSource": {
         "status": "KNOWN",
-        "sourceId": "566480b2af1337d9163f44746584423ea3b1507b:PROJECT_STATUS.md"
+        "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md"
       },
-      "stage": "CP-11 — Portfolio Refresh",
-      "checkpoint": "CP-11 — Portfolio Refresh",
+      "stage": null,
+      "checkpoint": "CP-16 — Project Detail Drill-down & Session Inspection",
       "progress": null,
-      "lastUpdated": "2026-09-18",
+      "lastUpdated": "2026-10-01",
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-10-01T14:12:32Z",
+          "source": "COMMIT",
+          "sourceId": "46b0a94db3fdecd1564dc51ea931f93c881b05f3",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/46b0a94db3fdecd1564dc51ea931f93c881b05f3"
+        },
+        "statusUpdatedAt": {
+          "status": "KNOWN",
+          "at": "2026-10-01T00:00:00Z",
+          "source": "PROJECT_STATUS",
+          "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T14:24:51Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.github.json"
+        }
+      },
+      "session": {
+        "sessionState": "CLOSED",
+        "sessionCheckpoint": "CP-16 — Project Detail Drill-down & Session Inspection",
+        "sessionStartedAt": {
+          "status": "KNOWN",
+          "at": "2026-10-01T13:20:00Z",
+          "source": "PROJECT_STATUS",
+          "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+        },
+        "sessionLastActivityAt": {
+          "status": "KNOWN",
+          "at": "2026-10-01T14:05:00Z",
+          "source": "PROJECT_STATUS",
+          "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+        },
+        "sessionClosureStatus": "CONFIRMED",
+        "sessionClosureEvidence": {
+          "label": "PROJECT_STATUS.md (session closure)",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/26",
+          "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md"
+        },
+        "sessionStateEvidence": [
+          {
+            "label": "PROJECT_STATUS.md",
+            "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
+            "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md"
+          }
+        ],
+        "sessionStateReason": "Explicit Arena session closure evidence: PROJECT_STATUS.md (session closure)"
+      },
+      "history": {
+        "status": "KNOWN",
+        "limits": {
+          "commits": 15,
+          "pullRequests": 10,
+          "statusRevisions": 10
+        },
+        "events": [
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#28",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T14:14:12Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #28 docs(status): CP-16 post-merge correction — account for PR #26 hardening (status-only)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#28",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/28"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#27",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T14:12:32Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #27 docs: update CP-16 post-merge status record (PR #26, merge f2a0757)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#27",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/27"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#27",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T14:11:32Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #27 docs: update CP-16 post-merge status record (PR #26, merge f2a0757)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#27",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/27"
+          },
+          {
+            "id": "COMMIT:c5eb8ff41dfe0afefe979af3ac664610782c488a",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T14:11:29Z",
+            "timeBasis": "EVENT",
+            "summary": "docs: update CP-16 post-merge status record and canonical Arena Session block",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "c5eb8ff41dfe0afefe979af3ac664610782c488a",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/c5eb8ff41dfe0afefe979af3ac664610782c488a"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#26",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T14:08:38Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #26 CP-16 — Project Detail Drill-down & Session Inspection (routing & provenance hardening)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#26",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/26"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#26",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T14:07:42Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #26 CP-16 — Project Detail Drill-down & Session Inspection (routing & provenance hardening)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#26",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/26"
+          },
+          {
+            "id": "COMMIT:699a6c00847f8b8e0a4b081eb5b522030d3c95f6",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T14:07:23Z",
+            "timeBasis": "EVENT",
+            "summary": "CP-16 — Project Detail drill-down: preserve originating view, conflict provenance & session closure clarity",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "699a6c00847f8b8e0a4b081eb5b522030d3c95f6",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/699a6c00847f8b8e0a4b081eb5b522030d3c95f6"
+          },
+          {
+            "id": "SESSION_ACTIVITY:d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "type": "SESSION_ACTIVITY",
+            "occurredAt": "2026-10-01T14:05:00Z",
+            "timeBasis": "EVENT",
+            "summary": "Arena session activity observed",
+            "from": null,
+            "to": null,
+            "source": "PROJECT_STATUS",
+            "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+          },
+          {
+            "id": "SESSION_CLOSED:d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "type": "SESSION_CLOSED",
+            "occurredAt": "2026-10-01T14:05:00Z",
+            "timeBasis": "SESSION_LAST_ACTIVITY",
+            "summary": "Explicit Arena session closure evidenced; the closure time itself is not declared",
+            "from": null,
+            "to": null,
+            "source": "PROJECT_STATUS",
+            "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/26"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#25",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T13:28:55Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #25 docs: close CP-16 status (post-merge record)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#25",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/25"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#25",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T13:27:45Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #25 docs: close CP-16 status (post-merge record)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#25",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/25"
+          },
+          {
+            "id": "COMMIT:acea997b94f9624bca685921426e78694b7ac093",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T13:27:30Z",
+            "timeBasis": "EVENT",
+            "summary": "docs: close CP-16 status (post-merge record)",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "acea997b94f9624bca685921426e78694b7ac093",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/acea997b94f9624bca685921426e78694b7ac093"
+          },
+          {
+            "id": "CHECKPOINT_MOVED:acea997b94f9624bca685921426e78694b7ac093",
+            "type": "CHECKPOINT_MOVED",
+            "occurredAt": "2026-10-01T13:27:30Z",
+            "timeBasis": "EVENT",
+            "summary": "Checkpoint moved from CP-15 — Activity-Aware Portfolio, Triage & Session Visibility to CP-16 — Project Detail Drill-down & Session Inspection",
+            "from": "CP-15 — Activity-Aware Portfolio, Triage & Session Visibility",
+            "to": "CP-16 — Project Detail Drill-down & Session Inspection",
+            "source": "PROJECT_STATUS",
+            "sourceId": "acea997b94f9624bca685921426e78694b7ac093",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/acea997b94f9624bca685921426e78694b7ac093"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#24",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T13:24:38Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #24 CP-16 — Project Detail Drill-down & Session Inspection",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#24",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/24"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#24",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T13:23:26Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #24 CP-16 — Project Detail Drill-down & Session Inspection",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#24",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/24"
+          },
+          {
+            "id": "COMMIT:4e1211d04b1020da4575643622008247c6f11c55",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T13:22:21Z",
+            "timeBasis": "EVENT",
+            "summary": "CP-16 — Project Detail drill-down & Arena session inspection",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "4e1211d04b1020da4575643622008247c6f11c55",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/4e1211d04b1020da4575643622008247c6f11c55"
+          },
+          {
+            "id": "SESSION_STARTED:d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "type": "SESSION_STARTED",
+            "occurredAt": "2026-10-01T13:20:00Z",
+            "timeBasis": "EVENT",
+            "summary": "Arena session started for CP-16 — Project Detail Drill-down & Session Inspection",
+            "from": null,
+            "to": null,
+            "source": "PROJECT_STATUS",
+            "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#23",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T12:45:46Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #23 docs: close CP-15 status (post-merge record)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#23",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/23"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#23",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T12:44:47Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #23 docs: close CP-15 status (post-merge record)",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#23",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/23"
+          },
+          {
+            "id": "COMMIT:f05ddcffd6a4a1e5a881191ec70793bc36f886c2",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T12:44:39Z",
+            "timeBasis": "EVENT",
+            "summary": "docs: close CP-15 status — post-merge record (PR #22, merge 2e3ad52)",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "f05ddcffd6a4a1e5a881191ec70793bc36f886c2",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/f05ddcffd6a4a1e5a881191ec70793bc36f886c2"
+          },
+          {
+            "id": "CHECKPOINT_MOVED:f05ddcffd6a4a1e5a881191ec70793bc36f886c2",
+            "type": "CHECKPOINT_MOVED",
+            "occurredAt": "2026-10-01T12:44:39Z",
+            "timeBasis": "EVENT",
+            "summary": "Checkpoint moved from CP-14 — Portfolio Activity & Arena Session State Contract to CP-15 — Activity-Aware Portfolio, Triage & Session Visibility",
+            "from": "CP-14 — Portfolio Activity & Arena Session State Contract",
+            "to": "CP-15 — Activity-Aware Portfolio, Triage & Session Visibility",
+            "source": "PROJECT_STATUS",
+            "sourceId": "f05ddcffd6a4a1e5a881191ec70793bc36f886c2",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/f05ddcffd6a4a1e5a881191ec70793bc36f886c2"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#22",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T12:43:27Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #22 CP-15 — Activity-Aware Portfolio, Triage & Session Visibility",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#22",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/22"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#22",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T12:42:11Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #22 CP-15 — Activity-Aware Portfolio, Triage & Session Visibility",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#22",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/22"
+          },
+          {
+            "id": "COMMIT:e88004dddf76df12b842a7d2da66a8e96e3124ec",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T12:41:53Z",
+            "timeBasis": "EVENT",
+            "summary": "CP-15: activity-aware portfolio, triage ordering and Arena session visibility",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "e88004dddf76df12b842a7d2da66a8e96e3124ec",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/e88004dddf76df12b842a7d2da66a8e96e3124ec"
+          },
+          {
+            "id": "COMMIT:f9ae32133c905a079dd945a8cb0e7bf7c2788269",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T12:11:28Z",
+            "timeBasis": "EVENT",
+            "summary": "docs: close CP-14 status",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "f9ae32133c905a079dd945a8cb0e7bf7c2788269",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/f9ae32133c905a079dd945a8cb0e7bf7c2788269"
+          },
+          {
+            "id": "CHECKPOINT_MOVED:f9ae32133c905a079dd945a8cb0e7bf7c2788269",
+            "type": "CHECKPOINT_MOVED",
+            "occurredAt": "2026-10-01T12:11:28Z",
+            "timeBasis": "EVENT",
+            "summary": "Checkpoint moved from CP-12 — Discovery Monitoring to CP-14 — Portfolio Activity & Arena Session State Contract",
+            "from": "CP-12 — Discovery Monitoring",
+            "to": "CP-14 — Portfolio Activity & Arena Session State Contract",
+            "source": "PROJECT_STATUS",
+            "sourceId": "f9ae32133c905a079dd945a8cb0e7bf7c2788269",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/f9ae32133c905a079dd945a8cb0e7bf7c2788269"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#21",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T11:25:09Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #21 CP-14 — Portfolio Activity & Arena Session State Contract",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#21",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/21"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#21",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-10-01T10:53:36Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #21 CP-14 — Portfolio Activity & Arena Session State Contract",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#21",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/21"
+          },
+          {
+            "id": "COMMIT:1e2e005bdc64d8bb6cf00dfa6679706792b34c68",
+            "type": "COMMIT",
+            "occurredAt": "2026-10-01T10:53:24Z",
+            "timeBasis": "EVENT",
+            "summary": "feat(cp-14): portfolio activity and Arena session state contract",
+            "from": null,
+            "to": null,
+            "source": "COMMIT",
+            "sourceId": "1e2e005bdc64d8bb6cf00dfa6679706792b34c68",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/1e2e005bdc64d8bb6cf00dfa6679706792b34c68"
+          },
+          {
+            "id": "PULL_REQUEST_MERGED:Murkin1980/salamat-projects-dashboard#20",
+            "type": "PULL_REQUEST_MERGED",
+            "occurredAt": "2026-10-01T09:16:13Z",
+            "timeBasis": "EVENT",
+            "summary": "Merged #20 CP-13: automatic portfolio sync from GitHub before the production build",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#20",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/20"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#20",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-30T19:41:38Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #20 CP-13: automatic portfolio sync from GitHub before the production build",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#20",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/20"
+          },
+          {
+            "id": "PULL_REQUEST_OPENED:Murkin1980/salamat-projects-dashboard#17",
+            "type": "PULL_REQUEST_OPENED",
+            "occurredAt": "2026-09-25T09:03:25Z",
+            "timeBasis": "EVENT",
+            "summary": "Opened #17 experiments: show AI Search / Entity Readiness",
+            "from": null,
+            "to": null,
+            "source": "PULL_REQUEST",
+            "sourceId": "Murkin1980/salamat-projects-dashboard#17",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/pull/17"
+          },
+          {
+            "id": "STATE_CHANGED:9a591524557ab38512d5044c54c69365dcaa62e1",
+            "type": "STATE_CHANGED",
+            "occurredAt": "2026-09-25T07:11:12Z",
+            "timeBasis": "EVENT",
+            "summary": "Status changed from VALIDATION to PASS",
+            "from": "VALIDATION",
+            "to": "PASS",
+            "source": "PROJECT_STATUS",
+            "sourceId": "9a591524557ab38512d5044c54c69365dcaa62e1",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/9a591524557ab38512d5044c54c69365dcaa62e1"
+          },
+          {
+            "id": "CHECKPOINT_MOVED:c66c0c2572fdad9a49378399d739994741fb475c",
+            "type": "CHECKPOINT_MOVED",
+            "occurredAt": "2026-09-21T06:06:22Z",
+            "timeBasis": "EVENT",
+            "summary": "Checkpoint moved from CP-11 — Portfolio Refresh to CP-12 — Discovery Monitoring",
+            "from": "CP-11 — Portfolio Refresh",
+            "to": "CP-12 — Discovery Monitoring",
+            "source": "PROJECT_STATUS",
+            "sourceId": "c66c0c2572fdad9a49378399d739994741fb475c",
+            "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/c66c0c2572fdad9a49378399d739994741fb475c"
+          }
+        ],
+        "gaps": []
+      },
       "blocker": null,
-      "nextAction": "Validate the refreshed registry, merge CP-11, then deploy the updated static snapshot to Cloudflare Pages.",
+      "nextAction": null,
       "evidenceLinks": [
         {
           "label": "PROJECT_STATUS.md",
           "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
-          "sourceId": "566480b2af1337d9163f44746584423ea3b1507b:PROJECT_STATUS.md"
+          "sourceId": "d78d2e0943cf6b468b8cf6843b3aeb94b393505a:PROJECT_STATUS.md"
+        },
+        {
+          "label": "ROADMAP.md",
+          "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/ROADMAP.md",
+          "sourceId": "03b9a8984ff27208e589b5186855b913e6e95c26:ROADMAP.md"
         }
       ],
       "dependencies": [],
@@ -181,53 +1007,10 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/salamat-projects-dashboard"
       },
-      "staleAfterDays": 7,
-      "activity": {
-        "lastMeaningfulActivity": {
-          "status": "KNOWN",
-          "at": "2026-10-01T10:38:22Z",
-          "source": "COMMIT",
-          "sourceId": "0a41f51efa3181026c78471565bd6a57123bdea2",
-          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/0a41f51efa3181026c78471565bd6a57123bdea2"
-        },
-        "statusUpdatedAt": {
-          "status": "KNOWN",
-          "at": "2026-09-30T00:00:00Z",
-          "source": "PROJECT_STATUS",
-          "sourceId": "647aff59f652f35c339ec46af615a69a50935568:PROJECT_STATUS.md",
-          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
-        },
-        "snapshotGeneratedAt": {
-          "at": "2026-10-01T10:50:25Z",
-          "source": "SNAPSHOT",
-          "sourceId": "config/projects.github.json"
-        }
-      },
-      "session": {
-        "sessionCheckpoint": "CP-12 — Discovery Monitoring",
-        "sessionStartedAt": {
-          "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session start timestamp was found"
-        },
-        "sessionLastActivityAt": {
-          "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session activity timestamp was found"
-        },
-        "sessionClosureEvidence": null,
-        "sessionStateEvidence": [
-          {
-            "label": "PROJECT_STATUS.md",
-            "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
-            "sourceId": "647aff59f652f35c339ec46af615a69a50935568:PROJECT_STATUS.md"
-          }
-        ],
-        "sessionState": "UNKNOWN",
-        "sessionClosureStatus": "UNKNOWN",
-        "sessionStateReason": "No Arena session evidence found in PROJECT_STATUS.md"
-      }
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "mebelflow-ai",
       "name": "MebelFlow AI",
       "summary": "Furniture workflow and design automation experiments.",
@@ -241,17 +1024,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Close remaining live gates and continue pilot work.",
-      "evidenceLinks": [],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "FIXTURE",
-        "id": "fixture-registry"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -285,10 +1057,25 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Close remaining live gates and continue pilot work.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-ads-control",
       "name": "Murat Ads Control",
       "summary": "Google Ads control and optimization layer for furniture brands.",
@@ -302,23 +1089,6 @@
       "checkpoint": "CP-004 — Bek Mebel real diagnostic / EXP-001 decision",
       "progress": null,
       "lastUpdated": "2026-09-17",
-      "blocker": "Repository-native Google Ads E2E still needs runtime credentials; the external connector quota is exhausted for the current billing period.",
-      "nextAction": "Inject runtime credentials in a safe execution environment, rerun READ → NORMALIZE → DIAGNOSE → REPORT, then decide EXP-001.",
-      "evidenceLinks": [
-        {
-          "label": "docs/CHECKPOINTS.md",
-          "url": "https://github.com/Murkin1980/murat-ads-control/blob/main/docs/CHECKPOINTS.md",
-          "sourceId": "e50c7d13717c7e049a88d5470e8619c741f8c075:docs/CHECKPOINTS.md"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/murat-ads-control"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -358,10 +1128,31 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": "Repository-native Google Ads E2E still needs runtime credentials; the external connector quota is exhausted for the current billing period.",
+      "nextAction": "Inject runtime credentials in a safe execution environment, rerun READ → NORMALIZE → DIAGNOSE → REPORT, then decide EXP-001.",
+      "evidenceLinks": [
+        {
+          "label": "docs/CHECKPOINTS.md",
+          "url": "https://github.com/Murkin1980/murat-ads-control/blob/main/docs/CHECKPOINTS.md",
+          "sourceId": "e50c7d13717c7e049a88d5470e8619c741f8c075:docs/CHECKPOINTS.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-ads-control"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "interactive-kp",
       "name": "Interactive KP",
       "summary": "Interactive commercial proposals and Qulpinay Style offers.",
@@ -375,17 +1166,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Continue production use and iterative improvements.",
-      "evidenceLinks": [],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "FIXTURE",
-        "id": "fixture-registry"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -419,10 +1199,25 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Continue production use and iterative improvements.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "mebellegal-kz",
       "name": "MebelLegal KZ",
       "summary": "Furniture legal/document workflow for Kazakhstan.",
@@ -436,17 +1231,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Validate against real contracts and document cases.",
-      "evidenceLinks": [],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "FIXTURE",
-        "id": "fixture-registry"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -480,10 +1264,25 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Validate against real contracts and document cases.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "whatsapp-sales-agent",
       "name": "WhatsApp Sales Agent",
       "summary": "AI sales assistant for WhatsApp furniture leads.",
@@ -497,17 +1296,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Validate stable end-to-end behavior on real leads.",
-      "evidenceLinks": [],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "FIXTURE",
-        "id": "fixture-registry"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -541,10 +1329,25 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Validate stable end-to-end behavior on real leads.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "tender-assistant",
       "name": "Tender Assistant",
       "summary": "Furniture tender monitoring and entrepreneur assistance.",
@@ -558,23 +1361,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-09-12",
-      "blocker": null,
-      "nextAction": "Record a canonical project status, then continue the monitoring-first MVP for Almaty furniture tenders.",
-      "evidenceLinks": [
-        {
-          "label": "Latest main commit",
-          "url": "https://github.com/Murkin1980/tender-assistant/commit/1f2bc7bfe99960bcb91295dfc8537cae154b7276",
-          "sourceId": "1f2bc7bfe99960bcb91295dfc8537cae154b7276"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/tender-assistant"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -614,10 +1400,31 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Record a canonical project status, then continue the monitoring-first MVP for Almaty furniture tenders.",
+      "evidenceLinks": [
+        {
+          "label": "Latest main commit",
+          "url": "https://github.com/Murkin1980/tender-assistant/commit/1f2bc7bfe99960bcb91295dfc8537cae154b7276",
+          "sourceId": "1f2bc7bfe99960bcb91295dfc8537cae154b7276"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/tender-assistant"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "etsy-market-research",
       "name": "Etsy Market Research",
       "summary": "Market research exploration for Etsy opportunities.",
@@ -631,17 +1438,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-08-26",
-      "blocker": null,
-      "nextAction": "Resume only after higher-priority portfolio work allows it.",
-      "evidenceLinks": [],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "FIXTURE",
-        "id": "fixture-registry"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -675,10 +1471,25 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Resume only after higher-priority portfolio work allows it.",
+      "evidenceLinks": [],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "FIXTURE",
+        "id": "fixture-registry"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "minibase-cloudflare",
       "name": "MiniBase Cloudflare",
       "summary": "Compact multi-project BaaS on Cloudflare Workers, D1 and R2.",
@@ -692,33 +1503,6 @@
       "checkpoint": "CP-06 — Files & Artifact Model",
       "progress": null,
       "lastUpdated": "2026-09-06",
-      "blocker": null,
-      "nextAction": "Hold feature growth until a real consumer pull; deployment stays a separate owner-approved step.",
-      "evidenceLinks": [
-        {
-          "label": "ROADMAP.md",
-          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/ROADMAP.md",
-          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:ROADMAP.md"
-        },
-        {
-          "label": "CP06_AUDIT.md",
-          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/CP06_AUDIT.md",
-          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:CP06_AUDIT.md"
-        },
-        {
-          "label": "docs/SCALABILITY.md",
-          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/docs/SCALABILITY.md",
-          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:docs/SCALABILITY.md"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/minibase-cloudflare"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -768,10 +1552,41 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Hold feature growth until a real consumer pull; deployment stays a separate owner-approved step.",
+      "evidenceLinks": [
+        {
+          "label": "ROADMAP.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/ROADMAP.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:ROADMAP.md"
+        },
+        {
+          "label": "CP06_AUDIT.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/CP06_AUDIT.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:CP06_AUDIT.md"
+        },
+        {
+          "label": "docs/SCALABILITY.md",
+          "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/docs/SCALABILITY.md",
+          "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:docs/SCALABILITY.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/minibase-cloudflare"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "ai-microtask-factory",
       "name": "AI Microtask Factory",
       "summary": "Microtask pipeline with controlled acceptance and execution handoff.",
@@ -785,23 +1600,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-09-16",
-      "blocker": null,
-      "nextAction": "Continue the human-in-the-loop pilot path and close production gates before broader spreadsheet capability expansion.",
-      "evidenceLinks": [
-        {
-          "label": "PROJECT_STATUS.md",
-          "url": "https://github.com/Murkin1980/ai-microtask-factory/blob/main/PROJECT_STATUS.md",
-          "sourceId": "fafd8ba187f64d82cdf06245e372e6bf07a828d8:PROJECT_STATUS.md"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/ai-microtask-factory"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "UNAVAILABLE",
@@ -838,10 +1636,31 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh, so no commit, pull request, status or session history was collected"
+      },
+      "blocker": null,
+      "nextAction": "Continue the human-in-the-loop pilot path and close production gates before broader spreadsheet capability expansion.",
+      "evidenceLinks": [
+        {
+          "label": "PROJECT_STATUS.md",
+          "url": "https://github.com/Murkin1980/ai-microtask-factory/blob/main/PROJECT_STATUS.md",
+          "sourceId": "fafd8ba187f64d82cdf06245e372e6bf07a828d8:PROJECT_STATUS.md"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/ai-microtask-factory"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-house",
       "name": "Murat House",
       "summary": "Public project journal about how Murat's projects, decisions, lessons and skills are built.",
@@ -855,23 +1674,6 @@
       "checkpoint": "CP-05 — House Navigation",
       "progress": null,
       "lastUpdated": "2026-09-18",
-      "blocker": null,
-      "nextAction": "Start CP-06 after the merged CP-05 navigation checkpoint.",
-      "evidenceLinks": [
-        {
-          "label": "CP-05 merge",
-          "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
-          "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/Murat-house"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -911,10 +1713,31 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Start CP-06 after the merged CP-05 navigation checkpoint.",
+      "evidenceLinks": [
+        {
+          "label": "CP-05 merge",
+          "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
+          "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/Murat-house"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-ai-orchestrator",
       "name": "Murat AI Orchestrator",
       "summary": "Bounded orchestration layer for Murat AI with governed routing, fallback and durable execution checkpoints.",
@@ -928,28 +1751,6 @@
       "checkpoint": "CP-06 — Bounded Fallback & Quality Escalation v1",
       "progress": null,
       "lastUpdated": "2026-09-18",
-      "blocker": null,
-      "nextAction": "Execute CP-07 — Durable Execution using the committed Arena checkpoint instruction.",
-      "evidenceLinks": [
-        {
-          "label": "CP-06 merge",
-          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
-          "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
-        },
-        {
-          "label": "CP-07 instruction",
-          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
-          "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/murat-ai-orchestrator"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -994,10 +1795,36 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Execute CP-07 — Durable Execution using the committed Arena checkpoint instruction.",
+      "evidenceLinks": [
+        {
+          "label": "CP-06 merge",
+          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
+          "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
+        },
+        {
+          "label": "CP-07 instruction",
+          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
+          "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/murat-ai-orchestrator"
+      },
+      "staleAfterDays": 7
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "grand-mebel-document-control",
       "name": "Grand Mebel Document Control",
       "summary": "Document-control workspace for invoices, waybills, ESF tracking and registry operations.",
@@ -1011,23 +1838,6 @@
       "checkpoint": null,
       "progress": null,
       "lastUpdated": "2026-09-12",
-      "blocker": null,
-      "nextAction": "Continue the document registry and invoice → waybill → ESF workflow from canonical project records.",
-      "evidenceLinks": [
-        {
-          "label": "Latest main merge",
-          "url": "https://github.com/Murkin1980/grand-mebel-document-control/commit/58fbddaa84e2cacb9cd03cb3862c30011e2d4224",
-          "sourceId": "58fbddaa84e2cacb9cd03cb3862c30011e2d4224"
-        }
-      ],
-      "dependencies": [],
-      "tools": [],
-      "approvals": [],
-      "source": {
-        "kind": "REPOSITORY",
-        "id": "Murkin1980/grand-mebel-document-control"
-      },
-      "staleAfterDays": 7,
       "activity": {
         "lastMeaningfulActivity": {
           "status": "KNOWN",
@@ -1067,7 +1877,28 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
-      }
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+      },
+      "blocker": null,
+      "nextAction": "Continue the document registry and invoice → waybill → ESF workflow from canonical project records.",
+      "evidenceLinks": [
+        {
+          "label": "Latest main merge",
+          "url": "https://github.com/Murkin1980/grand-mebel-document-control/commit/58fbddaa84e2cacb9cd03cb3862c30011e2d4224",
+          "sourceId": "58fbddaa84e2cacb9cd03cb3862c30011e2d4224"
+        }
+      ],
+      "dependencies": [],
+      "tools": [],
+      "approvals": [],
+      "source": {
+        "kind": "REPOSITORY",
+        "id": "Murkin1980/grand-mebel-document-control"
+      },
+      "staleAfterDays": 7
     }
   ]
 }

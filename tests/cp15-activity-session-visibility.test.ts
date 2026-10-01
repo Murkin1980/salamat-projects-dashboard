@@ -224,16 +224,24 @@ test('every card shows freshness and a read-only session indicator separate from
   const { container, cleanup } = await renderDashboard(390)
   t.after(cleanup)
 
+  const registry = JSON.parse(snapshotText) as Registry
   const cards = [...container.querySelectorAll('.project-card')]
   assert.ok(cards.length > 0)
   for (const card of cards) {
     assert.ok(card.querySelector('.freshness-chip'), 'each card must show an activity freshness chip')
     assert.ok(card.querySelector('.status-badge'), 'each card must keep its operational status badge')
-    // All committed projects are UNKNOWN sessions, so the indicator is shown.
-    assert.ok(card.querySelector('.session-indicator.session-unknown'), 'each card must show the Arena session indicator')
+    // CLOSED / NOT_ACTIVE are settled states and render no indicator; every other
+    // committed session state (here UNKNOWN) must show it.
+    const name = card.querySelector('h2')?.textContent
+    const sessionState = (registry.projects.find((project) => project.name === name)?.session as { sessionState: string }).sessionState
+    const settled = sessionState === 'CLOSED' || sessionState === 'NOT_ACTIVE'
+    assert.equal(
+      card.querySelectorAll('.session-indicator').length,
+      settled ? 0 : 1,
+      `${name}: the Arena session indicator must follow the committed session state (${sessionState})`,
+    )
     // The indicator must never replace the operational status badge.
     assert.equal(card.querySelectorAll('.status-badge').length, 1)
-    assert.equal(card.querySelectorAll('.session-indicator').length, 1)
   }
   // The session indicator is a read-only observation span, never a button.
   assert.equal(container.querySelectorAll('.project-card button').length, 0)

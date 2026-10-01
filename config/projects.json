@@ -1,10 +1,10 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "version": 5,
   "updatedAt": "2026-10-01",
   "projects": [
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-project-engineer",
       "name": "Murat Project Engineer",
       "summary": "Portfolio engineering, gates, experiments and project governance.",
@@ -74,10 +74,14 @@
         "sessionState": "UNKNOWN",
         "sessionClosureStatus": "UNKNOWN",
         "sessionStateReason": "No Arena session evidence found in STATUS.md"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "business-discovery",
       "name": "Business Discovery",
       "summary": "Evidence-backed business discovery and audit engine.",
@@ -148,10 +152,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "salamat-projects-dashboard",
       "name": "Salamat Projects Dashboard",
       "summary": "Live portfolio triage and node-flow dashboard.",
@@ -224,10 +232,14 @@
         "sessionState": "UNKNOWN",
         "sessionClosureStatus": "UNKNOWN",
         "sessionStateReason": "No Arena session evidence found in PROJECT_STATUS.md"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "mebelflow-ai",
       "name": "MebelFlow AI",
       "summary": "Furniture workflow and design automation experiments.",
@@ -285,10 +297,14 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-ads-control",
       "name": "Murat Ads Control",
       "summary": "Google Ads control and optimization layer for furniture brands.",
@@ -358,10 +374,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "interactive-kp",
       "name": "Interactive KP",
       "summary": "Interactive commercial proposals and Qulpinay Style offers.",
@@ -419,10 +439,14 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "mebellegal-kz",
       "name": "MebelLegal KZ",
       "summary": "Furniture legal/document workflow for Kazakhstan.",
@@ -480,10 +504,14 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "whatsapp-sales-agent",
       "name": "WhatsApp Sales Agent",
       "summary": "AI sales assistant for WhatsApp furniture leads.",
@@ -541,10 +569,14 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "tender-assistant",
       "name": "Tender Assistant",
       "summary": "Furniture tender monitoring and entrepreneur assistance.",
@@ -614,10 +646,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "etsy-market-research",
       "name": "Etsy Market Research",
       "summary": "Market research exploration for Etsy opportunities.",
@@ -675,10 +711,14 @@
         "sessionClosureEvidence": null,
         "sessionStateEvidence": [],
         "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "minibase-cloudflare",
       "name": "MiniBase Cloudflare",
       "summary": "Compact multi-project BaaS on Cloudflare Workers, D1 and R2.",
@@ -768,10 +808,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "ai-microtask-factory",
       "name": "AI Microtask Factory",
       "summary": "Microtask pipeline with controlled acceptance and execution handoff.",
@@ -838,10 +882,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-house",
       "name": "Murat House",
       "summary": "Public project journal about how Murat's projects, decisions, lessons and skills are built.",
@@ -911,10 +959,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "murat-ai-orchestrator",
       "name": "Murat AI Orchestrator",
       "summary": "Bounded orchestration layer for Murat AI with governed routing, fallback and durable execution checkpoints.",
@@ -994,10 +1046,14 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     },
     {
-      "schemaVersion": "1.1.0",
+      "schemaVersion": "1.2.0",
       "id": "grand-mebel-document-control",
       "name": "Grand Mebel Document Control",
       "summary": "Document-control workspace for invoices, waybills, ESF tracking and registry operations.",
@@ -1067,6 +1123,10 @@
           }
         ],
         "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      },
+      "history": {
+        "status": "UNAVAILABLE",
+        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
       }
     }
   ]

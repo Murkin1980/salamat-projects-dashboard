@@ -9,6 +9,12 @@ import {
   type CheckpointWorkState,
   type DeclaredSessionState,
 } from '../monitoring/derived-state.js'
+import {
+  buildRepositoryHistory,
+  unavailableHistory,
+  type RepositoryHistoryEvidence,
+  type StatusRevisionLabels,
+} from '../monitoring/history-derivation.js'
 
 // --- Input types -----------------------------------------------------------
 
@@ -41,6 +47,12 @@ export interface RepositorySnapshot {
   snapshotSourceId: string
   artifacts: RepositoryArtifact[]
   alternateStatus?: AlternateStatus
+  /**
+   * Recent commits, pull request lifecycle and status-artifact revisions read by
+   * the synchronization. Absent evidence normalizes to an explicit `UNAVAILABLE`
+   * history, never to an empty-looking one.
+   */
+  historyEvidence?: RepositoryHistoryEvidence
 }
 
 // --- Status mapping --------------------------------------------------------
@@ -115,6 +127,19 @@ function parseLabels(content: string): ParsedLabels {
   if (updatedMatch) result.lastUpdated = updatedMatch[1].trim()
 
   return result
+}
+
+/**
+ * Canonical labels of one revision of a status artifact, read with the same
+ * parser as the current state so the newest revision can never disagree with it.
+ */
+export function readStatusRevisionLabels(content: string): StatusRevisionLabels {
+  const labels = parseLabels(content)
+  return {
+    checkpoint: labels.checkpoint,
+    status: labels.status,
+    blocker: normalizeNullableText(labels.blocker),
+  }
 }
 
 /**
@@ -246,6 +271,7 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
     snapshotSourceId,
     artifacts,
     alternateStatus,
+    historyEvidence,
   } = snapshot
 
   const primaryNames = ['PROJECT_STATUS.md', 'STATUS.md'] as const
@@ -363,6 +389,12 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
 
   const session = deriveArenaSession(sessionEvidence, { now: new Date(generatedAt) })
 
+  // --- Live history ---------------------------------------------------------
+
+  const history: ProjectState['history'] = historyEvidence
+    ? buildRepositoryHistory(historyEvidence, session)
+    : unavailableHistory('The synchronization did not collect commit, pull request, status or session history evidence for this repository')
+
   // --- Conflict detection --------------------------------------------------
 
   let triageSource: ProjectState['triageSource']
@@ -447,6 +479,7 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
     lastUpdated,
     activity,
     session,
+    history,
     blocker,
     nextAction,
     evidenceLinks,

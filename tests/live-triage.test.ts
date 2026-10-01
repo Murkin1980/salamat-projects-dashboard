@@ -5,7 +5,7 @@ import { deriveLiveProjectState } from '../src/triage/live-triage.js'
 
 function project(overrides: Partial<ProjectState> = {}): ProjectState {
   return {
-    schemaVersion: '1.1.0',
+    schemaVersion: '1.2.0',
     id: 'example-project',
     name: 'Example',
     summary: 'Example project',
@@ -31,6 +31,7 @@ function project(overrides: Partial<ProjectState> = {}): ProjectState {
       sessionStateEvidence: [],
       sessionStateReason: 'Test fixture carries no Arena session evidence',
     },
+    history: { status: 'UNAVAILABLE', reason: 'test fixture' },
     blocker: null,
     nextAction: 'Continue',
     evidenceLinks: [],

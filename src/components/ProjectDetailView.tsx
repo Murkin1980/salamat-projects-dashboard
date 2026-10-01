@@ -27,18 +27,19 @@ import type {
   ArenaSessionState,
   ProjectState,
 } from '../contract/project-state'
-import type { ProjectHistory } from '../history/project-history'
 import { getActivityFreshness } from '../monitoring/derived-state'
+import { getHistoryEvents, summarizeHistory } from '../monitoring/history-view'
 import { buildProjectDetailEvents, formatEventTimestamp } from '../monitoring/project-detail-events'
-import { viewHash } from '../routing/hash-route'
+import { reportHash, viewHash } from '../routing/hash-route'
+import { HistoryEventBody, HistoryGaps } from './history-parts'
 import { SessionIndicator, StatusBadge } from './status-badges'
 
 /**
  * Project Detail view (CP-16) — the complete read-only view of one project.
  *
  * It renders the same normalized `ProjectState` the portfolio cards render, so
- * the detail view can never disagree with the list, plus the project's own
- * committed history. Everything here is observation: there is no mutation, task
+ * the detail view can never disagree with the list, plus the project's live
+ * history (the same normalized events History & Reports renders). Everything here is observation: there is no mutation, task
  * execution, session control or agent control anywhere in this view.
  */
 export interface ProjectDetailViewProps {
@@ -46,12 +47,13 @@ export interface ProjectDetailViewProps {
   project: ProjectState | null
   /** Project id requested by the route; kept for the explicit not-found state. */
   projectId: string
-  /** Committed history for this project, or `null` when the manifest has none. */
-  history: ProjectHistory | null
   onNavigate: (hash: string) => void
 }
 
-export function ProjectDetailView({ project, projectId, history, onNavigate }: ProjectDetailViewProps) {
+/** Latest events shown in the detail panel; the full list lives in History & Reports. */
+const DETAIL_HISTORY_LIMIT = 10
+
+export function ProjectDetailView({ project, projectId, onNavigate }: ProjectDetailViewProps) {
   if (!project) {
     return (
       <section className="project-detail">
@@ -66,7 +68,9 @@ export function ProjectDetailView({ project, projectId, history, onNavigate }: P
   }
 
   const events = buildProjectDetailEvents(project)
-  const historyEvents = history ? [...history.events].reverse() : []
+  const historyEvents = getHistoryEvents(project)
+  const recentHistory = historyEvents.slice(0, DETAIL_HISTORY_LIMIT)
+  const historySummary = summarizeHistory(historyEvents)
 
   return (
     <section className="project-detail" aria-label={`Проект ${project.name}`}>
@@ -197,23 +201,39 @@ export function ProjectDetailView({ project, projectId, history, onNavigate }: P
 
         <article className="detail-panel" aria-label="История проекта">
           <h3><IconHistory size={17}/> История проекта</h3>
-          {historyEvents.length > 0
-            ? <ol className="detail-history">
-                {historyEvents.map((event) => (
-                  <li key={event.id}>
-                    <div className="detail-event-head">
-                      <strong>{event.type === 'CHECKPOINT_MOVED' ? 'Checkpoint' : event.type === 'STATE_CHANGED' ? 'State' : 'Blocker'}</strong>
-                      <time dateTime={event.occurredAt}>
-                        {new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(event.occurredAt))}
-                      </time>
-                    </div>
-                    <p>{event.from ?? 'Нет blocker'} → {event.to ?? 'Нет blocker'}</p>
-                    <p>{event.summary}</p>
-                    <a href={event.evidenceUrl} target="_blank" rel="noreferrer"><IconExternalLink size={13}/> Commit {event.sourceId.slice(0, 7)}</a>
-                  </li>
-                ))}
-              </ol>
-            : <p className="meta-unknown">По этому проекту нет зафиксированной истории в манифесте project-history.json.</p>}
+          {project.history.status === 'KNOWN' ? (
+            <>
+              <p className="detail-hint">
+                В окне: {historySummary.commits} коммитов, {historySummary.pullRequestsMerged} влитых PR,
+                {' '}{historySummary.checkpointMoves} переходов checkpoint, {historySummary.stateChanges} смен статуса,
+                {' '}{historySummary.blockerChanges} изменений блокера, {historySummary.sessionEvents} событий сессии.
+              </p>
+              <HistoryGaps history={project.history}/>
+              {recentHistory.length > 0
+                ? <ol className="detail-history">
+                    {recentHistory.map((event) => (
+                      <li key={event.id}><HistoryEventBody event={event}/></li>
+                    ))}
+                  </ol>
+                : <p className="meta-unknown">В окне нет событий с evidence.</p>}
+            </>
+          ) : (
+            <p className="meta-unknown">История недоступна (UNAVAILABLE): {project.history.reason}</p>
+          )}
+          <a
+            className="detail-report-link"
+            href={reportHash(project.id)}
+            rel="noreferrer"
+            onClick={(event) => {
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+              event.preventDefault()
+              onNavigate(reportHash(project.id))
+            }}
+          >
+            {historyEvents.length > recentHistory.length
+              ? `Вся история в отчёте (${historyEvents.length} событий)`
+              : 'Открыть в History & Reports'}
+          </a>
         </article>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const PROJECT_STATE_SCHEMA_VERSION = '1.1.0' as const
+export const PROJECT_STATE_SCHEMA_VERSION = '1.2.0' as const
 
 export const TriageStateSchema = z.enum([
   'ACTION_NOW',
@@ -207,6 +207,156 @@ export const ArenaSessionSchema = z.object({
   }
 })
 
+
+// --- Live history ------------------------------------------------------------
+
+/**
+ * Normalized history/event contract (CP-17).
+ *
+ * Every event is attributable to concrete evidence: a commit, a pull request
+ * lifecycle change, a canonical status-artifact revision or the Arena session
+ * block of the canonical status artifact. Events are collected by the existing
+ * synchronization, never authored in the dashboard, and never derived from the
+ * snapshot clock.
+ */
+export const HISTORY_EVENT_TYPES = [
+  'COMMIT',
+  'PULL_REQUEST_OPENED',
+  'PULL_REQUEST_MERGED',
+  'PULL_REQUEST_CLOSED',
+  'CHECKPOINT_MOVED',
+  'STATE_CHANGED',
+  'BLOCKER_CHANGED',
+  'SESSION_STARTED',
+  'SESSION_ACTIVITY',
+  'SESSION_WAITING_FOR_VALIDATION',
+  'SESSION_READY_TO_CLOSE',
+  'SESSION_CLOSED',
+  'SESSION_STALE',
+] as const
+
+export const HistoryEventTypeSchema = z.enum(HISTORY_EVENT_TYPES)
+
+export const HISTORY_EVENT_CATEGORIES = ['COMMITS', 'PULL_REQUESTS', 'STATUS', 'SESSION'] as const
+export type HistoryEventCategory = (typeof HISTORY_EVENT_CATEGORIES)[number]
+
+/** Project status transitions and Arena session lifecycle are separate categories. */
+export function historyEventCategory(type: (typeof HISTORY_EVENT_TYPES)[number]): HistoryEventCategory {
+  if (type === 'COMMIT') return 'COMMITS'
+  if (type.startsWith('PULL_REQUEST_')) return 'PULL_REQUESTS'
+  if (type.startsWith('SESSION_')) return 'SESSION'
+  return 'STATUS'
+}
+
+/**
+ * What the event timestamp means.
+ * - `EVENT`: the evidence itself carries the time (commit, PR, status revision, declared session start).
+ * - `SESSION_LAST_ACTIVITY`: the session state is evidenced as of the last session activity; the
+ *   state-change time itself is not declared by any source.
+ * - `INACTIVITY_THRESHOLD`: stale-session detection, placed where the last session activity plus the
+ *   inactivity threshold falls — derived from evidence, never from the snapshot clock.
+ */
+export const HISTORY_TIME_BASES = ['EVENT', 'SESSION_LAST_ACTIVITY', 'INACTIVITY_THRESHOLD'] as const
+
+const HISTORY_EVENT_SOURCES = ['COMMIT', 'PULL_REQUEST', 'PROJECT_STATUS'] as const
+
+export const HistoryEventSchema = z.object({
+  /** Deterministic: `<type>:<sourceId>`. */
+  id: NonEmptyStringSchema,
+  type: HistoryEventTypeSchema,
+  occurredAt: IsoTimestampSchema,
+  timeBasis: z.enum(HISTORY_TIME_BASES),
+  summary: NonEmptyStringSchema,
+  from: NonEmptyStringSchema.nullable(),
+  to: NonEmptyStringSchema.nullable(),
+  source: z.enum(HISTORY_EVENT_SOURCES),
+  sourceId: NonEmptyStringSchema,
+  /** Every event keeps a concrete evidence reference. */
+  evidenceUrl: z.url(),
+}).strict().superRefine((event, context) => {
+  const category = historyEventCategory(event.type)
+  const expectedSource = category === 'COMMITS' ? 'COMMIT' : category === 'PULL_REQUESTS' ? 'PULL_REQUEST' : 'PROJECT_STATUS'
+  if (event.source !== expectedSource) {
+    context.addIssue({ code: 'custom', path: ['source'], message: `${event.type} must be attributed to ${expectedSource} evidence` })
+  }
+  if (event.id !== `${event.type}:${event.sourceId}`) {
+    context.addIssue({ code: 'custom', path: ['id'], message: 'event id must be <type>:<sourceId>' })
+  }
+  if (event.type === 'CHECKPOINT_MOVED' || event.type === 'STATE_CHANGED') {
+    if (event.from === null || event.to === null) {
+      context.addIssue({ code: 'custom', path: ['from'], message: 'checkpoint and state transitions require from and to values' })
+    }
+  }
+  if ((event.type === 'CHECKPOINT_MOVED' || event.type === 'STATE_CHANGED' || event.type === 'BLOCKER_CHANGED') && event.from === event.to) {
+    context.addIssue({ code: 'custom', path: ['to'], message: 'a transition must change the value' })
+  }
+  if (category !== 'STATUS' && (event.from !== null || event.to !== null)) {
+    context.addIssue({ code: 'custom', path: ['from'], message: 'only status transitions carry from/to values' })
+  }
+  const expectedBasis = event.type === 'SESSION_STALE'
+    ? 'INACTIVITY_THRESHOLD'
+    : event.type === 'SESSION_WAITING_FOR_VALIDATION' || event.type === 'SESSION_READY_TO_CLOSE' || event.type === 'SESSION_CLOSED'
+      ? 'SESSION_LAST_ACTIVITY'
+      : 'EVENT'
+  if (event.timeBasis !== expectedBasis) {
+    context.addIssue({ code: 'custom', path: ['timeBasis'], message: `${event.type} must use the ${expectedBasis} time basis` })
+  }
+})
+
+/**
+ * Deterministic ordering: newest first, then event type, then evidence id.
+ * The result never depends on input order or on the machine's locale.
+ */
+export function compareHistoryEvents(
+  left: Pick<z.infer<typeof HistoryEventSchema>, 'occurredAt' | 'type' | 'sourceId' | 'id'>,
+  right: Pick<z.infer<typeof HistoryEventSchema>, 'occurredAt' | 'type' | 'sourceId' | 'id'>,
+): number {
+  const byTime = Date.parse(right.occurredAt) - Date.parse(left.occurredAt)
+  if (byTime !== 0) return byTime
+  const byType = HISTORY_EVENT_TYPES.indexOf(left.type) - HISTORY_EVENT_TYPES.indexOf(right.type)
+  if (byType !== 0) return byType
+  if (left.sourceId !== right.sourceId) return left.sourceId < right.sourceId ? -1 : 1
+  return left.id < right.id ? -1 : left.id > right.id ? 1 : 0
+}
+
+export const HISTORY_GAP_AREAS = ['COMMITS', 'PULL_REQUESTS', 'STATUS_TRANSITIONS', 'SESSION'] as const
+
+export const ProjectHistorySchema = z.discriminatedUnion('status', [
+  z.object({
+    status: z.literal('KNOWN'),
+    /** Size of the recent window collected per evidence source. */
+    limits: z.object({
+      commits: z.number().int().positive(),
+      pullRequests: z.number().int().positive(),
+      statusRevisions: z.number().int().positive(),
+    }).strict(),
+    /** Newest first; see `compareHistoryEvents`. */
+    events: z.array(HistoryEventSchema),
+    /** Evidence that could not be read or attributed; an explicit gap is never silent. */
+    gaps: z.array(z.object({
+      area: z.enum(HISTORY_GAP_AREAS),
+      reason: NonEmptyStringSchema,
+    }).strict()),
+  }).strict(),
+  z.object({
+    status: z.literal('UNAVAILABLE'),
+    reason: NonEmptyStringSchema,
+  }).strict(),
+]).superRefine((history, context) => {
+  if (history.status !== 'KNOWN') return
+  const ids = new Set<string>()
+  history.events.forEach((event, index) => {
+    if (ids.has(event.id)) {
+      context.addIssue({ code: 'custom', path: ['events', index, 'id'], message: 'history event ids must be unique' })
+    }
+    ids.add(event.id)
+    const previous = history.events[index - 1]
+    if (previous && compareHistoryEvents(previous, event) > 0) {
+      context.addIssue({ code: 'custom', path: ['events', index], message: 'history events must be ordered newest first with deterministic tie-breaks' })
+    }
+  })
+})
+
 const ProjectStateBaseSchema = z.object({
   schemaVersion: z.literal(PROJECT_STATE_SCHEMA_VERSION),
   id: IdSchema,
@@ -224,6 +374,8 @@ const ProjectStateBaseSchema = z.object({
   lastUpdated: IsoDateSchema,
   activity: ProjectActivitySchema,
   session: ArenaSessionSchema,
+  /** Live history collected by the synchronization; `UNAVAILABLE` carries its reason. */
+  history: ProjectHistorySchema,
   blocker: NonEmptyStringSchema.nullable(),
   nextAction: NonEmptyStringSchema.nullable(),
   evidenceLinks: z.array(EvidenceLinkSchema),
@@ -293,6 +445,9 @@ export type ProjectActivity = z.infer<typeof ProjectActivitySchema>
 export type ArenaSessionState = z.infer<typeof ArenaSessionStateSchema>
 export type ArenaSessionClosureStatus = z.infer<typeof ArenaSessionClosureStatusSchema>
 export type ArenaSession = z.infer<typeof ArenaSessionSchema>
+export type HistoryEvent = z.infer<typeof HistoryEventSchema>
+export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>
+export type ProjectHistory = z.infer<typeof ProjectHistorySchema>
 export type ProjectState = z.infer<typeof ProjectStateSchema>
 export type ProjectRegistry = z.infer<typeof ProjectRegistrySchema>
 export type Freshness = 'FRESH' | 'STALE'

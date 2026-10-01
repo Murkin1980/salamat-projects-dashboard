@@ -435,17 +435,18 @@ test('the detail view renders on a phone viewport (390px)', async (t) => {
 })
 
 test('project history renders for the project that has it and states the gap otherwise', async (t) => {
+  // CP-17 replaced the static manifest with the live history carried by ProjectState.
   const { container: withHistory, cleanup: cleanupHistory } = await renderDashboard(1440, '#/project/salamat-projects-dashboard')
   t.after(cleanupHistory)
   const historyItems = withHistory.querySelectorAll('.detail-history li')
-  assert.ok(historyItems.length > 0, 'the dashboard project keeps its committed history')
+  assert.ok(historyItems.length > 0, 'the dashboard project shows its live history')
   assert.ok(withHistory.textContent?.includes('История проекта'))
   assert.ok(withHistory.querySelector('.detail-history a')?.getAttribute('href')?.startsWith('https://'))
 
   const { container: withoutHistory, cleanup: cleanupGap } = await renderDashboard(1440, '#/project/murat-house')
   t.after(cleanupGap)
   assert.equal(withoutHistory.querySelectorAll('.detail-history li').length, 0)
-  assert.ok(withoutHistory.textContent?.includes('нет зафиксированной истории'), 'a missing history must be explicit')
+  assert.ok(withoutHistory.textContent?.includes('История недоступна (UNAVAILABLE)'), 'a missing history must be explicit')
 })
 
 test('activity timestamps are formatted from the evidence timestamp', () => {

@@ -1,11 +1,14 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "business-discovery",
   "name": "Business Discovery",
   "summary": "Evidence-backed business discovery and audit engine.",
   "repo": null,
   "triageState": "ACTION_NOW",
-  "triageSource": { "status": "KNOWN", "sourceId": "fixture-registry" },
+  "triageSource": {
+    "status": "KNOWN",
+    "sourceId": "fixture-registry"
+  },
   "stage": "Stage 5 — Auditor MVP",
   "checkpoint": null,
   "progress": null,
@@ -22,7 +25,11 @@
       "status": "UNAVAILABLE",
       "reason": "Fixture-only project: no canonical status artifact exists"
     },
-    "snapshotGeneratedAt": { "at": "2026-08-26T00:00:00Z", "source": "SNAPSHOT", "sourceId": "config/projects.json" }
+    "snapshotGeneratedAt": {
+      "at": "2026-08-26T00:00:00Z",
+      "source": "SNAPSHOT",
+      "sourceId": "config/projects.json"
+    }
   },
   "session": {
     "sessionState": "UNKNOWN",
@@ -40,12 +47,19 @@
     "sessionStateEvidence": [],
     "sessionStateReason": "Fixture-only project: no Arena session evidence source exists, so session state stays UNKNOWN"
   },
+  "history": {
+    "status": "UNAVAILABLE",
+    "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+  },
   "blocker": null,
   "nextAction": "Build Auditor MVP, then run Replay Pilot.",
   "evidenceLinks": [],
   "dependencies": [],
   "tools": [],
   "approvals": [],
-  "source": { "kind": "FIXTURE", "id": "fixture-registry" },
+  "source": {
+    "kind": "FIXTURE",
+    "id": "fixture-registry"
+  },
   "staleAfterDays": 7
 }
