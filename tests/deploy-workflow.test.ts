@@ -52,7 +52,8 @@ const indexOfStep = (name: string): number => {
 }
 
 test('the schedule stays at the approved six-hour cadence', () => {
-  assert.match(workflow, /cron:\s*"17 \*\/6 \* \* \*"/, 'the sync frequency must not change')
+  assert.match(workflow, /cron:\s*"17 0,6,12,18 \* \* \*"/, 'the sync must run four times per day')
+  assert.match(workflow, /timezone:\s*"Asia\/Almaty"/, 'the sync schedule must be pinned to Almaty time')
   assert.ok(!/cron:\s*"\* \* \* \* \*"/.test(workflow), 'no per-minute scheduling may be introduced')
 })
 
