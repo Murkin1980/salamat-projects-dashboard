@@ -447,3 +447,63 @@ body { margin: 0; min-height: 100vh; }
 .experiment-links { flex: 0 0 auto; display: grid; align-content: space-between; justify-items: end; gap: 10px; font-size: 12px; }
 .experiment-links a { display: inline-flex; gap: 4px; align-items: center; }
 @media (max-width: 640px) { .experiment-row { display: grid; gap: 12px; } .experiment-links { justify-items: start; } }
+
+/* CP-15 — Activity-aware portfolio, triage and Arena session visibility */
+.view-caption {
+  margin: -6px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 760px;
+}
+.view-caption strong { color: #48566a; }
+
+.project-card-head { flex-wrap: wrap; gap: 10px; }
+.project-head-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* Compact Arena session indicator — visually separate from operational status. */
+.session-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  border: 1px dashed;
+  white-space: nowrap;
+}
+.session-active { color: #2c5fa7; background: #e5eefb; border-color: #9cc0f0; }
+.session-waiting { color: #6445a9; background: #eee8fa; border-color: #c3b2ec; }
+.session-ready {
+  color: #8a5a10;
+  background: #fffaf0;
+  border-color: #e6c8a0;
+} /* caution amber — distinct from operational READY green */
+.session-stale {
+  color: #9a2830;
+  background: #fff5f5;
+  border-color: #e7a9ad;
+} /* alert — distinct dashed border + clock icon from BLOCKED */
+.session-unknown { color: #636d79; background: #eceef1; border-color: #cbd2db; }
+
+.project-activity { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.freshness-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+.freshness-fresh { color: #23794f; background: #e3f5eb; }
+.freshness-stale { color: #9a2830; background: #f8e3e5; }
+.freshness-unknown { color: #636d79; background: #eceef1; }
+.activity-when { color: var(--muted); font-size: 11px; min-width: 0; }
+
+@media (max-width: 760px) {
+  .view-caption { font-size: 11px; }
+  .project-head-badges { gap: 6px; }
+}
