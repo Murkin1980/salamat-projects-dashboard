@@ -3,40 +3,33 @@
  *
  * The app lives here, separate from the `src/main.tsx` browser entry, so the
  * shell can be rendered in DOM tests without loading CSS through the bundler.
- *
  * Product boundary: this is a read-only Portfolio Monitoring UI. It renders
  * project state from the normalized snapshot and exposes no execution control
- * (no task runners, no agent/model controls, no Task Packet export).
+ * (no task runners, no agent/model controls, no Task Packet export). Opening a
+ * project (CP-16) only changes the route: the Project Detail view is an
+ * observation of the same normalized state, never a control surface.
  */
 // Default React import: see NodeView.tsx — required by the tsx test runner's
 // classic JSX transform, tree-shaken by the automatic-runtime build.
 import React, { useMemo, useState } from 'react'
 import {
-  IconActivity,
   IconAlertTriangle,
-  IconBolt,
-  IconCircleCheck,
+  IconArrowRight,
   IconClock,
-  IconEye,
   IconExternalLink,
+  IconEye,
   IconFlask,
   IconFolderCode,
   IconGitBranch,
-  IconHourglass,
   IconLayoutDashboard,
   IconListDetails,
-  IconPlayerPause,
-  IconPlayerPlay,
-  IconQuestionMark,
   IconRadar,
-  IconRosetteDiscountCheck,
   IconRefresh,
   IconRoute,
   IconSearch,
   IconSettings,
   IconTargetArrow,
 } from '@tabler/icons-react'
-import iconMap from '../../config/icon-map.json'
 import projectRegistry from '../../config/projects.github.json'
 import nodeGraphRegistry from '../../config/node-graphs.json'
 import historyRegistry from '../../config/project-history.json'
@@ -44,60 +37,43 @@ import experimentRegistry from '../../config/experiments.github.json'
 import { NodesView } from './NodesView'
 import { ReportView } from './ReportView'
 import { DiscoveryView } from './DiscoveryView'
+import { ProjectDetailView } from './ProjectDetailView'
+import { SessionIndicator, StatusBadge, triageMeta } from './status-badges'
 import {
   parseProjectRegistry,
-  type ArenaSession,
-  type ArenaSessionState,
   type ProjectState,
   type TriageState,
 } from '../contract/project-state'
 import { useLiveRegistry } from '../hooks/use-live-registry'
+import { useHashRoute } from '../hooks/use-hash-route'
 import { deriveLiveProjectState } from '../triage/live-triage'
 import { parseNodeGraphRegistry } from '../graph/node-graph'
 import { parseHistoryRegistry } from '../history/project-history'
 import { parseExperimentRegistry, type ExperimentStatus } from '../contract/experiment-registry'
-import {
-  ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS,
-  getActivityFreshness,
-} from '../monitoring/derived-state'
+import { ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS, getActivityFreshness } from '../monitoring/derived-state'
+import { formatEventTimestamp } from '../monitoring/project-detail-events'
 import {
   compareByPriorityThenActivity,
   orderByRecentActivity,
-  shouldShowSessionIndicator,
 } from '../monitoring/portfolio-ordering'
-
-type View = 'triage' | 'portfolio' | 'experiments' | 'attention' | 'nodes' | 'reports' | 'discovery'
+import { projectDetailHash, viewHash, type DashboardView } from '../routing/hash-route'
 
 const initialRegistry = parseProjectRegistry(projectRegistry)
 // The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
 const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
-const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
+const historyProjects = parseHistoryRegistry(historyRegistry).projects
+const dashboardHistory = historyProjects.find((history) => history.projectId === 'salamat-projects-dashboard')!
 const experiments = parseExperimentRegistry(experimentRegistry)
 const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned', RETIRED: 'Retired' }
-const triageIcons = {
-  bolt: IconBolt,
-  'alert-triangle': IconAlertTriangle,
-  'circle-check': IconCircleCheck,
-  'player-play': IconPlayerPlay,
-  flask: IconFlask,
-  'player-pause': IconPlayerPause,
-  'rosette-discount-check': IconRosetteDiscountCheck,
-} as const
 
-function getTriageIcon(name: string) {
-  const Icon = triageIcons[name as keyof typeof triageIcons]
-  if (!Icon) throw new Error(`Unsupported triage icon in config/icon-map.json: ${name}`)
-  return Icon
-}
-
-const triageMeta: Record<TriageState, { label: string; className: string; Icon: typeof IconBolt }> = {
-  ACTION_NOW: { label: 'ACTION NOW', className: 'status-action', Icon: getTriageIcon(iconMap.triage.ACTION_NOW) },
-  BLOCKED: { label: 'BLOCKED', className: 'status-blocked', Icon: getTriageIcon(iconMap.triage.BLOCKED) },
-  READY: { label: 'READY', className: 'status-ready', Icon: getTriageIcon(iconMap.triage.READY) },
-  IN_PROGRESS: { label: 'IN PROGRESS', className: 'status-progress', Icon: getTriageIcon(iconMap.triage.IN_PROGRESS) },
-  VALIDATION: { label: 'VALIDATION', className: 'status-validation', Icon: getTriageIcon(iconMap.triage.VALIDATION) },
-  HOLD: { label: 'HOLD', className: 'status-hold', Icon: getTriageIcon(iconMap.triage.HOLD) },
-  DONE: { label: 'DONE', className: 'status-done', Icon: getTriageIcon(iconMap.triage.DONE) },
+const viewTitles: Record<DashboardView, string> = {
+  triage: 'Triage',
+  portfolio: 'Portfolio',
+  experiments: 'Experiments',
+  attention: 'Attention',
+  nodes: 'Node View',
+  reports: 'History & Reports',
+  discovery: 'Discovery',
 }
 
 const triageOrder: TriageState[] = ['ACTION_NOW', 'BLOCKED', 'READY', 'IN_PROGRESS', 'VALIDATION', 'HOLD', 'DONE']
@@ -112,10 +88,13 @@ function matchesQuery(project: ProjectState, query: string) {
 }
 
 function App() {
-  const [view, setView] = useState<View>('triage')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<TriageState | 'ALL'>('ALL')
   const [experimentFilter, setExperimentFilter] = useState<ExperimentStatus | 'ALL'>('ALL')
+  // The route lives in the URL hash, so a project detail link survives a refresh
+  // and a direct navigation, and the browser Back button returns to the list.
+  const { route, navigate } = useHashRoute()
+  const view = route.view
   const { registry, refresh, refreshState, error, lastSuccessAt } = useLiveRegistry(initialRegistry)
   const liveProjects = useMemo(
     () => registry.projects.map((project) => deriveLiveProjectState(project, new Date())),
@@ -169,6 +148,16 @@ function App() {
     [attentionProjects],
   )
 
+  // The detail view reads the same normalized state the cards render, so a
+  // project can never be described differently in the list and in its detail.
+  const detailProjectId = route.projectId
+  const detailProject = detailProjectId === null
+    ? null
+    : projects.find((project) => project.id === detailProjectId) ?? null
+  const detailHistory = detailProjectId === null
+    ? null
+    : historyProjects.find((history) => history.projectId === detailProjectId) ?? null
+
   return (
     <div className="app-shell">
       <aside className="sidebar" aria-label="Навигация">
@@ -180,14 +169,14 @@ function App() {
           </div>
         </div>
         <nav className="nav-list">
-          <button className={view === 'triage' ? 'active' : ''} onClick={() => setView('triage')}><IconLayoutDashboard size={20}/> Triage</button>
-          <button className={view === 'portfolio' ? 'active' : ''} onClick={() => setView('portfolio')}><IconFolderCode size={20}/> Portfolio</button>
-          <button className={view === 'experiments' ? 'active' : ''} onClick={() => setView('experiments')}><IconFlask size={20}/> Experiments</button>
-          <button className={view === 'attention' ? 'active' : ''} onClick={() => setView('attention')}><IconAlertTriangle size={20}/> Attention</button>
-          <button className={view === 'nodes' ? 'active' : ''} onClick={() => setView('nodes')}><IconRoute size={20}/> Nodes</button>
+          <button className={view === 'triage' ? 'active' : ''} onClick={() => navigate(viewHash('triage'))}><IconLayoutDashboard size={20}/> Triage</button>
+          <button className={view === 'portfolio' ? 'active' : ''} onClick={() => navigate(viewHash('portfolio'))}><IconFolderCode size={20}/> Portfolio</button>
+          <button className={view === 'experiments' ? 'active' : ''} onClick={() => navigate(viewHash('experiments'))}><IconFlask size={20}/> Experiments</button>
+          <button className={view === 'attention' ? 'active' : ''} onClick={() => navigate(viewHash('attention'))}><IconAlertTriangle size={20}/> Attention</button>
+          <button className={view === 'nodes' ? 'active' : ''} onClick={() => navigate(viewHash('nodes'))}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
-          <button className={view === 'reports' ? 'active' : ''} onClick={() => setView('reports')}><IconListDetails size={20}/> Reports</button>
-          <button className={view === 'discovery' ? 'active' : ''} onClick={() => setView('discovery')}><IconRadar size={20}/> Discovery</button>
+          <button className={view === 'reports' ? 'active' : ''} onClick={() => navigate(viewHash('reports'))}><IconListDetails size={20}/> Reports</button>
+          <button className={view === 'discovery' ? 'active' : ''} onClick={() => navigate(viewHash('discovery'))}><IconRadar size={20}/> Discovery</button>
           <button disabled title="Настройки появятся позже"><IconSettings size={20}/> Settings</button>
         </nav>
         <div className="sidebar-note">
@@ -200,8 +189,10 @@ function App() {
         <header className="page-header">
           <div>
             <p className="eyebrow">Operational portfolio</p>
-            <h1>{view === 'triage' ? 'Triage' : view === 'portfolio' ? 'Portfolio' : view === 'experiments' ? 'Experiments' : view === 'attention' ? 'Attention' : view === 'nodes' ? 'Node View' : view === 'reports' ? 'History & Reports' : 'Discovery'}</h1>
-            <p>{view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.'}</p>
+            <h1>{detailProjectId === null ? viewTitles[view] : detailProject?.name ?? 'Проект не найден'}</h1>
+            <p>{detailProjectId === null
+              ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
+              : 'Полная карточка проекта: состояние, активность, сессия Arena и evidence. Только чтение.'}</p>
           </div>
           {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
@@ -211,21 +202,31 @@ function App() {
                 {refreshState === 'REFRESHING' ? 'Обновление…' : 'Обновить'}
               </button>
             </div>
-            <label className="search-box">
+            {/* The detail view is a single project, so list filtering does not apply. */}
+            {detailProjectId === null && <label className="search-box">
               <IconSearch size={19}/>
               <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Найти проект…" aria-label="Поиск проектов" />
-            </label>
+            </label>}
           </div>}
         </header>
 
-        {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <section className="summary-grid" aria-label="Сводка">
+        {detailProjectId === null && view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Готовы к следующему этапу" value={counts.READY} detail="READY" tone="positive" />
           <SummaryCard label="На валидации" value={counts.VALIDATION} detail="VALIDATION" tone="validation" />
         </section>}
 
-        {view === 'triage' && (
+        {detailProjectId !== null && (
+          <ProjectDetailView
+            project={detailProject}
+            projectId={detailProjectId}
+            history={detailHistory}
+            onNavigate={navigate}
+          />
+        )}
+
+        {detailProjectId === null && view === 'triage' && (
           <>
             <section className="triage-tabs" aria-label="Фильтр по готовности">
               <button className={filter === 'ALL' ? 'selected' : ''} onClick={() => setFilter('ALL')}>ALL <span>{projects.length}</span></button>
@@ -234,24 +235,24 @@ function App() {
                 return <button key={state} className={`${filter === state ? 'selected' : ''} ${meta.className}`} onClick={() => setFilter(state)}>{meta.label} <span>{counts[state]}</span></button>
               })}
             </section>
-            <ProjectGrid projects={triageOrderedProjects} />
+            <ProjectGrid projects={triageOrderedProjects} onNavigate={navigate} />
           </>
         )}
 
-        {view === 'portfolio' && (
+        {detailProjectId === null && view === 'portfolio' && (
           <>
             <p className="view-caption">
               Порядок — по дате последней значимой активности. Отметка <strong>Arena</strong> рядом со статусом проекта
               показывает состояние сессии (порог устаревшей сессии — {ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS} ч) и не
-              заменяет операционный статус проекта.
+              заменяет операционный статус проекта. Нажмите на карточку, чтобы открыть проект полностью.
             </p>
-            <ProjectGrid projects={portfolioProjects} />
+            <ProjectGrid projects={portfolioProjects} onNavigate={navigate} />
           </>
         )}
 
-        {view === 'experiments' && <ExperimentsView filter={experimentFilter} onFilter={setExperimentFilter} />}
+        {detailProjectId === null && view === 'experiments' && <ExperimentsView filter={experimentFilter} onFilter={setExperimentFilter} />}
 
-        {view === 'attention' && (
+        {detailProjectId === null && view === 'attention' && (
           <section className="attention-list">
             {orderedAttentionProjects.filter(({ project }) => matchesQuery(project, query)).map(({ project, effectiveTriageState, attention }) => (
               <article key={project.id} className="attention-row">
@@ -267,9 +268,9 @@ function App() {
           </section>
         )}
 
-        {view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
-        {view === 'reports' && <ReportView history={dashboardHistory}/>}
-        {view === 'discovery' && <DiscoveryView/>}
+        {detailProjectId === null && view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
+        {detailProjectId === null && view === 'reports' && <ReportView history={dashboardHistory}/>}
+        {detailProjectId === null && view === 'discovery' && <DiscoveryView/>}
       </main>
     </div>
   )
@@ -279,18 +280,18 @@ function SummaryCard({ label, value, detail, tone = 'neutral' }: { label: string
   return <article className={`summary-card ${tone}`}><span>{label}</span><strong>{value}</strong><small>{detail}</small></article>
 }
 
-function ProjectGrid({ projects }: { projects: ProjectState[] }) {
+function ProjectGrid({ projects, onNavigate }: { projects: ProjectState[]; onNavigate: (hash: string) => void }) {
   if (!projects.length) return <div className="empty-state">Ничего не найдено по текущему фильтру.</div>
   return (
     <section className="project-grid">
       {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
+        <ProjectCard key={project.id} project={project} onNavigate={onNavigate} />
       ))}
     </section>
   )
 }
 
-function ProjectCard({ project }: { project: ProjectState }) {
+function ProjectCard({ project, onNavigate }: { project: ProjectState; onNavigate: (hash: string) => void }) {
   // Source attribution stays visible: every rendered status must be explainable
   // from its source artifact, including UNKNOWN and CONFLICT resolutions.
   const sourceHint = project.triageSource.status === 'KNOWN'
@@ -344,63 +345,26 @@ function ProjectCard({ project }: { project: ProjectState }) {
       <div className="project-footer">
         <span><IconClock size={16}/> Обновлено {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
         <span className="project-source" title={sourceHint}>Источник: {project.source.id}</span>
+        <span className="project-card-cta">Открыть проект <IconArrowRight size={13}/></span>
       </div>
+      {/*
+        The whole card is the link to the project detail route. It is a real
+        anchor with the deep link as `href`, so the card is keyboard reachable
+        and the link can be copied or opened in a new tab; the click handler only
+        takes over plain left clicks so navigation stays inside the SPA.
+      */}
+      <a
+        className="project-card-open"
+        href={projectDetailHash(project.id)}
+        aria-label={`Открыть проект ${project.name}`}
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+          event.preventDefault()
+          onNavigate(projectDetailHash(project.id))
+        }}
+      />
     </article>
   )
-}
-
-function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | null; resolution?: 'KNOWN' | 'UNKNOWN' | 'CONFLICT' }) {
-  if (state === null) {
-    return <span className="status-badge status-hold"><IconAlertTriangle size={15}/>{resolution === 'CONFLICT' ? 'SOURCE CONFLICT' : 'STATUS UNKNOWN'}</span>
-  }
-  const meta = triageMeta[state]
-  const Icon = meta.Icon
-  return <span className={`status-badge ${meta.className}`}><Icon size={15}/>{meta.label}</span>
-}
-
-/**
- * Compact Arena session indicator. It is shown only for the five states that
- * need attention or are genuine gaps (ACTIVE, WAITING_FOR_VALIDATION,
- * READY_TO_CLOSE, STALE_SESSION, UNKNOWN). `NOT_ACTIVE` and `CLOSED` are settled
- * states and get no indicator. The indicator is deliberately a separate element
- * with its own dashed border and "Arena ·" prefix so it never reads as, or
- * replaces, the operational project status badge.
- */
-const sessionMeta: Record<ArenaSessionState, { short: string; className: string; Icon: typeof IconClock }> = {
-  ACTIVE: { short: 'ACTIVE', className: 'session-active', Icon: IconActivity },
-  WAITING_FOR_VALIDATION: { short: 'WAIT VALIDATION', className: 'session-waiting', Icon: IconHourglass },
-  READY_TO_CLOSE: { short: 'READY TO CLOSE', className: 'session-ready', Icon: IconCircleCheck },
-  STALE_SESSION: { short: 'STALE', className: 'session-stale', Icon: IconAlertTriangle },
-  UNKNOWN: { short: 'UNKNOWN', className: 'session-unknown', Icon: IconQuestionMark },
-  // Settled states are never surfaced as an indicator; entries kept for totality.
-  NOT_ACTIVE: { short: '', className: '', Icon: IconClock },
-  CLOSED: { short: '', className: '', Icon: IconClock },
-}
-
-function SessionIndicator({ session }: { session: ArenaSession }) {
-  if (!shouldShowSessionIndicator(session.sessionState)) return null
-  const meta = sessionMeta[session.sessionState]
-  const Icon = meta.Icon
-  const thresholdNote = session.sessionState === 'STALE_SESSION'
-    ? ` · порог бездействия ${ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS}ч`
-    : ''
-  return (
-    <span
-      className={`session-indicator ${meta.className}`}
-      title={`Arena session: ${session.sessionState} — ${session.sessionStateReason}${thresholdNote}`}
-    >
-      <Icon size={13} />
-      <span>Arena · {meta.short}</span>
-    </span>
-  )
-}
-
-function formatActivityTimestamp(at: string): string {
-  return new Intl.DateTimeFormat('ru-RU', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'UTC',
-  }).format(new Date(at))
 }
 
 /**
@@ -414,7 +378,7 @@ function ActivityFreshness({ project }: { project: ProjectState }) {
   const label = freshness === 'FRESH' ? 'СВЕЖАЯ' : freshness === 'STALE' ? 'УСТАРЕЛА' : 'НЕИЗВЕСТНО'
   const activity = project.activity.lastMeaningfulActivity
   const when = activity.status === 'KNOWN'
-    ? `Активность: ${formatActivityTimestamp(activity.at)}`
+    ? `Активность: ${formatEventTimestamp(activity.at)}`
     : 'Активность: нет данных'
   return (
     <div className="project-activity">

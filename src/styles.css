@@ -507,3 +507,83 @@ body { margin: 0; min-height: 100vh; }
   .view-caption { font-size: 11px; }
   .project-head-badges { gap: 6px; }
 }
+
+/* CP-16 — Project Detail drill-down & Arena session inspection */
+/*
+  A project card is a link to its own detail route. The anchor covers the whole
+  card (`.project-card-open`) so the card stays one large, keyboard-reachable
+  target, while the evidence links inside keep a higher stacking context and
+  remain independently clickable.
+*/
+.project-card { position: relative; }
+.project-card-open { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+.project-card-open:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.project-card:hover { border-color: #b9c6d8; }
+.project-card:focus-within { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(45, 111, 194, 0.16); }
+.project-card-cta { display: inline-flex; align-items: center; gap: 5px; color: var(--accent-strong); font-size: 11px; font-weight: 800; }
+.project-evidence a { position: relative; z-index: 2; }
+
+.detail-return { display: flex; gap: 8px; flex-wrap: wrap; }
+.detail-return button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; background: #fff; color: #33445c; font-size: 12px; font-weight: 750; cursor: pointer; }
+.detail-return button:hover { border-color: #b9c6d8; background: #f8fafc; }
+
+.detail-head { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-l); padding: 20px; }
+.detail-icon { width: 52px; height: 52px; }
+.detail-head-body { flex: 1 1 320px; min-width: 0; }
+.detail-head-body h2 { margin: 4px 0 6px; font-size: 26px; letter-spacing: -0.03em; }
+.detail-head-body p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.detail-head-badges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.detail-panel { min-width: 0; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius-l); padding: 18px; }
+.detail-panel h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: 14px; letter-spacing: -0.01em; }
+.detail-session-panel { grid-column: 1 / -1; }
+.detail-fields { margin: 0; display: grid; gap: 12px; }
+.detail-row { padding-top: 11px; border-top: 1px solid #edf0f4; }
+.detail-fields > .detail-row:first-child { padding-top: 0; border-top: 0; }
+.detail-row dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.detail-row dd { margin: 5px 0 0; font-size: 13px; line-height: 1.45; display: grid; gap: 4px; justify-items: start; }
+.detail-hint { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+
+.detail-note { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 10px; border: 1px solid #cfdceb; background: #f8fbff; border-radius: 12px; padding: 12px 14px; color: #284b74; font-size: 12px; line-height: 1.5; }
+.detail-note svg { flex: 0 0 auto; margin-top: 1px; }
+.detail-note strong { display: block; }
+.detail-note-line { margin: 0 0 14px; border: 1px solid var(--border); background: #f8fafc; border-radius: 12px; padding: 11px 13px; color: #48566a; font-size: 12px; line-height: 1.5; }
+
+/* Arena session state — deliberately distinct from the operational status palette. */
+.session-detail-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 5px 10px; font-size: 10px; font-weight: 900; letter-spacing: 0.04em; border: 1px solid var(--border); background: #eef0f3; color: #56606d; }
+.session-detail-settled { color: #4c6a58; background: #ecf1ed; border-color: #c6d8cd; }
+.session-detail-active { color: #2c5fa7; background: #e5eefb; border-color: #9cc0f0; }
+.session-detail-waiting { color: #6445a9; background: #eee8fa; border-color: #c3b2ec; }
+.session-detail-ready { color: #8a5a10; background: #fffaf0; border-color: #e6c8a0; }
+.session-detail-closed { color: #23794f; background: #e3f5eb; border-color: #bfe0cc; }
+.session-detail-stale { color: #9a2830; background: #fff5f5; border-color: #e7a9ad; }
+.session-detail-unknown { color: #636d79; background: #eceef1; border-color: #cbd2db; }
+.closure-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 10px; font-size: 10px; font-weight: 900; letter-spacing: 0.04em; }
+.closure-confirmed { color: #23794f; background: #e3f5eb; }
+.closure-not-confirmed { color: #8a5a10; background: #fffaf0; }
+.closure-unknown { color: #636d79; background: #eceef1; }
+
+.detail-events, .detail-history { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.detail-events li, .detail-history li { display: grid; gap: 5px; min-width: 0; border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; }
+.detail-event-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.detail-event-head strong { font-size: 12.5px; }
+.detail-event-head time { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.detail-event-gap { color: #8a5a10; background: #fffaf0; border: 1px solid #e6c8a0; border-radius: 999px; padding: 2px 8px; font-size: 9px; font-weight: 900; }
+.detail-events small, .detail-history small { color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+.detail-events p, .detail-history p { margin: 0; color: #48566a; font-size: 12px; line-height: 1.45; }
+.detail-events a, .detail-history a { display: inline-flex; align-items: center; gap: 5px; color: var(--accent-strong); font-size: 11px; font-weight: 750; }
+.detail-evidence-link, .detail-evidence-list a { display: inline-flex; align-items: center; gap: 5px; color: var(--accent-strong); font-size: 12px; font-weight: 750; }
+.detail-evidence-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 1100px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .detail-head { padding: 16px; }
+  .detail-head-body h2 { font-size: 21px; }
+  .detail-panel { padding: 14px; }
+  .detail-return button { min-height: 44px; }
+  .detail-note, .detail-note-line { font-size: 11px; }
+}

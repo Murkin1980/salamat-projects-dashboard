@@ -51,6 +51,13 @@ last valid committed snapshot instead of publishing damaged or empty data.
 4. Flow / Nodes — project/tool/plugin/service graph
 5. Roadmap — checkpoint trajectory
 6. Reports — historical changes and summaries
+7. Project Detail — the complete read-only view of one project, opened from a card
+
+Navigation is hash-routed (`#/portfolio`, `#/project/<project-id>`) so a project
+detail link survives a direct navigation, a refresh and a shared link on the
+static Pages deployment. The detail view renders the same normalized `ProjectState`
+as the cards and adds the activity/session evidence blocks; it is observation
+only and exposes no mutation or control.
 
 ## Proposed MVP stack
 - React + TypeScript + Vite
