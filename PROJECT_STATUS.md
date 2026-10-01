@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-14 — Portfolio Activity & Arena Session State Contract`
+Current checkpoint: `CP-15 — Activity-Aware Portfolio, Triage & Session Visibility`
 Status: `PASS`
 
 ## CP-00 — Repository Foundation
@@ -544,5 +544,43 @@ Current state:
 - Blocker: none;
 - Next checkpoint: `CP-15 — Activity-Aware Portfolio, Triage & Session Visibility`;
 - CP-15 has not started.
+
+Last updated: 2026-10-01 (Asia/Almaty)
+
+## CP-15 — Activity-Aware Portfolio, Triage & Session Visibility
+Status: `PASS`
+
+Result:
+- PR #22 merged to `main` at merge commit `2e3ad52490890730a82263f22b4349e7f0910834`.
+- Activity-aware ordering, card freshness and a compact Arena session indicator were implemented and validated.
+- Triage/Attention keep operational priority authoritative; recency is a deterministic, secondary tie-breaker only.
+- The normalized `activity` and `session` blocks from CP-14 are now consumed by the UI and by deterministic ordering helpers; no contract change (schema version remains `1.1.0`).
+
+Post-merge validation:
+- `npm test`: 152/152 passed (was 150; +2 CP-15 tests covering ordering determinism and desktop/mobile rendering);
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: PASS — schemaVersion `1.1.0`, version 5, 15 projects, no credentials detected;
+- desktop (1440px) and mobile (390px) DOM checks confirmed Portfolio ordering by recent meaningful activity, the activity-freshness chip on every card, and the visually distinct `READY_TO_CLOSE` / `STALE_SESSION` session indicators;
+- the PR #22 `validate` check (tests + `verify:snapshot` + `sync:discovery` + build) reported SUCCESS; the Cloudflare Pages PR-preview check is a sandbox artifact (no Cloudflare credentials in this environment) and is not a code-validation gate — the production deploy runs on `main` with repository secrets.
+
+Scope boundary (unchanged):
+- read-only Portfolio Monitoring UI; no execution/session controls, no backend, no database, no new repository, no new source of truth;
+- operational status (`READY` / `IN_PROGRESS` / `ACTION NOW` / `BLOCKED` / `VALIDATION` / `HOLD` / `DONE`) is never replaced by the Arena session state;
+- the Arena session indicator is a separate, dashed-border observation prefixed `Arena ·`; `NOT_ACTIVE` and `CLOSED` show no indicator;
+- the Arena session observation is evidence only — the dashboard never closes a session; a merge / commit / status update is not closure;
+- all values come only from the latest scheduled/manual snapshot; no browser-side continuous Arena monitoring was added.
+
+Arena session closure:
+- Session checkpoint: `CP-15`;
+- Session closure: `CONFIRMED`;
+- Closure evidence: explicit post-merge Arena session closure record associated with PR #22;
+- Closure does not derive from the merge alone.
+
+Current state:
+- Progress: `16/21`;
+- Blocker: none;
+- Next checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection`;
+- CP-16 has not started.
 
 Last updated: 2026-10-01 (Asia/Almaty)
