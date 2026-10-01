@@ -96,9 +96,10 @@ The dashboard remains a read-only Portfolio Monitoring UI:
 
 ## Validation
 
-- `npm test`: 170/170 pass (was 152; +18 new CP-16 tests), including desktop
-  (1440px) and mobile (390px) DOM checks for the detail view, deep links, return
-  navigation and the read-only boundary.
+- `npm test`: 172/172 pass (was 152; +20 CP-16 tests), including desktop
+  (1440px) and mobile (390px) DOM checks for the detail view, deep links,
+  preserved originating list view, conflict source provenance, pending/stale
+  session closure distinctions, return navigation and the read-only boundary.
 - `npm run build` (`tsc -b && vite build`): PASS.
 - `git diff --check`: clean.
 - `npm run verify:snapshot`: OK — schemaVersion `1.1.0`, version 5, 15 projects,

@@ -194,7 +194,7 @@ function App() {
               ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
               : 'Полная карточка проекта: состояние, активность, сессия Arena и evidence. Только чтение.'}</p>
           </div>
-          {view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <div className="header-actions">
+          {(detailProjectId !== null || (view !== 'nodes' && view !== 'reports' && view !== 'discovery')) && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>

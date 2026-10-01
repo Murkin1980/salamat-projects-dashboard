@@ -121,9 +121,21 @@ export function ProjectDetailView({ project, projectId, history, onNavigate }: P
               {formatEventTimestamp(`${project.lastUpdated}T00:00:00Z`)}
             </DetailRow>
             <DetailRow label="Источник состояния">
-              {project.triageSource.status === 'KNOWN'
-                ? project.triageSource.sourceId
-                : <span className="meta-unknown">{project.triageSource.reason}</span>}
+              {project.triageSource.status === 'KNOWN' ? (
+                <>
+                  <span>{project.triageSource.sourceId}</span>
+                  <small className="detail-hint">{project.source.kind} · {project.source.id}</small>
+                </>
+              ) : (
+                <>
+                  <span className="meta-unknown">{project.triageSource.reason}</span>
+                  <small className="detail-hint">
+                    {project.triageSource.status === 'CONFLICT'
+                      ? `${project.triageSource.sourceIds.join(' vs ')} · ${project.source.kind} (${project.source.id})`
+                      : `${project.source.kind} · ${project.source.id}`}
+                  </small>
+                </>
+              )}
             </DetailRow>
           </dl>
         </article>
@@ -290,6 +302,12 @@ function sessionClosureNote(project: ProjectState): string {
   }
   if (session.sessionClosureStatus === 'UNKNOWN') {
     return 'Закрытие сессии не может быть проверено по доступным источникам: UNKNOWN.'
+  }
+  if (session.sessionState === 'STALE_SESSION') {
+    return 'Сессия остаётся открытой дольше порога бездействия (STALE_SESSION): закрытие не подтверждено evidence. Статус проекта и статус сессии остаются разными значениями.'
+  }
+  if (session.sessionState === 'READY_TO_CLOSE') {
+    return 'Работа по checkpoint завершена, но закрытие сессии ожидает подтверждения (READY_TO_CLOSE — не подтверждено evidence). Статус проекта и статус сессии остаются разными значениями.'
   }
   if (session.sessionClosureStatus === 'NOT_CONFIRMED') {
     return `Закрытие сессии не подтверждено evidence (${session.sessionState}). Статус проекта и статус сессии остаются разными значениями.`

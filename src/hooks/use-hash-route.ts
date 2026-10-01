@@ -18,13 +18,15 @@ export interface HashRoute {
  * waiting for the asynchronous hash event.
  */
 export function useHashRoute(): HashRoute {
-  const [hash, setHash] = useState(() => (
-    typeof window === 'undefined' ? '' : window.location.hash
-  ))
+  const [route, setRoute] = useState<DashboardRoute>(() =>
+    parseHashRoute(typeof window === 'undefined' ? '' : window.location.hash),
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const onChange = () => setHash(window.location.hash)
+    const onChange = () => {
+      setRoute((prev) => parseHashRoute(window.location.hash, prev.view))
+    }
     window.addEventListener('hashchange', onChange)
     window.addEventListener('popstate', onChange)
     return () => {
@@ -34,11 +36,11 @@ export function useHashRoute(): HashRoute {
   }, [])
 
   const navigate = useCallback((next: string) => {
-    setHash(next)
+    setRoute((prev) => parseHashRoute(next, prev.view))
     if (typeof window !== 'undefined' && window.location.hash !== next) {
       window.location.hash = next
     }
   }, [])
 
-  return { route: parseHashRoute(hash), navigate }
+  return { route, navigate }
 }
