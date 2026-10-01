@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 0,6,12,18 * * *"
   workflow_dispatch:
 
 permissions:
@@ -56,13 +56,11 @@ jobs:
           fi
           echo "GitHub credentials are available for the read-only portfolio sync."
 
-      # Portfolio state must be refreshed from GitHub before the build so the
-      # deployed snapshot is current. The sync fails closed and writes nothing on
-      # error, so a temporary GitHub outage keeps the last valid committed
-      # snapshot instead of publishing damaged or empty data.
+      # A production deployment is allowed only after a successful fresh GitHub
+      # portfolio sync. Never silently deploy the previous snapshot after a
+      # failed synchronization.
       - name: Sync GitHub portfolio state
         id: github-sync
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -71,14 +69,7 @@ jobs:
       # Never let a damaged or empty snapshot reach the build: both published
       # artifacts must stay schema valid, byte-identical and credential free.
       - name: Verify published portfolio snapshot
-        shell: bash
-        env:
-          SYNC_OUTCOME: ${{ steps.github-sync.outcome }}
-        run: |
-          if [[ "$SYNC_OUTCOME" == "failure" ]]; then
-            echo "::warning::GitHub portfolio sync failed; the last valid committed snapshot is preserved for this deployment."
-          fi
-          npm run verify:snapshot
+        run: npm run verify:snapshot
 
       - name: Verify Cloudflare credentials are configured
         shell: bash
