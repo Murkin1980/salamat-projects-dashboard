@@ -679,3 +679,52 @@ Known limitation (external, not introduced here):
   records the evidence.
 
 Last updated: 2026-10-01 18:26 (Asia/Almaty)
+
+### CP-16 post-merge correction — PR #26 hardening (2026-10-01 19:13 Asia/Almaty)
+Status: `PASS` — CP-16 remains closed; this is a status-record correction only.
+
+Reason for correction:
+- CP-16 was implemented, merged and closed through PR #24 and the CP-16 entry
+  above; after that closure Arena additionally created and merged PR #26
+  (`CP-16 — Project Detail Drill-down & Session Inspection (routing & provenance
+  hardening)`), which is already present in `main` but was not yet reflected in
+  the factual `PROJECT_STATUS.md` record;
+- the CP-16 entry above therefore describes only the `29973db` state; the final
+  CP-16 state must also account for the PR #26 hardening;
+- this correction changes only this status document — no functional code,
+  architecture, routing, tests, checkpoint scope, `CHECKPOINTS.md`, source of
+  truth or dashboard boundary was changed;
+- PR #26 is **not** a new checkpoint and does **not** expand CP-16 scope.
+
+Merge facts:
+- PR #24 — main CP-16 implementation merge — merge commit
+  `29973db57a36907b407c7a61d34a08d32b25c060` (recorded above, unchanged);
+- PR #26 — subsequent CP-16 hardening, already in `main` — merge commit
+  `f2a0757962e3285374b071c28f7f211e6bfc473b` (merged 2026-10-01);
+- PR #26 stays inside the already-approved CP-16 routing/provenance boundary: it
+  preserves the originating list view on drill-down, completes `source.kind` /
+  `source.id` and conflict `sourceIds` provenance in Project Detail, adds
+  explicit pending (`READY_TO_CLOSE`) and stale (`STALE_SESSION`) session-closure
+  notes, and adds 2 regression tests. It does not change `config/`, `public/`,
+  the data contracts or the monitoring-only boundary.
+
+Final CP-16 validation (factually re-verified against `main` at `f2a0757`):
+- `npm test`: 172/172 PASS, 0 fail — the `170/170` figure in the PR #24 record
+  above is the historical pre-hardening result and is superseded by 172/172 as
+  the final CP-16 total;
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: PASS — schemaVersion `1.1.0`, version 5, 15 projects,
+  `config/projects.github.json` byte-identical to `public/project-state.json`,
+  no credentials detected;
+- desktop (1440px) and mobile (390px) validation: PASS — the automated DOM suite
+  renders the dashboard and the Project Detail view at both widths, including the
+  post-PR #26 routing/provenance and session-closure distinctions.
+
+Current state:
+- CP-16: closed (`PASS`), final state includes the PR #26 hardening;
+- Blocker: none;
+- Next checkpoint: `CP-17 — Live History & Reports`;
+- CP-17 has not started.
+
+Last updated: 2026-10-01 19:13 (Asia/Almaty)
