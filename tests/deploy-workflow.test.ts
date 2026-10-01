@@ -8,8 +8,8 @@ import { test } from 'node:test'
  *
  * The Cloudflare Pages workflow is the only production path for the portfolio
  * snapshot. It must refresh project state from GitHub *before* the build, use
- * only the existing read-only credential mechanism, and never publish a damaged
- * or empty snapshot when the GitHub sync is temporarily unavailable.
+ * only the existing read-only credential mechanism, and never publish a stale
+ * snapshot when the GitHub sync fails.
  */
 
 const workflowPath = fileURLToPath(new URL('../.github/workflows/deploy-cloudflare-pages.yml', import.meta.url))
@@ -101,13 +101,12 @@ test('the GitHub sync uses only the existing read-only credential mechanism', ()
   assert.ok(!/\bgithub_pat_[A-Za-z0-9_]{20,}\b/.test(workflow), 'no token literal may be committed')
 })
 
-test('a failing GitHub sync preserves the last valid snapshot instead of publishing damage', () => {
+test('a failing GitHub sync blocks deployment instead of publishing a stale snapshot', () => {
   const sync = stepAt('Sync GitHub portfolio state')
-  assert.match(sync.body, /continue-on-error:\s*true/, 'a temporary GitHub outage must not block deployment')
+  assert.ok(!/continue-on-error:\s*true/.test(sync.body), 'a failed sync must block deployment')
 
   const verify = stepAt('Verify published portfolio snapshot').body
-  assert.match(verify, /npm run verify:snapshot/, 'the published snapshot must be verified before build')
-  assert.match(verify, /::warning::/, 'a failed sync must stay visible in CI logs')
+  assert.match(verify, /npm run verify:snapshot/, 'the snapshot must be verified before build')
   assert.ok(
     indexOfStep('Verify published portfolio snapshot') < indexOfStep('Build'),
     'snapshot verification must happen before the build',
