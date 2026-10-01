@@ -71,9 +71,37 @@ React Flow is a rendering/interactivity component only. Business truth and execu
 - checkpoint
 - progress
 - lastUpdated
+- activity: lastMeaningfulActivity, statusUpdatedAt, snapshotGeneratedAt
+- session: sessionState, sessionCheckpoint, sessionStartedAt, sessionLastActivityAt,
+  sessionClosureStatus, sessionClosureEvidence, sessionStateEvidence[], sessionStateReason
 - blocker
 - nextAction
 - evidenceLinks[]
 - dependencies[]
 - tools[]
 - approvals[]
+
+## Activity and Arena session observation (CP-14)
+The dashboard distinguishes three things that must not be conflated:
+
+1. project operational status (`triageState`, checkpoint, blocker);
+2. meaningful project activity (newest attributable commit, pull-request,
+   workflow/check or canonical status-artifact evidence);
+3. the state of the project's Arena execution session
+   (`NOT_ACTIVE | ACTIVE | WAITING_FOR_VALIDATION | READY_TO_CLOSE | CLOSED | STALE_SESSION | UNKNOWN`).
+
+Session state is evidence only. A merge, commit, validation result or
+`PROJECT_STATUS.md` update never means the Arena session is closed; when
+checkpoint work is complete without closure evidence the observed state is
+`READY_TO_CLOSE`, and beyond the inactivity threshold it becomes
+`STALE_SESSION`. Missing evidence stays `UNKNOWN`/`UNAVAILABLE`.
+
+Session evidence is written by the executor into the canonical status artifact
+(optional `## Arena Session` block, see `docs/PROJECT_STATE_CONTRACT.md`) and is
+read by the existing scheduled/manual synchronization. The dashboard never
+starts, continues, retries or closes a session, and no realtime, webhook or
+per-project monitoring is added: a post-merge status update is a source event for
+the next **full portfolio** reconciliation, not a trigger.
+
+The executable derivation is `src/monitoring/derived-state.ts`; the contract is
+`src/contract/project-state.ts`.

@@ -19,6 +19,7 @@
     "src/adapters/github-source.ts",
     "src/contract/project-state.ts",
     "src/contract/task-packet.ts",
-    "src/discovery/discovery-analytics.ts"
+    "src/discovery/discovery-analytics.ts",
+    "src/monitoring/**/*.ts"
   ]
 }

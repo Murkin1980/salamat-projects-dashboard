@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "business-discovery",
   "name": "Business Discovery",
   "summary": "Evidence-backed business discovery and audit engine.",
@@ -10,6 +10,36 @@
   "checkpoint": null,
   "progress": null,
   "lastUpdated": "2026-08-26",
+  "activity": {
+    "lastMeaningfulActivity": {
+      "status": "KNOWN",
+      "at": "2026-08-26T00:00:00Z",
+      "source": "FIXTURE",
+      "sourceId": "fixture-registry",
+      "evidenceUrl": null
+    },
+    "statusUpdatedAt": {
+      "status": "UNAVAILABLE",
+      "reason": "Fixture-only project: no canonical status artifact exists"
+    },
+    "snapshotGeneratedAt": { "at": "2026-08-26T00:00:00Z", "source": "SNAPSHOT", "sourceId": "config/projects.json" }
+  },
+  "session": {
+    "sessionState": "UNKNOWN",
+    "sessionCheckpoint": null,
+    "sessionStartedAt": {
+      "status": "UNAVAILABLE",
+      "reason": "Fixture-only project: no Arena session evidence source exists"
+    },
+    "sessionLastActivityAt": {
+      "status": "UNAVAILABLE",
+      "reason": "Fixture-only project: no Arena session evidence source exists"
+    },
+    "sessionClosureStatus": "UNKNOWN",
+    "sessionClosureEvidence": null,
+    "sessionStateEvidence": [],
+    "sessionStateReason": "Fixture-only project: no Arena session evidence source exists, so session state stays UNKNOWN"
+  },
   "blocker": null,
   "nextAction": "Build Auditor MVP, then run Replay Pilot.",
   "evidenceLinks": [],
