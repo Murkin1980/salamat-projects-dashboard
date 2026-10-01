@@ -56,6 +56,7 @@ function project(
       sessionStateEvidence: [],
       sessionStateReason: 'Fixture registry carries no Arena session evidence',
     },
+    history: { status: 'UNAVAILABLE', reason: 'fixture registry carries no history evidence' },
     blocker: null,
     nextAction: null,
     evidenceLinks: [],
@@ -121,38 +122,70 @@ function encodeContent(content: string): string {
   return Buffer.from(content, 'utf8').toString('base64')
 }
 
-/** Minimal GitHub REST surface used by the synchronization. */
+const OLDER_STATUS_CONTENT = STATUS_CONTENT
+  .replace('CP-09 — Adapter Contract', 'CP-08 — Fixture Predecessor')
+  .replace('IN_PROGRESS', 'READY')
+
+const NEWER_REVISION_SHA = 'bbbb1111cccc2222dddd3333eeee4444ffff5555'
+const OLDER_REVISION_SHA = 'cccc1111dddd2222eeee3333ffff44445555aaaa'
+
+/** Minimal GitHub REST surface used by the synchronization, including CP-17 history reads. */
+function githubStubResponse(url: string, statusContent: string): Response {
+  const pathname = url.replace('https://api.github.com', '')
+  const [route, query = ''] = pathname.split('?')
+  const params = new URLSearchParams(query)
+
+  if (route === '/repos/Murkin1980/demo-alpha') {
+    return Response.json({ default_branch: 'main' })
+  }
+  if (route === '/repos/Murkin1980/demo-alpha/commits/main') {
+    return Response.json({
+      sha: 'aaaa1111bbbb2222cccc3333dddd4444eeee5555',
+      commit: { committer: { date: '2026-09-21T10:00:00Z' } },
+    })
+  }
+  if (route === '/repos/Murkin1980/demo-alpha/commits') {
+    if (params.get('path') === 'PROJECT_STATUS.md') {
+      return Response.json([
+        { sha: NEWER_REVISION_SHA, html_url: `https://github.com/Murkin1980/demo-alpha/commit/${NEWER_REVISION_SHA}`, commit: { message: 'status: CP-09', committer: { date: '2026-09-20T09:00:00Z' } } },
+        { sha: OLDER_REVISION_SHA, html_url: `https://github.com/Murkin1980/demo-alpha/commit/${OLDER_REVISION_SHA}`, commit: { message: 'status: CP-08', committer: { date: '2026-09-18T09:00:00Z' } } },
+      ])
+    }
+    return Response.json([
+      { sha: 'aaaa1111bbbb2222cccc3333dddd4444eeee5555', html_url: 'https://github.com/Murkin1980/demo-alpha/commit/aaaa1111bbbb2222cccc3333dddd4444eeee5555', commit: { message: 'feat: wire sync\n\nBody text.', committer: { date: '2026-09-21T10:00:00Z' } } },
+    ])
+  }
+  if (route === '/repos/Murkin1980/demo-alpha/pulls') {
+    return Response.json([
+      { number: 7, title: 'Wire sync', html_url: 'https://github.com/Murkin1980/demo-alpha/pull/7', created_at: '2026-09-20T08:00:00Z', merged_at: '2026-09-20T09:30:00Z', closed_at: '2026-09-20T09:30:00Z', merge_commit_sha: null },
+    ])
+  }
+  if (route.startsWith('/repos/Murkin1980/demo-alpha/contents/PROJECT_STATUS.md')) {
+    const ref = params.get('ref')
+    const content = ref === OLDER_REVISION_SHA ? OLDER_STATUS_CONTENT : statusContent
+    return Response.json({
+      type: 'file',
+      path: 'PROJECT_STATUS.md',
+      sha: '0123456789abcdef0123456789abcdef01234567',
+      html_url: 'https://github.com/Murkin1980/demo-alpha/blob/main/PROJECT_STATUS.md',
+      content: encodeContent(content),
+    })
+  }
+  if (route.startsWith('/repos/Murkin1980/demo-alpha/contents/ROADMAP.md')) {
+    return new Response('{"message":"Not Found"}', { status: 404 })
+  }
+  return new Response('{"message":"Unexpected request"}', { status: 500 })
+}
+
 function installGithubStub(options: { statusContent?: string; failOn?: string } = {}): void {
   const statusContent = options.statusContent ?? STATUS_CONTENT
   globalThis.fetch = (async (input: RequestInfo | URL) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url
     const pathname = url.replace('https://api.github.com', '')
-
     if (options.failOn && pathname.startsWith(options.failOn)) {
       return new Response('{"message":"Not Found"}', { status: 404 })
     }
-    if (pathname === '/repos/Murkin1980/demo-alpha') {
-      return Response.json({ default_branch: 'main' })
-    }
-    if (pathname === '/repos/Murkin1980/demo-alpha/commits/main') {
-      return Response.json({
-        sha: 'aaaa1111bbbb2222cccc3333dddd4444eeee5555',
-        commit: { committer: { date: '2026-09-21T10:00:00Z' } },
-      })
-    }
-    if (pathname.startsWith('/repos/Murkin1980/demo-alpha/contents/PROJECT_STATUS.md')) {
-      return Response.json({
-        type: 'file',
-        path: 'PROJECT_STATUS.md',
-        sha: '0123456789abcdef0123456789abcdef01234567',
-        html_url: 'https://github.com/Murkin1980/demo-alpha/blob/main/PROJECT_STATUS.md',
-        content: encodeContent(statusContent),
-      })
-    }
-    if (pathname.startsWith('/repos/Murkin1980/demo-alpha/contents/ROADMAP.md')) {
-      return new Response('{"message":"Not Found"}', { status: 404 })
-    }
-    return new Response('{"message":"Unexpected request"}', { status: 500 })
+    return githubStubResponse(url, statusContent)
   }) as typeof fetch
 }
 
@@ -306,6 +339,25 @@ test('sync publishes the canonical cache and the runtime snapshot from one run',
     'snapshot generation is never the project activity timestamp',
   )
 
+  // CP-17: the same synchronization collects the project's live history.
+  assert.equal(alpha.history.status, 'KNOWN')
+  if (alpha.history.status === 'KNOWN') {
+    const types = alpha.history.events.map((event) => event.type)
+    assert.ok(types.includes('COMMIT'))
+    assert.ok(types.includes('PULL_REQUEST_OPENED') && types.includes('PULL_REQUEST_MERGED'))
+    assert.ok(types.includes('CHECKPOINT_MOVED') && types.includes('STATE_CHANGED'))
+    const moved = alpha.history.events.find((event) => event.type === 'CHECKPOINT_MOVED')!
+    assert.equal(moved.from, 'CP-08 — Fixture Predecessor')
+    assert.equal(moved.to, 'CP-09 — Adapter Contract')
+    assert.equal(moved.sourceId, NEWER_REVISION_SHA)
+    assert.ok(moved.evidenceUrl.endsWith(`/commit/${NEWER_REVISION_SHA}`))
+    // No session block in the artifact: no session event is manufactured, the gap is explicit.
+    assert.ok(!types.some((type) => type.startsWith('SESSION_')))
+    assert.ok(alpha.history.gaps.some((gap) => gap.area === 'SESSION'))
+  }
+  const betaHistory = registry.projects.find((entry) => entry.id === 'demo-beta')!.history
+  assert.equal(betaHistory.status, 'UNAVAILABLE', 'a fixture project gets an explicit unavailable history, not an empty one')
+
   // No session evidence in the canonical artifact: never inferred as closed.
   assert.equal(alpha.session.sessionState, 'UNKNOWN')
   assert.equal(alpha.session.sessionClosureStatus, 'UNKNOWN')
@@ -363,26 +415,7 @@ test('sync authenticates against the GitHub REST API with the read-only token', 
 })
 
 function installGithubStubResponse(url: string): Response {
-  const pathname = url.replace('https://api.github.com', '')
-  if (pathname === '/repos/Murkin1980/demo-alpha') {
-    return Response.json({ default_branch: 'main' })
-  }
-  if (pathname === '/repos/Murkin1980/demo-alpha/commits/main') {
-    return Response.json({
-      sha: 'aaaa1111bbbb2222cccc3333dddd4444eeee5555',
-      commit: { committer: { date: '2026-09-21T10:00:00Z' } },
-    })
-  }
-  if (pathname.startsWith('/repos/Murkin1980/demo-alpha/contents/PROJECT_STATUS.md')) {
-    return Response.json({
-      type: 'file',
-      path: 'PROJECT_STATUS.md',
-      sha: '0123456789abcdef0123456789abcdef01234567',
-      html_url: 'https://github.com/Murkin1980/demo-alpha/blob/main/PROJECT_STATUS.md',
-      content: encodeContent(STATUS_CONTENT),
-    })
-  }
-  return new Response('{"message":"Not Found"}', { status: 404 })
+  return githubStubResponse(url, STATUS_CONTENT)
 }
 
 test('sync fails closed and writes nothing when GitHub is unavailable', async () => {

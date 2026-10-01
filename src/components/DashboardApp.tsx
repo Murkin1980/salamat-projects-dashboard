@@ -32,7 +32,6 @@ import {
 } from '@tabler/icons-react'
 import projectRegistry from '../../config/projects.github.json'
 import nodeGraphRegistry from '../../config/node-graphs.json'
-import historyRegistry from '../../config/project-history.json'
 import experimentRegistry from '../../config/experiments.github.json'
 import { NodesView } from './NodesView'
 import { ReportView } from './ReportView'
@@ -48,7 +47,6 @@ import { useLiveRegistry } from '../hooks/use-live-registry'
 import { useHashRoute } from '../hooks/use-hash-route'
 import { deriveLiveProjectState } from '../triage/live-triage'
 import { parseNodeGraphRegistry } from '../graph/node-graph'
-import { parseHistoryRegistry } from '../history/project-history'
 import { parseExperimentRegistry, type ExperimentStatus } from '../contract/experiment-registry'
 import { ARENA_SESSION_INACTIVITY_THRESHOLD_HOURS, getActivityFreshness } from '../monitoring/derived-state'
 import { formatEventTimestamp } from '../monitoring/project-detail-events'
@@ -61,8 +59,6 @@ import { projectDetailHash, viewHash, type DashboardView } from '../routing/hash
 const initialRegistry = parseProjectRegistry(projectRegistry)
 // The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
 const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
-const historyProjects = parseHistoryRegistry(historyRegistry).projects
-const dashboardHistory = historyProjects.find((history) => history.projectId === 'salamat-projects-dashboard')!
 const experiments = parseExperimentRegistry(experimentRegistry)
 const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned', RETIRED: 'Retired' }
 
@@ -148,15 +144,16 @@ function App() {
     [attentionProjects],
   )
 
+  // History & Reports lists every project in the same activity order as Portfolio
+  // (unfiltered: the search box does not apply there), so its project selector is explainable.
+  const reportProjects = useMemo(() => orderByRecentActivity(projects), [projects])
+
   // The detail view reads the same normalized state the cards render, so a
   // project can never be described differently in the list and in its detail.
   const detailProjectId = route.projectId
   const detailProject = detailProjectId === null
     ? null
     : projects.find((project) => project.id === detailProjectId) ?? null
-  const detailHistory = detailProjectId === null
-    ? null
-    : historyProjects.find((history) => history.projectId === detailProjectId) ?? null
 
   return (
     <div className="app-shell">
@@ -191,7 +188,7 @@ function App() {
             <p className="eyebrow">Operational portfolio</p>
             <h1>{detailProjectId === null ? viewTitles[view] : detailProject?.name ?? 'Проект не найден'}</h1>
             <p>{detailProjectId === null
-              ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Проверяемая хронология checkpoint, state и blocker changes.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
+              ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Живая хронология проекта из GitHub evidence: коммиты, PR, переходы статуса и события сессии Arena.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
               : 'Полная карточка проекта: состояние, активность, сессия Arena и evidence. Только чтение.'}</p>
           </div>
           {(detailProjectId !== null || (view !== 'nodes' && view !== 'reports' && view !== 'discovery')) && <div className="header-actions">
@@ -221,7 +218,6 @@ function App() {
           <ProjectDetailView
             project={detailProject}
             projectId={detailProjectId}
-            history={detailHistory}
             onNavigate={navigate}
           />
         )}
@@ -269,7 +265,7 @@ function App() {
         )}
 
         {detailProjectId === null && view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
-        {detailProjectId === null && view === 'reports' && <ReportView history={dashboardHistory}/>}
+        {detailProjectId === null && view === 'reports' && <ReportView projects={reportProjects} selectedProjectId={route.reportProjectId ?? null} onNavigate={navigate}/>}
         {detailProjectId === null && view === 'discovery' && <DiscoveryView/>}
       </main>
     </div>

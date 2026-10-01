@@ -4,9 +4,17 @@ import path from 'node:path'
 import { tmpdir } from 'node:os'
 import {
   adaptGithubSource,
+  readStatusRevisionLabels,
   type RepositoryArtifact,
   type RepositorySnapshot,
 } from '../src/adapters/github-source.js'
+import {
+  HISTORY_LIMITS,
+  type CommitEvidence,
+  type PullRequestEvidence,
+  type RepositoryHistoryEvidence,
+  type StatusRevisionEvidence,
+} from '../src/monitoring/history-derivation.js'
 import {
   parseProjectRegistry,
   type ProjectRegistry,
@@ -183,6 +191,85 @@ async function firstExistingArtifact(
   return null
 }
 
+// --- History evidence (CP-17) ---------------------------------------------
+
+interface GithubCommitListItem {
+  sha: string
+  html_url: string
+  commit: { message: string; committer: { date: string } | null }
+}
+
+interface GithubPullListItem {
+  number: number
+  title: string
+  html_url: string
+  created_at: string
+  merged_at: string | null
+  closed_at: string | null
+  merge_commit_sha: string | null
+}
+
+function toCommitEvidence(item: GithubCommitListItem): CommitEvidence {
+  return {
+    sha: item.sha,
+    committedAt: item.commit.committer?.date ?? '',
+    message: item.commit.message,
+    url: item.html_url,
+  }
+}
+
+/**
+ * Reads the recent, bounded history window of one repository with the same
+ * read-only credentials and the same fail-closed client as the rest of the sync.
+ * Raw status-artifact content is parsed into labels immediately and never kept.
+ */
+async function collectHistoryEvidence(
+  repo: string,
+  branch: string,
+  statusPath: string | null,
+  token: string | null,
+): Promise<RepositoryHistoryEvidence> {
+  const commits = (await githubRequest(
+    `/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&per_page=${HISTORY_LIMITS.commits}`,
+    token,
+  )) as GithubCommitListItem[]
+
+  const pulls = (await githubRequest(
+    `/repos/${repo}/pulls?state=all&sort=updated&direction=desc&per_page=${HISTORY_LIMITS.pullRequests}`,
+    token,
+  )) as GithubPullListItem[]
+
+  let statusRevisions: StatusRevisionEvidence[] | null = null
+  if (statusPath) {
+    const revisionCommits = (await githubRequest(
+      `/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&path=${encodePath(statusPath)}&per_page=${HISTORY_LIMITS.statusRevisions}`,
+      token,
+    )) as GithubCommitListItem[]
+    statusRevisions = []
+    for (const revision of revisionCommits) {
+      const artifact = await fetchArtifact(repo, revision.sha, statusPath, token)
+      statusRevisions.push({
+        sha: revision.sha,
+        committedAt: revision.commit.committer?.date ?? '',
+        url: revision.html_url,
+        labels: artifact ? readStatusRevisionLabels(artifact.content) : null,
+      })
+    }
+  }
+
+  const pullRequests: PullRequestEvidence[] = pulls.map((pull) => ({
+    number: pull.number,
+    title: pull.title,
+    url: pull.html_url,
+    createdAt: pull.created_at,
+    mergedAt: pull.merged_at,
+    closedAt: pull.closed_at,
+    mergeCommitSha: pull.merge_commit_sha,
+  }))
+
+  return { repo, commits: commits.map(toCommitEvidence), pullRequests, statusRevisions }
+}
+
 // --- Sync ------------------------------------------------------------------
 
 export function mergeSelected(
@@ -338,6 +425,12 @@ export async function syncOnce(
       snapshotSourceId,
       artifacts,
       alternateStatus,
+      historyEvidence: await collectHistoryEvidence(
+        source.repo,
+        meta.default_branch,
+        primary?.path ?? null,
+        token,
+      ),
     }
 
     selected.push(adaptGithubSource(snapshot))

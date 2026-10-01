@@ -84,7 +84,7 @@ function snapshot(overrides: Partial<RepositorySnapshot> = {}): RepositorySnapsh
 /** A minimal full project so the cross-field session rules can be validated. */
 function projectWithSession(session: ArenaSession): ProjectState {
   return {
-    schemaVersion: '1.1.0',
+    schemaVersion: '1.2.0',
     id: 'fixture-project',
     name: 'Fixture Project',
     summary: 'Fixture summary.',
@@ -107,6 +107,7 @@ function projectWithSession(session: ArenaSession): ProjectState {
       snapshotGeneratedAt: { at: GENERATED_AT, source: 'SNAPSHOT', sourceId: SNAPSHOT_SOURCE_ID },
     },
     session,
+    history: { status: 'UNAVAILABLE', reason: 'fixture' },
     blocker: null,
     nextAction: null,
     evidenceLinks: [STATUS_REF],

@@ -304,8 +304,9 @@ body { margin: 0; min-height: 100vh; }
 .history-timeline li { position: relative; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; padding-bottom: 18px; }
 .history-timeline li:not(:last-child)::before { content: ''; position: absolute; left: 20px; top: 38px; bottom: -4px; width: 1px; background: #dce2ea; }
 .history-icon { position: relative; z-index: 1; width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #cad5e4; border-radius: 12px; background: #edf3fa; color: #315b8d; }
-.history-icon.event-state_changed { background: #f1edfb; color: #6f56a2; }
-.history-icon.event-blocker_changed { background: #fff0ef; color: #b33236; }
+.history-icon.event-pull_requests { background: #eef6ee; color: #2f7048; border-color: #c7dcc9; }
+.history-icon.event-status { background: #f1edfb; color: #6f56a2; border-color: #d3c9ea; }
+.history-icon.event-session { background: #fff7e8; color: #8a5a10; border-color: #e6c8a0; }
 .history-timeline article { border: 1px solid #e2e7ed; border-radius: 14px; padding: 14px 16px; }
 .history-event-heading { display: flex; justify-content: space-between; gap: 12px; color: #728095; font-size: 10px; font-weight: 850; text-transform: uppercase; }
 .history-event-heading time { font-weight: 650; text-transform: none; }
@@ -587,3 +588,47 @@ body { margin: 0; min-height: 100vh; }
   .detail-return button { min-height: 44px; }
   .detail-note, .detail-note-line { font-size: 11px; }
 }
+
+/* CP-17 — live History & Reports */
+.reports-heading > div { min-width: 0; }
+.reports-heading-actions { display: grid; justify-items: end; gap: 8px; flex: 0 0 auto; }
+.report-detail-link, .detail-report-link { display: inline-flex; align-items: center; min-height: 36px; color: var(--accent-strong); font-size: 12px; font-weight: 800; }
+.report-controls { display: grid; gap: 8px; padding: 14px 22px; border-bottom: 1px solid #e5e9ef; background: #fff; }
+.report-project-select { display: grid; gap: 5px; max-width: 520px; }
+.report-project-select span { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+.report-project-select select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #dce2eb; border-radius: 10px; padding: 8px 10px; background: #fff; color: #1d2d43; font: inherit; font-size: 13px; font-weight: 700; }
+.report-window { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.report-metrics strong { font-size: 22px; white-space: nowrap; }
+.history-gaps { list-style: none; margin: 0; padding: 12px 22px; display: grid; gap: 8px; border-bottom: 1px solid #e5e9ef; background: #fffdf8; }
+.history-gaps li { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; color: #6a5a3a; font-size: 12px; line-height: 1.45; }
+.history-gaps li span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.history-unavailable { margin: 22px; text-align: center; }
+.history-unavailable p { overflow-wrap: anywhere; }
+.history-time-note { color: #8a5a10 !important; font-size: 11px !important; }
+.history-provenance { color: #728095 !important; font-size: 11px !important; overflow-wrap: anywhere; }
+.history-provenance span { font-weight: 800; }
+.history-provenance code { font-size: 11px; overflow-wrap: anywhere; }
+.history-timeline article { min-width: 0; overflow-wrap: anywhere; }
+.history-timeline p { overflow-wrap: anywhere; }
+.detail-history .history-event-heading { align-items: baseline; flex-wrap: wrap; }
+.detail-history .history-transition { margin-top: 2px; flex-wrap: wrap; }
+.detail-history .history-transition strong { font-size: 12px; overflow-wrap: anywhere; }
+.detail-history p, .detail-history li { overflow-wrap: anywhere; }
+.detail-report-link { margin-top: 12px; }
+
+@media (max-width: 1100px) {
+  .report-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .reports-heading-actions { justify-items: start; }
+  .report-metrics { grid-template-columns: 1fr; }
+  .report-controls { padding: 12px; }
+  .report-project-select { max-width: none; }
+  .history-gaps { padding: 10px 12px; }
+  .history-unavailable { margin: 12px; }
+  .report-detail-link { min-height: 44px; }
+}
+
+/* CP-17 — long evidence ids (sha:path) must wrap inside the detail panels at 390px */
+.detail-row dd { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
