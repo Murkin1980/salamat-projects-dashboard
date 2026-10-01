@@ -27,6 +27,23 @@ Project repositories / MPE
 → triage engine
 → dashboard views
 
+## Production data path (CP-13)
+The scheduled Cloudflare Pages workflow keeps the portfolio snapshot current:
+
+```text
+GitHub repositories
+→ npm run sync:github -- --output config/projects.github.json
+→ config/projects.github.json
+→ public/project-state.json        (same run, byte-identical)
+→ npm run build
+→ Cloudflare Pages
+→ Dashboard (browser polls project-state.json every 60 s)
+```
+
+One synchronization mechanism, no backend, no Worker, no database and no new API.
+The sync runs before the build and fails closed, so a GitHub outage preserves the
+last valid committed snapshot instead of publishing damaged or empty data.
+
 ## Views
 1. Triage — main operational screen
 2. Portfolio — all projects

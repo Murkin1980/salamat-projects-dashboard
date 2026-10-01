@@ -48,5 +48,37 @@
         "ROADMAP.md"
       ]
     }
+  ],
+  "gaps": [
+    {
+      "projectId": "murat-ads-control",
+      "repo": "Murkin1980/murat-ads-control",
+      "reason": "Repository has no PROJECT_STATUS.md or STATUS.md. docs/CHECKPOINTS.md is a checkpoint log without a canonical Status label, so the attributed portfolio state (BLOCKED, CP-004) stays authoritative instead of being replaced by an UNKNOWN state without evidence."
+    },
+    {
+      "projectId": "tender-assistant",
+      "repo": "Murkin1980/tender-assistant",
+      "reason": "Repository has no PROJECT_STATUS.md or STATUS.md; only docs/checkpoints/CP-*.md milestone records exist. There is no canonical status artifact to synchronize."
+    },
+    {
+      "projectId": "minibase-cloudflare",
+      "repo": "Murkin1980/minibase-cloudflare",
+      "reason": "Repository has no PROJECT_STATUS.md or STATUS.md. ROADMAP.md is supporting evidence only and docs/PRODUCTION_STATUS.md is an operational runbook without a canonical Status label, so triage is not derived from them."
+    },
+    {
+      "projectId": "murat-house",
+      "repo": "Murkin1980/Murat-house",
+      "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
+    },
+    {
+      "projectId": "murat-ai-orchestrator",
+      "repo": "Murkin1980/murat-ai-orchestrator",
+      "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
+    },
+    {
+      "projectId": "grand-mebel-document-control",
+      "repo": "Murkin1980/grand-mebel-document-control",
+      "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
+    }
   ]
 }
