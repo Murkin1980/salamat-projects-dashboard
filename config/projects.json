@@ -1,10 +1,10 @@
 {
-  "schemaVersion": "1.0.0",
-  "version": 4,
-  "updatedAt": "2026-09-18",
+  "schemaVersion": "1.1.0",
+  "version": 5,
+  "updatedAt": "2026-10-01",
   "projects": [
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "murat-project-engineer",
       "name": "Murat Project Engineer",
       "summary": "Portfolio engineering, gates, experiments and project governance.",
@@ -34,10 +34,50 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/murat-project-engineer"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-10-01T10:29:26Z",
+          "source": "COMMIT",
+          "sourceId": "532d2ec6189b587d77d1597d1d561f434982c27a",
+          "evidenceUrl": "https://github.com/Murkin1980/murat-project-engineer/commit/532d2ec6189b587d77d1597d1d561f434982c27a"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No canonical status artifact carried an attributable \"Last updated\" value"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "STATUS.md",
+            "url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md",
+            "sourceId": "033f49e0c39f3af0056fb506c2b9371bc492ab94:STATUS.md"
+          }
+        ],
+        "sessionState": "UNKNOWN",
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionStateReason": "No Arena session evidence found in STATUS.md"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "business-discovery",
       "name": "Business Discovery",
       "summary": "Evidence-backed business discovery and audit engine.",
@@ -71,10 +111,47 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/business-discovery"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "business-discovery",
+            "url": "https://github.com/Murkin1980/business-discovery",
+            "sourceId": "config/projects.json:business-discovery"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "salamat-projects-dashboard",
       "name": "Salamat Projects Dashboard",
       "summary": "Live portfolio triage and node-flow dashboard.",
@@ -104,10 +181,53 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/salamat-projects-dashboard"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-10-01T10:38:22Z",
+          "source": "COMMIT",
+          "sourceId": "0a41f51efa3181026c78471565bd6a57123bdea2",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/commit/0a41f51efa3181026c78471565bd6a57123bdea2"
+        },
+        "statusUpdatedAt": {
+          "status": "KNOWN",
+          "at": "2026-09-30T00:00:00Z",
+          "source": "PROJECT_STATUS",
+          "sourceId": "647aff59f652f35c339ec46af615a69a50935568:PROJECT_STATUS.md",
+          "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionCheckpoint": "CP-12 — Discovery Monitoring",
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "PROJECT_STATUS.md",
+            "url": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md",
+            "sourceId": "647aff59f652f35c339ec46af615a69a50935568:PROJECT_STATUS.md"
+          }
+        ],
+        "sessionState": "UNKNOWN",
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionStateReason": "No Arena session evidence found in PROJECT_STATUS.md"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "mebelflow-ai",
       "name": "MebelFlow AI",
       "summary": "Furniture workflow and design automation experiments.",
@@ -131,10 +251,44 @@
         "kind": "FIXTURE",
         "id": "fixture-registry"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-08-26T00:00:00Z",
+          "source": "FIXTURE",
+          "sourceId": "fixture-registry",
+          "evidenceUrl": null
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no canonical status artifact exists"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [],
+        "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "murat-ads-control",
       "name": "Murat Ads Control",
       "summary": "Google Ads control and optimization layer for furniture brands.",
@@ -164,10 +318,50 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/murat-ads-control"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-17T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:murat-ads-control",
+          "evidenceUrl": "https://github.com/Murkin1980/murat-ads-control/blob/main/docs/CHECKPOINTS.md"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "docs/CHECKPOINTS.md",
+            "url": "https://github.com/Murkin1980/murat-ads-control/blob/main/docs/CHECKPOINTS.md",
+            "sourceId": "e50c7d13717c7e049a88d5470e8619c741f8c075:docs/CHECKPOINTS.md"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "interactive-kp",
       "name": "Interactive KP",
       "summary": "Interactive commercial proposals and Qulpinay Style offers.",
@@ -191,10 +385,44 @@
         "kind": "FIXTURE",
         "id": "fixture-registry"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-08-26T00:00:00Z",
+          "source": "FIXTURE",
+          "sourceId": "fixture-registry",
+          "evidenceUrl": null
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no canonical status artifact exists"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [],
+        "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "mebellegal-kz",
       "name": "MebelLegal KZ",
       "summary": "Furniture legal/document workflow for Kazakhstan.",
@@ -218,10 +446,44 @@
         "kind": "FIXTURE",
         "id": "fixture-registry"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-08-26T00:00:00Z",
+          "source": "FIXTURE",
+          "sourceId": "fixture-registry",
+          "evidenceUrl": null
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no canonical status artifact exists"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [],
+        "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "whatsapp-sales-agent",
       "name": "WhatsApp Sales Agent",
       "summary": "AI sales assistant for WhatsApp furniture leads.",
@@ -245,10 +507,44 @@
         "kind": "FIXTURE",
         "id": "fixture-registry"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-08-26T00:00:00Z",
+          "source": "FIXTURE",
+          "sourceId": "fixture-registry",
+          "evidenceUrl": null
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no canonical status artifact exists"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [],
+        "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "tender-assistant",
       "name": "Tender Assistant",
       "summary": "Furniture tender monitoring and entrepreneur assistance.",
@@ -278,10 +574,50 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/tender-assistant"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-12T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:tender-assistant",
+          "evidenceUrl": "https://github.com/Murkin1980/tender-assistant/commit/1f2bc7bfe99960bcb91295dfc8537cae154b7276"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "Latest main commit",
+            "url": "https://github.com/Murkin1980/tender-assistant/commit/1f2bc7bfe99960bcb91295dfc8537cae154b7276",
+            "sourceId": "1f2bc7bfe99960bcb91295dfc8537cae154b7276"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "etsy-market-research",
       "name": "Etsy Market Research",
       "summary": "Market research exploration for Etsy opportunities.",
@@ -305,10 +641,44 @@
         "kind": "FIXTURE",
         "id": "fixture-registry"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-08-26T00:00:00Z",
+          "source": "FIXTURE",
+          "sourceId": "fixture-registry",
+          "evidenceUrl": null
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no canonical status artifact exists"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Fixture-only project: no Arena session evidence source exists"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [],
+        "sessionStateReason": "Fixture-only project: no Arena session evidence source exists"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "minibase-cloudflare",
       "name": "MiniBase Cloudflare",
       "summary": "Compact multi-project BaaS on Cloudflare Workers, D1 and R2.",
@@ -348,10 +718,60 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/minibase-cloudflare"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-06T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:minibase-cloudflare",
+          "evidenceUrl": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/ROADMAP.md"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "ROADMAP.md",
+            "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/ROADMAP.md",
+            "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:ROADMAP.md"
+          },
+          {
+            "label": "CP06_AUDIT.md",
+            "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/CP06_AUDIT.md",
+            "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:CP06_AUDIT.md"
+          },
+          {
+            "label": "docs/SCALABILITY.md",
+            "url": "https://github.com/Murkin1980/minibase-cloudflare/blob/a139b471dfc59719cb1c538234983deeb5f1d8c6/docs/SCALABILITY.md",
+            "sourceId": "a139b471dfc59719cb1c538234983deeb5f1d8c6:docs/SCALABILITY.md"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "ai-microtask-factory",
       "name": "AI Microtask Factory",
       "summary": "Microtask pipeline with controlled acceptance and execution handoff.",
@@ -381,10 +801,47 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/ai-microtask-factory"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "ai-microtask-factory",
+            "url": "https://github.com/Murkin1980/ai-microtask-factory",
+            "sourceId": "config/projects.json:ai-microtask-factory"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable: Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "murat-house",
       "name": "Murat House",
       "summary": "Public project journal about how Murat's projects, decisions, lessons and skills are built.",
@@ -414,10 +871,50 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/Murat-house"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-18T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:murat-house",
+          "evidenceUrl": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "CP-05 merge",
+            "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
+            "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "murat-ai-orchestrator",
       "name": "Murat AI Orchestrator",
       "summary": "Bounded orchestration layer for Murat AI with governed routing, fallback and durable execution checkpoints.",
@@ -452,10 +949,55 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/murat-ai-orchestrator"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-18T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:murat-ai-orchestrator",
+          "evidenceUrl": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "CP-06 merge",
+            "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
+            "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
+          },
+          {
+            "label": "CP-07 instruction",
+            "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
+            "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     },
     {
-      "schemaVersion": "1.0.0",
+      "schemaVersion": "1.1.0",
       "id": "grand-mebel-document-control",
       "name": "Grand Mebel Document Control",
       "summary": "Document-control workspace for invoices, waybills, ESF tracking and registry operations.",
@@ -485,7 +1027,47 @@
         "kind": "REPOSITORY",
         "id": "Murkin1980/grand-mebel-document-control"
       },
-      "staleAfterDays": 7
+      "staleAfterDays": 7,
+      "activity": {
+        "lastMeaningfulActivity": {
+          "status": "KNOWN",
+          "at": "2026-09-12T00:00:00Z",
+          "source": "MANUAL",
+          "sourceId": "config/projects.json:grand-mebel-document-control",
+          "evidenceUrl": "https://github.com/Murkin1980/grand-mebel-document-control/commit/58fbddaa84e2cacb9cd03cb3862c30011e2d4224"
+        },
+        "statusUpdatedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "Registry attribution records no canonical status-artifact update time"
+        },
+        "snapshotGeneratedAt": {
+          "at": "2026-10-01T00:00:00Z",
+          "source": "SNAPSHOT",
+          "sourceId": "config/projects.json"
+        }
+      },
+      "session": {
+        "sessionState": "UNKNOWN",
+        "sessionCheckpoint": null,
+        "sessionStartedAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session start timestamp was found"
+        },
+        "sessionLastActivityAt": {
+          "status": "UNAVAILABLE",
+          "reason": "No attributable Arena session activity timestamp was found"
+        },
+        "sessionClosureStatus": "UNKNOWN",
+        "sessionClosureEvidence": null,
+        "sessionStateEvidence": [
+          {
+            "label": "Latest main merge",
+            "url": "https://github.com/Murkin1980/grand-mebel-document-control/commit/58fbddaa84e2cacb9cd03cb3862c30011e2d4224",
+            "sourceId": "58fbddaa84e2cacb9cd03cb3862c30011e2d4224"
+          }
+        ],
+        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+      }
     }
   ]
 }

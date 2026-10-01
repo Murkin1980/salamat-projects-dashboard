@@ -264,6 +264,11 @@ export async function syncOnce(
   // path must never leave a partially refreshed snapshot behind.
   const resolvedOutput = outputPath ? resolveSafeOutput(outputPath, root) : null
 
+  // One observation time for the whole run. It is recorded as the snapshot
+  // generation timestamp only and is never used as project or session activity.
+  const generatedAt = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
+  const snapshotSourceId = CANONICAL_CACHE_RELATIVE_PATH.split(path.sep).join('/')
+
   const sourceConfig = JSON.parse(
     await readFile(path.join(root, 'config', 'source-repositories.json'), 'utf8'),
   ) as SourceRepositoriesConfig
@@ -329,6 +334,8 @@ export async function syncOnce(
       headSha: head.sha,
       headCommittedAt: head.commit.committer.date,
       retrievedAt: new Date().toISOString().slice(0, 10),
+      generatedAt,
+      snapshotSourceId,
       artifacts,
       alternateStatus,
     }

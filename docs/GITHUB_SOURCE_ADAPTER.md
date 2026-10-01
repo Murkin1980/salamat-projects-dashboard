@@ -14,6 +14,17 @@ project truth.
 5. Dates come from an attributable status label or the repository HEAD commit,
    never from the synchronization clock.
 6. Evidence links contain the repository path and immutable Git blob SHA.
+7. Activity evidence for CP-14 is the newest of: the HEAD commit of the default
+   branch, and the declared `Last updated:` date of the canonical status and
+   roadmap artifacts. The run's own timestamp is recorded as
+   `activity.snapshotGeneratedAt` only and is never activity.
+8. An optional canonical `## Arena Session` block in the status artifact is
+   parsed into the normalized session evidence (see
+   `docs/PROJECT_STATE_CONTRACT.md`). An absent or unrecognized block is
+   `UNKNOWN`, never `CLOSED`; a merge, commit or status update is not closure.
+9. A configured source that cannot be read stays explicitly `UNAVAILABLE` with a
+   reason instead of being attributed from a previous snapshot; the next
+   synchronization publishes real evidence for it.
 
 ## Security boundary
 

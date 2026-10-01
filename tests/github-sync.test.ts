@@ -41,6 +41,21 @@ function project(
     checkpoint: null,
     progress: null,
     lastUpdated: '2026-01-01',
+    activity: {
+      lastMeaningfulActivity: { status: 'UNAVAILABLE', reason: 'fixture registry carries no activity evidence' },
+      statusUpdatedAt: { status: 'UNAVAILABLE', reason: 'fixture registry carries no status artifact' },
+      snapshotGeneratedAt: { at: '2026-09-01T00:00:00Z', source: 'SNAPSHOT', sourceId: 'config/projects.json' },
+    },
+    session: {
+      sessionState: 'UNKNOWN',
+      sessionCheckpoint: null,
+      sessionStartedAt: { status: 'UNAVAILABLE', reason: 'fixture registry carries no session evidence' },
+      sessionLastActivityAt: { status: 'UNAVAILABLE', reason: 'fixture registry carries no session evidence' },
+      sessionClosureStatus: 'UNKNOWN',
+      sessionClosureEvidence: null,
+      sessionStateEvidence: [],
+      sessionStateReason: 'Fixture registry carries no Arena session evidence',
+    },
     blocker: null,
     nextAction: null,
     evidenceLinks: [],
@@ -271,6 +286,62 @@ test('sync publishes the canonical cache and the runtime snapshot from one run',
 
   const beta = registry.projects.find((entry) => entry.id === 'demo-beta')!
   assert.equal(beta.source.kind, 'FIXTURE', 'fixture-only projects are not invented into repositories')
+
+  // Activity is attributed to evidence; the snapshot timestamp stays separate.
+  assert.equal(alpha.activity.lastMeaningfulActivity.status, 'KNOWN')
+  if (alpha.activity.lastMeaningfulActivity.status === 'KNOWN') {
+    assert.equal(alpha.activity.lastMeaningfulActivity.source, 'COMMIT')
+    assert.equal(alpha.activity.lastMeaningfulActivity.at, '2026-09-21T10:00:00Z')
+    assert.equal(alpha.activity.lastMeaningfulActivity.sourceId, 'aaaa1111bbbb2222cccc3333dddd4444eeee5555')
+  }
+  assert.equal(alpha.activity.statusUpdatedAt.status, 'KNOWN')
+  if (alpha.activity.statusUpdatedAt.status === 'KNOWN') {
+    assert.equal(alpha.activity.statusUpdatedAt.at, '2026-09-20T00:00:00Z')
+    assert.equal(alpha.activity.statusUpdatedAt.source, 'PROJECT_STATUS')
+  }
+  assert.equal(alpha.activity.snapshotGeneratedAt.source, 'SNAPSHOT')
+  assert.notEqual(
+    alpha.activity.snapshotGeneratedAt.at,
+    alpha.activity.lastMeaningfulActivity.status === 'KNOWN' ? alpha.activity.lastMeaningfulActivity.at : null,
+    'snapshot generation is never the project activity timestamp',
+  )
+
+  // No session evidence in the canonical artifact: never inferred as closed.
+  assert.equal(alpha.session.sessionState, 'UNKNOWN')
+  assert.equal(alpha.session.sessionClosureStatus, 'UNKNOWN')
+  assert.notEqual(alpha.session.sessionState, 'CLOSED')
+})
+
+test('sync derives an evidenced open Arena session without ever inferring closure', async () => {
+  // A session still at work one hour ago is observably active; the artifact
+  // carries no closure evidence, so the sync must not publish CLOSED.
+  const oneHourAgo = new Date(Date.now() - 3_600_000).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  const statusContent = `# PROJECT STATUS
+
+Current checkpoint: \`CP-14 — Fixture\`
+Status: \`IN_PROGRESS\`
+
+## Arena Session
+Session state: \`ACTIVE\`
+Last session activity: ${oneHourAgo}
+Session closure: \`NOT_CONFIRMED\`
+
+Last updated: 2026-09-20
+`
+  installGithubStub({ statusContent })
+
+  await syncOnce('config/projects.github.json', null, { repoRoot: fixtureRoot })
+
+  const registry = parseProjectRegistry(
+    JSON.parse(await readFile(path.join(fixtureRoot, 'config', 'projects.github.json'), 'utf8')),
+  )
+  const alpha = registry.projects.find((entry) => entry.id === 'demo-alpha')!
+
+  assert.equal(alpha.session.sessionState, 'ACTIVE')
+  assert.equal(alpha.session.sessionClosureStatus, 'NOT_CONFIRMED')
+  assert.equal(alpha.session.sessionClosureEvidence, null)
+  assert.equal(alpha.session.sessionLastActivityAt.status, 'KNOWN')
+  assert.ok(alpha.session.sessionStateEvidence.length > 0, 'a determined session state keeps its evidence')
 })
 
 test('sync authenticates against the GitHub REST API with the read-only token', async () => {

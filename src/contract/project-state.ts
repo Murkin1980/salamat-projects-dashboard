@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const PROJECT_STATE_SCHEMA_VERSION = '1.0.0' as const
+export const PROJECT_STATE_SCHEMA_VERSION = '1.1.0' as const
 
 export const TriageStateSchema = z.enum([
   'ACTION_NOW',
@@ -16,6 +16,14 @@ const IsoDateSchema = z.string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, 'Expected an ISO date (YYYY-MM-DD)')
   .refine((value) => !Number.isNaN(Date.parse(`${value}T00:00:00Z`))
     && new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value, 'Expected a real calendar date')
+/**
+ * Second-precision UTC timestamps only, so a stored snapshot is byte-stable and
+ * never depends on the machine's locale or on millisecond formatting.
+ */
+const IsoTimestampSchema = z.string()
+  .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/, 'Expected an ISO-8601 UTC timestamp (YYYY-MM-DDTHH:MM:SSZ)')
+  .refine((value) => !Number.isNaN(Date.parse(value))
+    && new Date(value).toISOString().replace(/\.\d{3}Z$/, 'Z') === value, 'Expected a real UTC timestamp')
 const IdSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
 const NonEmptyStringSchema = z.string().trim().min(1)
 
@@ -56,6 +64,149 @@ const ApprovalSchema = z.object({
   sourceId: NonEmptyStringSchema,
 }).strict()
 
+// --- Activity and Arena session evidence ------------------------------------
+
+/**
+ * Normalized evidence kinds an activity or session timestamp may be attributed to.
+ *
+ * `SNAPSHOT` is the dashboard's own snapshot generation. It is a valid source for
+ * `snapshotGeneratedAt` only and is structurally rejected for every project or
+ * session activity field: generating a snapshot is not project activity.
+ */
+export const ACTIVITY_EVIDENCE_SOURCES = [
+  'COMMIT',
+  'PULL_REQUEST',
+  'WORKFLOW_RUN',
+  'CHECK_RUN',
+  'PROJECT_STATUS',
+  'ROADMAP',
+  'MANUAL',
+  'FIXTURE',
+  'SNAPSHOT',
+] as const
+
+export const ActivityEvidenceSourceSchema = z.enum(ACTIVITY_EVIDENCE_SOURCES)
+
+/**
+ * A timestamp is either attributable to a named evidence source or explicitly
+ * unavailable. There is no third "assume now" option, and the dashboard never
+ * substitutes the snapshot clock for missing project evidence.
+ */
+const EvidenceTimestampSchema = z.discriminatedUnion('status', [
+  z.object({
+    status: z.literal('KNOWN'),
+    at: IsoTimestampSchema,
+    source: ActivityEvidenceSourceSchema,
+    sourceId: NonEmptyStringSchema,
+    evidenceUrl: z.url().nullable(),
+  }).strict(),
+  z.object({
+    status: z.literal('UNAVAILABLE'),
+    reason: NonEmptyStringSchema,
+  }).strict(),
+])
+
+export const ProjectActivitySchema = z.object({
+  /** Newest evidence that the project itself changed. Never the snapshot clock. */
+  lastMeaningfulActivity: EvidenceTimestampSchema,
+  /** When the canonical status artifact was itself last updated. */
+  statusUpdatedAt: EvidenceTimestampSchema,
+  /** When the dashboard produced the snapshot this state was read from. */
+  snapshotGeneratedAt: z.object({
+    at: IsoTimestampSchema,
+    source: z.literal('SNAPSHOT'),
+    sourceId: NonEmptyStringSchema,
+  }).strict(),
+}).strict()
+
+export const ARENA_SESSION_STATES = [
+  'NOT_ACTIVE',
+  'ACTIVE',
+  'WAITING_FOR_VALIDATION',
+  'READY_TO_CLOSE',
+  'CLOSED',
+  'STALE_SESSION',
+  'UNKNOWN',
+] as const
+
+export const ArenaSessionStateSchema = z.enum(ARENA_SESSION_STATES)
+
+export const ArenaSessionClosureStatusSchema = z.enum(['CONFIRMED', 'NOT_CONFIRMED', 'UNKNOWN'])
+
+/** Session states that describe an Arena session which has not been closed. */
+export const OPEN_ARENA_SESSION_STATES = [
+  'ACTIVE',
+  'WAITING_FOR_VALIDATION',
+  'READY_TO_CLOSE',
+  'STALE_SESSION',
+] as const
+
+export const ArenaSessionSchema = z.object({
+  sessionState: ArenaSessionStateSchema,
+  /** Checkpoint the session is executing; null when no evidence names one. */
+  sessionCheckpoint: NonEmptyStringSchema.nullable(),
+  sessionStartedAt: EvidenceTimestampSchema,
+  sessionLastActivityAt: EvidenceTimestampSchema,
+  sessionClosureStatus: ArenaSessionClosureStatusSchema,
+  /** Explicit closure evidence; required exactly when closure is confirmed. */
+  sessionClosureEvidence: EvidenceLinkSchema.nullable(),
+  /** Evidence the session state was derived from; empty only for `UNKNOWN`. */
+  sessionStateEvidence: z.array(EvidenceLinkSchema),
+  /** Human-readable provenance of the derived state. */
+  sessionStateReason: NonEmptyStringSchema,
+}).strict().superRefine((session, context) => {
+  if (session.sessionState === 'CLOSED') {
+    if (session.sessionClosureStatus !== 'CONFIRMED' || session.sessionClosureEvidence === null) {
+      context.addIssue({
+        code: 'custom',
+        path: ['sessionState'],
+        message: 'CLOSED requires confirmed closure status and explicit closure evidence',
+      })
+    }
+  } else if ((OPEN_ARENA_SESSION_STATES as readonly string[]).includes(session.sessionState)) {
+    if (session.sessionClosureStatus === 'CONFIRMED') {
+      context.addIssue({
+        code: 'custom',
+        path: ['sessionClosureStatus'],
+        message: 'an open session state cannot carry confirmed closure',
+      })
+    }
+    if (session.sessionLastActivityAt.status !== 'KNOWN') {
+      context.addIssue({
+        code: 'custom',
+        path: ['sessionLastActivityAt'],
+        message: 'an open session state requires an attributable last session activity timestamp',
+      })
+    }
+  } else if (session.sessionState === 'NOT_ACTIVE' && session.sessionClosureStatus === 'CONFIRMED') {
+    context.addIssue({
+      code: 'custom',
+      path: ['sessionClosureStatus'],
+      message: 'NOT_ACTIVE means no session is running and cannot carry confirmed closure',
+    })
+  }
+
+  if (session.sessionState !== 'UNKNOWN' && session.sessionStateEvidence.length === 0) {
+    context.addIssue({
+      code: 'custom',
+      path: ['sessionStateEvidence'],
+      message: 'every determined session state must keep the evidence it was derived from',
+    })
+  }
+
+  // Snapshot generation is the dashboard's own clock, never session evidence.
+  for (const field of ['sessionStartedAt', 'sessionLastActivityAt'] as const) {
+    const value = session[field]
+    if (value.status === 'KNOWN' && value.source === 'SNAPSHOT') {
+      context.addIssue({
+        code: 'custom',
+        path: [field],
+        message: `${field} must not be attributed to the dashboard snapshot generation`,
+      })
+    }
+  }
+})
+
 const ProjectStateBaseSchema = z.object({
   schemaVersion: z.literal(PROJECT_STATE_SCHEMA_VERSION),
   id: IdSchema,
@@ -71,6 +222,8 @@ const ProjectStateBaseSchema = z.object({
     total: z.number().int().positive(),
   }).strict().nullable(),
   lastUpdated: IsoDateSchema,
+  activity: ProjectActivitySchema,
+  session: ArenaSessionSchema,
   blocker: NonEmptyStringSchema.nullable(),
   nextAction: NonEmptyStringSchema.nullable(),
   evidenceLinks: z.array(EvidenceLinkSchema),
@@ -103,6 +256,18 @@ export const ProjectStateSchema = ProjectStateBaseSchema.superRefine((project, c
   if (project.dependencies.some((dependency) => dependency.projectId === project.id)) {
     context.addIssue({ code: 'custom', path: ['dependencies'], message: 'A project cannot depend on itself' })
   }
+
+  // Snapshot generation is never project or session evidence.
+  for (const field of ['lastMeaningfulActivity', 'statusUpdatedAt'] as const) {
+    const value = project.activity[field]
+    if (value.status === 'KNOWN' && value.source === 'SNAPSHOT') {
+      context.addIssue({
+        code: 'custom',
+        path: ['activity', field],
+        message: `${field} must not be attributed to the dashboard snapshot generation`,
+      })
+    }
+  }
 })
 
 export const ProjectRegistrySchema = z.object({
@@ -121,6 +286,13 @@ export const ProjectRegistrySchema = z.object({
 })
 
 export type TriageState = z.infer<typeof TriageStateSchema>
+export type EvidenceLink = z.infer<typeof EvidenceLinkSchema>
+export type ActivityEvidenceSource = z.infer<typeof ActivityEvidenceSourceSchema>
+export type EvidenceTimestamp = z.infer<typeof EvidenceTimestampSchema>
+export type ProjectActivity = z.infer<typeof ProjectActivitySchema>
+export type ArenaSessionState = z.infer<typeof ArenaSessionStateSchema>
+export type ArenaSessionClosureStatus = z.infer<typeof ArenaSessionClosureStatusSchema>
+export type ArenaSession = z.infer<typeof ArenaSessionSchema>
 export type ProjectState = z.infer<typeof ProjectStateSchema>
 export type ProjectRegistry = z.infer<typeof ProjectRegistrySchema>
 export type Freshness = 'FRESH' | 'STALE'

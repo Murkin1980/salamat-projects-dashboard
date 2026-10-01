@@ -4,7 +4,43 @@ import type { ProjectState } from '../src/contract/project-state.js'
 import { deriveLiveProjectState } from '../src/triage/live-triage.js'
 
 function project(overrides: Partial<ProjectState> = {}): ProjectState {
-  return { schemaVersion: '1.0.0', id: 'example-project', name: 'Example', summary: 'Example project', repo: 'example/project', triageState: 'READY', triageSource: { status: 'KNOWN', sourceId: 'sha:PROJECT_STATUS.md' }, stage: null, checkpoint: 'CP-05', progress: null, lastUpdated: '2026-08-25', blocker: null, nextAction: 'Continue', evidenceLinks: [], dependencies: [], tools: [], approvals: [], source: { kind: 'REPOSITORY', id: 'example/project' }, staleAfterDays: 7, ...overrides }
+  return {
+    schemaVersion: '1.1.0',
+    id: 'example-project',
+    name: 'Example',
+    summary: 'Example project',
+    repo: 'example/project',
+    triageState: 'READY',
+    triageSource: { status: 'KNOWN', sourceId: 'sha:PROJECT_STATUS.md' },
+    stage: null,
+    checkpoint: 'CP-05',
+    progress: null,
+    lastUpdated: '2026-08-25',
+    activity: {
+      lastMeaningfulActivity: { status: 'KNOWN', at: '2026-08-25T12:00:00Z', source: 'COMMIT', sourceId: 'sha', evidenceUrl: null },
+      statusUpdatedAt: { status: 'UNAVAILABLE', reason: 'test fixture' },
+      snapshotGeneratedAt: { at: '2026-08-26T00:00:00Z', source: 'SNAPSHOT', sourceId: 'config/projects.json' },
+    },
+    session: {
+      sessionState: 'UNKNOWN',
+      sessionCheckpoint: null,
+      sessionStartedAt: { status: 'UNAVAILABLE', reason: 'test fixture' },
+      sessionLastActivityAt: { status: 'UNAVAILABLE', reason: 'test fixture' },
+      sessionClosureStatus: 'UNKNOWN',
+      sessionClosureEvidence: null,
+      sessionStateEvidence: [],
+      sessionStateReason: 'Test fixture carries no Arena session evidence',
+    },
+    blocker: null,
+    nextAction: 'Continue',
+    evidenceLinks: [],
+    dependencies: [],
+    tools: [],
+    approvals: [],
+    source: { kind: 'REPOSITORY', id: 'example/project' },
+    staleAfterDays: 7,
+    ...overrides,
+  }
 }
 const NOW = new Date('2026-08-27T12:00:00Z')
 

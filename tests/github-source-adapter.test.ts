@@ -49,6 +49,8 @@ function standardSnapshot(
     headSha: 'sha-head-001',
     headCommittedAt: '2026-08-25T12:00:00Z',
     retrievedAt: '2026-08-26',
+    generatedAt: '2026-08-26T06:17:00Z',
+    snapshotSourceId: 'config/projects.github.json',
     artifacts: [
       makeArtifact({
         path: 'PROJECT_STATUS.md',
