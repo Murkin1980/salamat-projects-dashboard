@@ -67,6 +67,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: npm run sync:github -- --output config/projects.github.json
 
+      - name: Sync canonical MPE experiment registry
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run sync:experiments
+
       # Never let a damaged or empty snapshot reach the build: both published
       # artifacts must stay schema valid, byte-identical and credential free.
       - name: Verify published portfolio snapshot
