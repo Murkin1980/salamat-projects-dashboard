@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection`
+Current checkpoint: `CP-17 — Live History & Reports`
 Status: `PASS`
 
 ## CP-00 — Repository Foundation
@@ -660,37 +660,94 @@ Scope boundary (unchanged):
 - the dashboard never starts, continues or closes an Arena session; a merge,
   commit, validation result or status update is not closure.
 
+## CP-17 — Live History & Reports
+Status: `PASS`
+
+Result:
+- PR #29 (`CP-17 — Live History & Reports`) merged to `main` at merge commit
+  `d4ce36bdcf794d85953d6fe440e71d08471346b3` (branch commit
+  `d7b80e90c0f4bd2a1cdaae5374438132166ed554`; short `d7b80e9`).
+- History & Reports now shows a live, evidence-derived history per project: commits,
+  pull request lifecycle (opened / merged / closed), checkpoint / state / blocker
+  transitions between revisions of the canonical status artifact, and Arena session
+  lifecycle events from the explicit `Arena Session` block only. The static
+  August-only `config/project-history.json` (and its loader/test) was removed — the
+  replacement is the extension CHECKPOINTS.md CP-17 permits.
+- `ProjectState` schema `1.1.0` → `1.2.0`: required `history` block
+  (`UNAVAILABLE {reason}` | `KNOWN {limits, events, gaps}`), collected by the
+  existing `sync:github` mechanism and normalized into the same snapshot.
+- Reports: any of the 15 projects can be selected (`#/reports/<id>`), with metrics,
+  category filters (Commits / Pull requests / Project status / Session) and reset, a
+  newest-first timeline, an explicit gaps panel and a provenance/window note. Project
+  Detail reads the same `project.history` through shared helpers and links to the report.
+- Every event carries `source`, `sourceId`, `evidenceUrl`, a deterministic id and a
+  `timeBasis`; ordering is newest first, then event type, then `sourceId`, then `id`,
+  enforced by the schema. `snapshotGeneratedAt` is never an event time; a commit, merge
+  or status update never produces a session event; missing evidence is `UNAVAILABLE`
+  or an explicit gap, never a fabricated event.
+
+Post-merge validation (on `main` at `d4ce36b`):
+- `npm test`: 216/216 passed (48 new CP-17 tests: contract, derivation, deterministic
+  ordering, provenance, no invented events, `UNKNOWN`/`UNAVAILABLE`, session lifecycle,
+  History/Reports ↔ Project Detail consistency, filters, 1440px and 390px DOM, boundary);
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: PASS — schemaVersion `1.2.0`, version 6, 15 projects, no
+  credentials detected; `config/projects.github.json` identical to `public/project-state.json`;
+- real-browser validation (Chromium, built `dist`) at 1440px and 390px across Triage,
+  Portfolio, Attention, Reports (all 15 projects via the selector), Project Detail and the
+  Detail → Reports → Back transitions: no horizontal overflow, no execution/session
+  controls, no console errors. One 390px overflow in Project Detail (long `sha:path`
+  evidence ids) was found and fixed in this checkpoint;
+- PR #29 `validate` check: SUCCESS. The `Cloudflare Pages` PR-preview check failed, as it
+  did on PR #27 (merged with the same result); it is the external Pages preview
+  integration, not a code-validation gate, and its logs are not accessible from the Arena
+  sandbox.
+
+Provenance / source of truth:
+- no new repository, backend, database, Worker, API, second synchronization mechanism or
+  new source of truth; GitHub / canonical project evidence → existing sync → normalized
+  `ProjectState` → History & Reports → read-only dashboard.
+
+Known limitation (external, disclosed):
+- the committed snapshot was refreshed only partially: the sandbox token reads only
+  `murat-project-engineer` and `salamat-projects-dashboard`, and the full
+  `npm run sync:github` fails closed (`business-discovery` 404). These two projects carry
+  real history (34 and 27 events; the latter with an explicit `SESSION` gap); the other
+  13 projects are explicit `history: UNAVAILABLE` with a reason until the next
+  scheduled/manual full synchronization runs with the full-scope token. No UI change is
+  needed for that.
+
+Scope boundary (unchanged):
+- read-only Portfolio Monitoring UI; no execution/session controls, no Task Packet, no
+  agent controls, no write-back, no realtime monitoring;
+- operational status is never replaced by the Arena session state; the dashboard never
+  starts, continues or closes an Arena session; a merge, commit, validation result or
+  status update is not closure.
+
 ## Arena Session
 Session state: `CLOSED`
-Session checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection`
-Session started: 2026-10-01T13:20:00Z
-Last session activity: 2026-10-01T14:05:00Z
+Session checkpoint: `CP-17 — Live History & Reports`
+Session started: 2026-10-01T14:18:00Z
+Last session activity: 2026-10-01T14:40:00Z
 Session closure: `CONFIRMED`
-Session closure evidence: https://github.com/Murkin1980/salamat-projects-dashboard/pull/26
+Session closure evidence: https://github.com/Murkin1980/salamat-projects-dashboard/pull/29
 
 Arena session closure:
-- Session checkpoint: `CP-16`;
+- Session checkpoint: `CP-17`;
 - Session closure: `CONFIRMED`;
-- Closure evidence: explicit post-merge Arena session closure record associated
-  with PR #24 (`29973db`) and PR #26 (`f2a0757`), authorized by the owner
-  instruction that defined CP-16 completion as merged validation plus a
-  committed and verified status update;
+- Closure evidence: explicit post-merge Arena session closure record associated with
+  PR #29 (`d4ce36b`), authorized by the owner instruction that defined CP-17 completion as
+  merged validation plus a committed and verified status update;
 - Closure does not derive from the merge alone.
 
 Current state:
-- Progress: `17/21`;
+- Progress: `18/21`;
 - Blocker: none;
-- Current stage/checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection` (closed);
-- Next checkpoint: `CP-17 — Live History & Reports`;
-- Next action: run the next full portfolio synchronization (existing scheduled
-  six-hour mechanism) so the session-state evidence recorded in this artifact is
-  reconciled for the whole portfolio; CP-17 has not started.
+- Current stage/checkpoint: `CP-17 — Live History & Reports` (closed);
+- Next checkpoint: `CP-18 — Portfolio Recent Activity Feed`; CP-18 has not started;
+- Next action: run the next full portfolio synchronization (existing scheduled six-hour
+  mechanism, full-scope token) so history is collected for the 13 projects that are
+  currently `UNAVAILABLE`; then start CP-18 as the sole scope of the next Arena run.
 
-Known limitation (external, not introduced here):
-- the committed snapshot predates any project carrying an explicit Arena session
-  block, so every project currently resolves to `UNKNOWN`; the detail view shows
-  that honestly as a gap, and the scheduled CI sync will surface
-  `READY_TO_CLOSE` / `STALE_SESSION` only when a canonical status artifact
-  records the evidence.
-
-Last updated: 2026-10-01 19:05 (Asia/Almaty)
+Last updated: 2026-10-01 19:40 (Asia/Almaty)
