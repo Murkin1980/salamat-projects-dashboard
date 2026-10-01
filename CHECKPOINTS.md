@@ -243,6 +243,24 @@ Rules:
 
 11. After the status update is committed and verified, the checkpoint is considered closed and only then may Arena proceed to the next checkpoint.
 
+
+## Portfolio synchronization rule
+
+The dashboard is a read-only observer of the entire canonical portfolio.
+
+After any governed project/repository updates its factual `PROJECT_STATUS.md` after merge, the next portfolio synchronization MUST reconcile **all configured portfolio repositories/projects**, not only the repository that changed.
+
+The synchronization must:
+- re-read canonical status and repository evidence for the full portfolio;
+- analyze current status, checkpoint, progress, blockers, meaningful activity and attributable evidence;
+- reconcile every project into the normalized dashboard state;
+- keep `UNKNOWN` / `UNAVAILABLE` explicit when a repository or source cannot be read;
+- never infer a project state from another project's changes;
+- never write status back to project repositories;
+- never use dashboard state as a source of truth.
+
+A status update in one repository is therefore a trigger/source event for a **full portfolio reconciliation**. The dashboard must reflect the resulting cross-repository analysis, subject to the existing scheduled/manual synchronization mechanism.
+
 ## Current execution state
 
 **Next checkpoint: CP-14 — Portfolio Activity Source & Freshness**
