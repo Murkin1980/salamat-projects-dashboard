@@ -194,7 +194,7 @@ Exit:
 
 # Arena Execution Protocol
 
-These checkpoints are intentionally sequential.
+These checkpoints are intentionally sequential and the status update rule applies to **every checkpoint, including all future checkpoints added to this file**.
 
 1. Arena executes **one checkpoint at a time**.
 2. Do not start the next checkpoint until the current checkpoint has passed its exit criteria.
@@ -214,6 +214,34 @@ These checkpoints are intentionally sequential.
 8. If a source is unavailable, the dashboard must expose the limitation explicitly rather than fabricate a value.
 9. If a checkpoint exposes a design problem that affects later checkpoints, stop at the current checkpoint and record the blocker instead of silently broadening scope.
 10. After each merged checkpoint, re-read this file and use the next numbered checkpoint as the sole scope for the next Arena run.
+
+## Mandatory post-merge status update
+
+**Every merged checkpoint MUST update the project's factual status before the checkpoint is considered closed.**
+
+After a checkpoint PR is merged, Arena must update `PROJECT_STATUS.md` in the same repository and record, at minimum:
+
+- completed checkpoint and its result;
+- merge commit SHA and PR reference;
+- current project status;
+- current stage/checkpoint;
+- progress;
+- blocker, or explicitly `none`;
+- next checkpoint / next action;
+- validation result (tests, build and production verification where applicable);
+- date/time of the status update.
+
+Rules:
+- Status must be updated **only after the merge and required validation actually succeed**.
+- Do not mark a checkpoint DONE merely because its PR was merged if production validation or another exit criterion is still pending; use the appropriate state such as `VALIDATION` or `BLOCKED`.
+- If the checkpoint is blocked or partially complete, record the factual blocker and stop rather than advancing the checkpoint.
+- `CHECKPOINTS.md` is the plan; `PROJECT_STATUS.md` is the factual current state.
+- Do not silently rewrite historical results. Add the new state/update while preserving the project history.
+- The status update itself must be committed and traceable to the completed checkpoint.
+- The final checkpoint evidence must include the resulting `PROJECT_STATUS.md` change.
+- If the status update cannot be completed, the checkpoint is **not closed** and Arena must report the blocker.
+
+11. After the status update is committed and verified, the checkpoint is considered closed and only then may Arena proceed to the next checkpoint.
 
 ## Current execution state
 
