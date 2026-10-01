@@ -590,32 +590,38 @@ Status: `PASS`
 
 Result:
 - PR #24 merged to `main` at merge commit `29973db57a36907b407c7a61d34a08d32b25c060`
-  (branch commit `4e1211d04b1020da4575643622008247c6f11c55`).
+  (branch commit `4e1211d04b1020da4575643622008247c6f11c55`), followed by PR #26
+  merged to `main` at merge commit `f2a0757962e3285374b071c28f7f211e6bfc473b`
+  (branch commit `699a6c0f83033d0889260208c273fc7a8f26a30c`).
 - Every project card is now a navigable link to a read-only Project Detail view
   (`#/project/<project-id>`), and the detail view shows the complete project:
   name, repository, operational status, stage, checkpoint, progress, blocker,
-  next action, last update, source attribution, the activity block (last
+  next action, last update, source attribution (including conflicting
+  `sourceIds` and `source.kind` / `source.id`), the activity block (last
   meaningful activity, canonical status update, snapshot generation, freshness),
   the Arena session block (state, closure status, session checkpoint,
   started-at, last session activity, closure evidence and state evidence),
   evidence links, recent activity/events and the project-specific history.
 - Deep links survive direct navigation, refresh and sharing; return navigation
-  to Portfolio and Triage is explicit; malformed routes fail safe to Triage.
+  to Portfolio and Triage is explicit while preserving the originating list view
+  on drill-down; malformed routes fail safe to Triage.
 - Project completion and session closure are explicitly separated: `DONE` does
-  not imply `CLOSED`, `CLOSED` does not imply `DONE`, and closure that cannot be
-  verified is shown as `UNKNOWN`.
+  not imply `CLOSED`, `CLOSED` does not imply `DONE`, pending (`READY_TO_CLOSE`)
+  and stale (`STALE_SESSION`) closure states are distinguished from confirmed
+  (`CLOSED`), and closure that cannot be verified is shown as `UNKNOWN`.
 - Detail data is derived from the same normalized snapshot state as the cards
   (same `ProjectState` objects, same snapshot-derived freshness reference clock),
   so the list and the detail can never disagree.
 - The detail view is strictly read-only: no input, form, select or mutating
   control, no task execution, no session or agent control.
 
-Post-merge validation (on `main` at `29973db`):
-- `npm test`: 170/170 passed (was 152; +18 new CP-16 tests covering the routing
-  contract, the derived event list, all 15 projects openable from their cards,
-  deep-link/refresh survival, return navigation, the project-vs-session
-  distinction, the explicit `UNKNOWN` closure state, the read-only boundary and
-  390px rendering);
+Post-merge validation (on `main` at `f2a0757`):
+- `npm test`: 172/172 passed (was 152; +20 CP-16 tests covering the routing
+  contract, preserved originating list view, derived event list, all 15 projects
+  openable from their cards, deep-link/refresh survival, return navigation,
+  conflict source provenance, the project-vs-session distinction, pending/stale
+  closure notes, the explicit `UNKNOWN` closure state, the read-only boundary
+  and 390px rendering);
 - `npm run build` (`tsc -b && vite build`): PASS;
 - `git diff --check`: clean;
 - `npm run verify:snapshot`: PASS — schemaVersion `1.1.0`, version 5, 15 projects,
@@ -625,13 +631,14 @@ Post-merge validation (on `main` at `29973db`):
   deep links, return navigation, the session panel and the read-only boundary;
 - the CP-10 monitoring-only boundary regression tests still pass at 1440px and
   390px (no execution control in any view; project cards contain no button);
-- PR #24 `validate` check (tests + `verify:snapshot` + `sync:discovery` + build):
-  SUCCESS; the Cloudflare Pages PR-preview check is a sandbox artifact (no
-  Cloudflare credentials in this environment) and is not a code-validation gate;
-- production deployment workflow run `36868477244` on main commit `29973db`
-  succeeded, including "Verify production snapshot" (production
-  `project-state.json` SHA-256 matches the committed runtime snapshot) and
-  "Verify production discovery snapshot".
+- PR #24 (`36868274712`) and PR #26 (`36873911318`) `validate` checks (tests +
+  `verify:snapshot` + `sync:discovery` + build): SUCCESS; the Cloudflare Pages
+  PR-preview check is a sandbox artifact (no Cloudflare credentials in this
+  environment) and is not a code-validation gate;
+- production deployment workflow runs `36868477244` (`29973db`) and
+  `36874033588` (`f2a0757`) on `main` succeeded, including "Verify production
+  snapshot" (production `project-state.json` SHA-256 matches the committed
+  runtime snapshot) and "Verify production discovery snapshot".
 
 Provenance / source of truth:
 - no new repository, backend, database, Worker, API, second synchronization
@@ -653,11 +660,19 @@ Scope boundary (unchanged):
 - the dashboard never starts, continues or closes an Arena session; a merge,
   commit, validation result or status update is not closure.
 
+## Arena Session
+Session state: `CLOSED`
+Session checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection`
+Session started: 2026-10-01T13:20:00Z
+Last session activity: 2026-10-01T14:05:00Z
+Session closure: `CONFIRMED`
+Session closure evidence: https://github.com/Murkin1980/salamat-projects-dashboard/pull/26
+
 Arena session closure:
 - Session checkpoint: `CP-16`;
 - Session closure: `CONFIRMED`;
 - Closure evidence: explicit post-merge Arena session closure record associated
-  with PR #24 (this `PROJECT_STATUS.md` update), authorized by the owner
+  with PR #24 (`29973db`) and PR #26 (`f2a0757`), authorized by the owner
   instruction that defined CP-16 completion as merged validation plus a
   committed and verified status update;
 - Closure does not derive from the merge alone.
@@ -678,4 +693,4 @@ Known limitation (external, not introduced here):
   `READY_TO_CLOSE` / `STALE_SESSION` only when a canonical status artifact
   records the evidence.
 
-Last updated: 2026-10-01 18:26 (Asia/Almaty)
+Last updated: 2026-10-01 19:05 (Asia/Almaty)
