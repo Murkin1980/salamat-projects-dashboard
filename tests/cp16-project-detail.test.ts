@@ -29,6 +29,7 @@ import {
 test('project routes carry the project id and survive a refresh', () => {
   assert.deepEqual(parseHashRoute('#/project/business-discovery'), { view: 'triage', projectId: 'business-discovery' })
   assert.deepEqual(parseHashRoute(projectDetailHash('murat-house')), { view: 'triage', projectId: 'murat-house' })
+  assert.deepEqual(parseHashRoute(projectDetailHash('murat-house'), 'portfolio'), { view: 'portfolio', projectId: 'murat-house' })
   // A direct navigation and a refresh deliver the same hash, so the route is stable.
   assert.deepEqual(parseHashRoute(parseHashRoute('#/project/murat-house') && '#/project/murat-house'), {
     view: 'triage',
@@ -452,4 +453,81 @@ test('activity timestamps are formatted from the evidence timestamp', () => {
   // Second-precision UTC evidence renders as a readable local-independent stamp.
   assert.match(formatted, /10:00/)
   assert.equal(formatEventTimestamp('2026-10-01T10:00:00Z'), formatted, 'formatting is deterministic')
+})
+
+test('opening a project from Portfolio preserves the originating list view and shows conflict source provenance', async (t) => {
+  const { container, act, cleanup } = await renderDashboard(1440)
+  t.after(cleanup)
+
+  const portfolioNav = buttonByText(container, 'Portfolio')!
+  await act(async () => { portfolioNav.click() })
+  assert.ok(portfolioNav.classList.contains('active'), 'Portfolio is active before opening a project')
+
+  await act(async () => {
+    cardFor(container, 'Business Discovery')!.querySelector<HTMLElement>('.project-card-open')!.click()
+  })
+
+  assert.ok(portfolioNav.classList.contains('active'), 'originating Portfolio view remains active while inspecting detail')
+  const detail = container.querySelector('.project-detail')!
+  assert.ok(detail.textContent?.includes('6c984ad810d9babc5dc5871f2629d0acbe4147ee:PROJECT_STATUS.md'))
+  assert.ok(detail.textContent?.includes('dfef377613e6d16768b8c417010077648a11df5c:PROJECT_STATUS.md'))
+  assert.ok(detail.textContent?.includes('REPOSITORY (Murkin1980/business-discovery)'))
+})
+
+test('pending (READY_TO_CLOSE) and stale (STALE_SESSION) closure states are explicitly distinguishable in detail view', async (t) => {
+  const { container: readyContainer, cleanup: cleanupReady } = await renderDashboard(
+    1440,
+    '#/project/murat-house',
+    (registry) => {
+      const project = registry.projects.find((candidate) => candidate.id === 'murat-house')!
+      project.triageState = 'VALIDATION'
+      project.triageSource = { status: 'KNOWN', sourceId: 'sha:PROJECT_STATUS.md' }
+      project.session = {
+        sessionState: 'READY_TO_CLOSE',
+        sessionCheckpoint: 'CP-16 — Project Detail Drill-down',
+        sessionStartedAt: { status: 'KNOWN', at: '2026-10-01T08:00:00Z', source: 'PROJECT_STATUS', sourceId: 'sha:PROJECT_STATUS.md', evidenceUrl: null },
+        sessionLastActivityAt: { status: 'KNOWN', at: '2026-10-01T10:00:00Z', source: 'PROJECT_STATUS', sourceId: 'sha:PROJECT_STATUS.md', evidenceUrl: null },
+        sessionClosureStatus: 'NOT_CONFIRMED',
+        sessionClosureEvidence: null,
+        sessionStateEvidence: [{
+          label: 'PROJECT_STATUS.md',
+          url: 'https://github.com/Murkin1980/murat-house/blob/main/PROJECT_STATUS.md',
+          sourceId: 'sha:PROJECT_STATUS.md',
+        }],
+        sessionStateReason: 'checkpoint complete without closure evidence',
+      }
+    },
+  )
+  t.after(cleanupReady)
+  const readyDetail = readyContainer.querySelector('.project-detail')!
+  assert.ok(readyDetail.querySelector('.session-detail-ready')?.textContent?.includes('READY_TO_CLOSE'))
+  assert.ok(readyDetail.textContent?.includes('ожидает подтверждения (READY_TO_CLOSE'))
+
+  const { container: staleContainer, cleanup: cleanupStale } = await renderDashboard(
+    1440,
+    '#/project/murat-house',
+    (registry) => {
+      const project = registry.projects.find((candidate) => candidate.id === 'murat-house')!
+      project.triageState = 'IN_PROGRESS'
+      project.triageSource = { status: 'KNOWN', sourceId: 'sha:PROJECT_STATUS.md' }
+      project.session = {
+        sessionState: 'STALE_SESSION',
+        sessionCheckpoint: 'CP-16 — Project Detail Drill-down',
+        sessionStartedAt: { status: 'KNOWN', at: '2026-09-20T08:00:00Z', source: 'PROJECT_STATUS', sourceId: 'sha:PROJECT_STATUS.md', evidenceUrl: null },
+        sessionLastActivityAt: { status: 'KNOWN', at: '2026-09-25T10:00:00Z', source: 'PROJECT_STATUS', sourceId: 'sha:PROJECT_STATUS.md', evidenceUrl: null },
+        sessionClosureStatus: 'NOT_CONFIRMED',
+        sessionClosureEvidence: null,
+        sessionStateEvidence: [{
+          label: 'PROJECT_STATUS.md',
+          url: 'https://github.com/Murkin1980/murat-house/blob/main/PROJECT_STATUS.md',
+          sourceId: 'sha:PROJECT_STATUS.md',
+        }],
+        sessionStateReason: 'open session exceeded inactivity threshold',
+      }
+    },
+  )
+  t.after(cleanupStale)
+  const staleDetail = staleContainer.querySelector('.project-detail')!
+  assert.ok(staleDetail.querySelector('.session-detail-stale')?.textContent?.includes('STALE_SESSION'))
+  assert.ok(staleDetail.textContent?.includes('дольше порога бездействия (STALE_SESSION)'))
 })

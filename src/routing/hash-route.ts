@@ -52,13 +52,16 @@ export function projectDetailHash(projectId: string): string {
  * rendering nothing, and a well-formed but unknown project id still resolves to
  * the detail route so the view can state the gap explicitly.
  */
-export function parseHashRoute(hash: string): DashboardRoute {
+export function parseHashRoute(
+  hash: string,
+  fallbackView: DashboardView = 'triage',
+): DashboardRoute {
   const path = hash.replace(/^#/, '').replace(/^\/+/, '').split('?')[0]
 
   if (path.startsWith(PROJECT_ROUTE_PREFIX)) {
     const projectId = path.slice(PROJECT_ROUTE_PREFIX.length).replace(/\/+$/, '')
     if (PROJECT_ID_PATTERN.test(projectId)) {
-      return { view: 'triage', projectId }
+      return { view: fallbackView, projectId }
     }
   }
 
