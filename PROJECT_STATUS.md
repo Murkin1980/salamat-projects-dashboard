@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-15 — Activity-Aware Portfolio, Triage & Session Visibility`
+Current checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection`
 Status: `PASS`
 
 ## CP-00 — Repository Foundation
@@ -584,3 +584,98 @@ Current state:
 - CP-16 has not started.
 
 Last updated: 2026-10-01 (Asia/Almaty)
+
+## CP-16 — Project Detail Drill-down & Session Inspection
+Status: `PASS`
+
+Result:
+- PR #24 merged to `main` at merge commit `29973db57a36907b407c7a61d34a08d32b25c060`
+  (branch commit `4e1211d04b1020da4575643622008247c6f11c55`).
+- Every project card is now a navigable link to a read-only Project Detail view
+  (`#/project/<project-id>`), and the detail view shows the complete project:
+  name, repository, operational status, stage, checkpoint, progress, blocker,
+  next action, last update, source attribution, the activity block (last
+  meaningful activity, canonical status update, snapshot generation, freshness),
+  the Arena session block (state, closure status, session checkpoint,
+  started-at, last session activity, closure evidence and state evidence),
+  evidence links, recent activity/events and the project-specific history.
+- Deep links survive direct navigation, refresh and sharing; return navigation
+  to Portfolio and Triage is explicit; malformed routes fail safe to Triage.
+- Project completion and session closure are explicitly separated: `DONE` does
+  not imply `CLOSED`, `CLOSED` does not imply `DONE`, and closure that cannot be
+  verified is shown as `UNKNOWN`.
+- Detail data is derived from the same normalized snapshot state as the cards
+  (same `ProjectState` objects, same snapshot-derived freshness reference clock),
+  so the list and the detail can never disagree.
+- The detail view is strictly read-only: no input, form, select or mutating
+  control, no task execution, no session or agent control.
+
+Post-merge validation (on `main` at `29973db`):
+- `npm test`: 170/170 passed (was 152; +18 new CP-16 tests covering the routing
+  contract, the derived event list, all 15 projects openable from their cards,
+  deep-link/refresh survival, return navigation, the project-vs-session
+  distinction, the explicit `UNKNOWN` closure state, the read-only boundary and
+  390px rendering);
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: PASS — schemaVersion `1.1.0`, version 5, 15 projects,
+  `config/projects.github.json` byte-identical to `public/project-state.json`,
+  no credentials detected;
+- desktop (1440px) and mobile (390px) DOM validation confirmed the detail view,
+  deep links, return navigation, the session panel and the read-only boundary;
+- the CP-10 monitoring-only boundary regression tests still pass at 1440px and
+  390px (no execution control in any view; project cards contain no button);
+- PR #24 `validate` check (tests + `verify:snapshot` + `sync:discovery` + build):
+  SUCCESS; the Cloudflare Pages PR-preview check is a sandbox artifact (no
+  Cloudflare credentials in this environment) and is not a code-validation gate;
+- production deployment workflow run `36868477244` on main commit `29973db`
+  succeeded, including "Verify production snapshot" (production
+  `project-state.json` SHA-256 matches the committed runtime snapshot) and
+  "Verify production discovery snapshot".
+
+Provenance / source of truth:
+- no new repository, backend, database, Worker, API, second synchronization
+  mechanism or new source of truth was introduced;
+- `config/` and `public/` are untouched by this checkpoint; the detail view
+  reads the same committed runtime snapshot the cards read;
+- recent activity/events are derived only from evidence timestamps already
+  present in the snapshot; missing timestamps remain explicit `UNAVAILABLE`
+  gaps and snapshot generation is never presented as project activity;
+- the committed history manifest still covers only
+  `salamat-projects-dashboard`; for every other project the detail view states
+  the gap explicitly instead of fabricating history.
+
+Scope boundary (unchanged):
+- read-only Portfolio Monitoring UI; no execution/session controls, no backend,
+  no database, no new repository, no new source of truth;
+- operational status (`READY` / `IN_PROGRESS` / `ACTION NOW` / `BLOCKED` /
+  `VALIDATION` / `HOLD` / `DONE`) is never replaced by the Arena session state;
+- the dashboard never starts, continues or closes an Arena session; a merge,
+  commit, validation result or status update is not closure.
+
+Arena session closure:
+- Session checkpoint: `CP-16`;
+- Session closure: `CONFIRMED`;
+- Closure evidence: explicit post-merge Arena session closure record associated
+  with PR #24 (this `PROJECT_STATUS.md` update), authorized by the owner
+  instruction that defined CP-16 completion as merged validation plus a
+  committed and verified status update;
+- Closure does not derive from the merge alone.
+
+Current state:
+- Progress: `17/21`;
+- Blocker: none;
+- Current stage/checkpoint: `CP-16 — Project Detail Drill-down & Session Inspection` (closed);
+- Next checkpoint: `CP-17 — Live History & Reports`;
+- Next action: run the next full portfolio synchronization (existing scheduled
+  six-hour mechanism) so the session-state evidence recorded in this artifact is
+  reconciled for the whole portfolio; CP-17 has not started.
+
+Known limitation (external, not introduced here):
+- the committed snapshot predates any project carrying an explicit Arena session
+  block, so every project currently resolves to `UNKNOWN`; the detail view shows
+  that honestly as a gap, and the scheduled CI sync will surface
+  `READY_TO_CLOSE` / `STALE_SESSION` only when a canonical status artifact
+  records the evidence.
+
+Last updated: 2026-10-01 18:26 (Asia/Almaty)
