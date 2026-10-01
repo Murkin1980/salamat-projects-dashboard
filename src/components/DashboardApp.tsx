@@ -59,7 +59,7 @@ const initialRegistry = parseProjectRegistry(projectRegistry)
 const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
 const dashboardHistory = parseHistoryRegistry(historyRegistry).projects.find((history) => history.projectId === 'salamat-projects-dashboard')!
 const experiments = parseExperimentRegistry(experimentRegistry)
-const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned' }
+const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned', RETIRED: 'Retired' }
 const triageIcons = {
   bolt: IconBolt,
   'alert-triangle': IconAlertTriangle,
