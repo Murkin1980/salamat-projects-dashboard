@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-12 — Discovery Monitoring`
+Current checkpoint: `CP-14 — Portfolio Activity & Arena Session State Contract`
 Status: `PASS`
 
 ## CP-00 — Repository Foundation
@@ -304,7 +304,7 @@ No active checkpoint blocker. Cloudflare crawler counts remain explicitly `UNAVA
 the production token receives Zone Read / Analytics Read; the UI and collector fail closed and
 never present missing analytics as zero traffic.
 
-Last updated: 2026-09-30
+Last updated: 2026-10-01 (Asia/Almaty)
 
 ## CP-11 — Portfolio Refresh
 Status: `PASS`
@@ -517,3 +517,32 @@ Boundary:
 - monitoring only; no write-back to GitHub, no Worker, no database, no new API, no
   runtime, no agent execution, no Task Packet generation/export in the UI, and MPE
   remains the decision system while GitHub remains the source of factual state.
+## CP-14 — Portfolio Activity & Arena Session State Contract
+Status: `PASS`
+
+Result:
+- PR #21 merged to `main` at merge commit `538174785daaf421e3f86fc371332ed7914cb831`.
+- Read-only activity/freshness and Arena execution-session state contract was implemented.
+- Activity is separated from snapshot generation; missing session evidence remains `UNKNOWN` rather than being inferred as `CLOSED`.
+- Dashboard remains observation-only and does not start, stop or close Arena sessions.
+
+Post-merge validation:
+- `npm test`: 140/140 passed;
+- `npm run build`: PASS;
+- `git diff --check`: clean;
+- `npm run verify:snapshot`: PASS — schemaVersion `1.1.0`, version 5, 15 projects, no credentials detected;
+- production workflow run `36855244142` for main commit `5381747` was reported successful.
+
+Arena session closure:
+- Session checkpoint: `CP-14`;
+- Session closure: `CONFIRMED`;
+- Closure evidence: explicit post-merge Arena session closure record associated with PR #21;
+- Closure does not derive from the merge alone.
+
+Current state:
+- Progress: `15/21`;
+- Blocker: none;
+- Next checkpoint: `CP-15 — Activity-Aware Portfolio, Triage & Session Visibility`;
+- CP-15 has not started.
+
+Last updated: 2026-10-01 (Asia/Almaty)
