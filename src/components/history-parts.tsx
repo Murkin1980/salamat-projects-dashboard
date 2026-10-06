@@ -40,6 +40,9 @@ export function HistoryEventBody({ event }: { event: HistoryEvent }) {
       {note && <p className="history-time-note">{note}</p>}
       <p className="history-provenance" title={event.sourceId}>
         <span>{event.source}</span> · <code>{shortSourceId(event)}</code>
+        {/* The 7-character form is deliberate on wide screens, but a `title` is
+            unreachable by touch: on phones the full evidence id is real text. */}
+        {shortSourceId(event) !== event.sourceId && <span className="touch-hint"> · {event.sourceId}</span>}
       </p>
       <a href={event.evidenceUrl} target="_blank" rel="noreferrer"><IconExternalLink size={13}/> Evidence</a>
     </>

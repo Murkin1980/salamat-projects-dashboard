@@ -620,6 +620,48 @@ body { margin: 0; min-height: 100vh; }
   .report-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/*
+  UI-SKILLS EXPERIMENT — bounded mobile usability & data-resilience fixes.
+
+  Every declaration in this section answers a defect proven by the Phase 1
+  (mobile) or Phase 2 (hostile data) audit recorded in
+  docs/UI_SKILLS_EXPERIMENT.md. Scope is limited to resilient wrapping,
+  touch-target size, mobile stacking and reaching tooltip-only content by
+  touch: no layout system, palette, spacing scale or component is replaced.
+  The mobile half of this section lives inside the existing
+  `@media (max-width: 760px)` block below so the stylesheet keeps one
+  authoritative mobile block.
+*/
+
+/* Resilient wrapping — source-controlled text must never force a box wider
+   than its container. `overflow-wrap: anywhere` is the idiom this stylesheet
+   already uses for `.detail-row dd`, `.history-timeline article` and
+   `.mobile-node-card-body strong`; these were the elements missing it, so a
+   single unbroken project name / summary / stage / blocker widened the page. */
+.page-header h1,
+.project-body h2,
+.project-body p,
+.project-meta dd,
+.attention-row strong,
+.attention-row p,
+.reports-heading h2,
+.detail-head-body h2,
+.detail-head-body p,
+.experiment-row h2,
+.experiment-row p,
+.experiment-source,
+.nodes-project-tab strong,
+.nodes-project-tab small,
+.sync-state span,
+.discovery-source-card p,
+.discovery-source-card small {
+  overflow-wrap: anywhere;
+}
+
+/* Tooltip-only content becomes real text on touch screens, where `title` never
+   appears. Hidden on wide screens, so desktop output is unchanged. */
+.touch-hint { display: none; }
+
 @media (max-width: 760px) {
   .reports-heading-actions { justify-items: start; }
   .report-metrics { grid-template-columns: 1fr; }
@@ -628,7 +670,68 @@ body { margin: 0; min-height: 100vh; }
   .history-gaps { padding: 10px 12px; }
   .history-unavailable { margin: 12px; }
   .report-detail-link { min-height: 44px; }
+
+  /* --- UI-SKILLS EXPERIMENT (mobile half) --- */
+
+  /* Header actions were a single row on mobile, cramming the sync state and
+     the search field side by side into 292px at 320px. */
+  .header-actions { flex-direction: column; gap: 10px; }
+
+  /* Primary navigation stays reachable after a long scroll. */
+  .sidebar { position: sticky; top: 0; z-index: 5; }
+
+  /* Touch targets: every control a phone user has to hit reaches 44px. These
+     already centre their content, so only the height changes. */
+  .nav-list button,
+  .triage-tabs button,
+  .type-filters button,
+  .clear-filters,
+  .graph-filters select,
+  .history-filters button { min-height: 44px; }
+
+  .search-box { min-height: 44px; padding: 0 12px; }
+  /* 16px is the iOS threshold below which focusing a field zooms the page. */
+  .search-box input { min-height: 44px; font-size: 16px; }
+  .report-project-select select { font-size: 16px; }
+
+  .evidence-links a,
+  .detail-evidence-list a,
+  .detail-evidence-link,
+  .detail-events a,
+  .detail-history a,
+  .history-timeline a,
+  .mobile-detail-card a,
+  .experiment-links a,
+  .experiment-source a,
+  .sync-state button,
+  .detail-report-link { min-height: 44px; }
+
+  /* No text below 11px on a phone. These were 8-9px, under the readable floor;
+     the deliberate 10px metadata scale is left untouched. */
+  .nodes-project-tab small,
+  .mobile-node-status,
+  .mobile-detail-title small,
+  .mobile-detail-meta dt,
+  .mobile-detail-card code,
+  .mobile-edge-endpoint small,
+  .session-indicator,
+  .freshness-chip,
+  .detail-event-gap,
+  .report-metrics small,
+  .discovery-table td small { font-size: 11px; }
+
+  /* Tooltip-only content is unreachable by touch, so on a phone it is text. */
+  .touch-hint { display: inline; }
 }
 
 /* CP-17 — long evidence ids (sha:path) must wrap inside the detail panels at 390px */
 .detail-row dd { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+
+/*
+  UI-SKILLS EXPERIMENT — the page title was 32px on a 320px screen, which left
+  roughly nine characters per line. CP-16 already shrinks `.detail-head-body h2`
+  below 760px for the same reason.
+*/
+@media (max-width: 420px) {
+  .page-header h1 { font-size: 24px; }
+}

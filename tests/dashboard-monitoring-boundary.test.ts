@@ -119,6 +119,11 @@ function chromeText(container: Element) {
     '.project-evidence',
     '.attention-row p',
     '.attention-row small',
+    // Source provenance that the UI reveals on touch screens instead of keeping
+    // it in a `title` tooltip. Like `.attention-row p`, this is verbatim
+    // source-artifact text (a conflicting status reason may legitimately name a
+    // branch such as `codex/...`), not vocabulary authored by the dashboard.
+    '.touch-hint',
   ]
   for (const selector of projectDataSelectors) {
     clone.querySelectorAll(selector).forEach((node) => node.remove())

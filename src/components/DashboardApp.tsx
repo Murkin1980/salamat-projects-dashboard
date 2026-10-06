@@ -340,7 +340,7 @@ function ProjectCard({ project, onNavigate }: { project: ProjectState; onNavigat
       )}
       <div className="project-footer">
         <span><IconClock size={16}/> Обновлено {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
-        <span className="project-source" title={sourceHint}>Источник: {project.source.id}</span>
+        <span className="project-source" title={sourceHint}>Источник: {project.source.id}<span className="touch-hint"> · {sourceHint}</span></span>
         <span className="project-card-cta">Открыть проект <IconArrowRight size={13}/></span>
       </div>
       {/*
