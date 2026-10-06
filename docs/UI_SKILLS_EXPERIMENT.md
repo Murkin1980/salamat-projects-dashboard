@@ -14,7 +14,7 @@ Status: **PASS** (scope: mobile usability + hostile-data resilience only).
 ## 1. Phase 0 — repository audit (no code modified)
 
 Baseline git SHA: `0ba585a470a1d17dc8112ba51a9cb19530899d1d`
-Branch: `arena/23bb92f8-salamat-projects-dashboard`
+Implementation commit: `c499c64` · branch `arena/23bb92f8-salamat-projects-dashboard` · PR #31
 Production: `https://projects.salamat-mebel.kz` (Cloudflare Pages, static, no backend).
 
 Read: `AGENTS.md`, `docs/governance/SCOPE-CHANGE-CONTROL.md`, `README.md`,
@@ -226,12 +226,16 @@ idioms reused, desktop untouched unless the fix is width-independent.
 **inside** the existing final `@media (max-width: 760px)` block so the stylesheet
 keeps a single authoritative mobile block):
 
-1. `overflow-wrap: anywhere` on the 17 selectors listed in B1/M6 — the same
-   declaration the stylesheet already uses for `.detail-row dd` and
+1. `overflow-wrap: anywhere` on 17 selectors — the B1 set plus the same class of
+   element in Experiments (`.experiment-row h2`/`p`, `.experiment-source`), Nodes
+   (`.nodes-project-tab strong`/`small`), the sync state (`.sync-state span`,
+   which carries the refresh error text) and Discovery
+   (`.discovery-source-card p`/`small`). It is the same declaration the
+   stylesheet already uses for `.detail-row dd` and
    `.history-timeline article`. *(This one is width-independent by design: an
    unbreakable token overflows at 1440px too. It changes nothing for real data,
    which contains no such token.)*
-2. `min-height: 44px` at ≤760px for 20 interactive selectors (nav, triage tabs,
+2. `min-height: 44px` at ≤760px for 18 interactive selectors (nav, triage tabs,
    graph filters, history filters, search field, every evidence link, sync
    button, detail report link).
 3. `.header-actions { flex-direction: column }` at ≤760px.
@@ -264,6 +268,8 @@ Commands run in this repository:
 | `npm run build` (`tsc -b && vite build`) | **PASS** — `dist/index.html` 0.45 kB, `dist/assets/index-DrhK9TtW.css` 57.50 kB (gzip 10.63 kB), `dist/assets/index-BAKWuBOn.js` 654.43 kB (gzip 179.30 kB), built in 5.74 s |
 | `npm run verify:snapshot` | **OK** — schemaVersion 1.2.0, version 6, updatedAt 2026-10-01, 15 projects, no credentials detected |
 | `git diff --check` | clean |
+| CI `validate` on PR #31 (`npm ci` → `npm test` → `verify:snapshot` → `sync:discovery` → `npm run build`) | **pass** in 48 s — independent confirmation on GitHub runners |
+| CI `Cloudflare Pages` preview on PR #31 | **fail** — pre-existing: the same check also fails on PRs #28, #29 and #30, so it is not caused by this change |
 | static cascade analyzer, 4 datasets × 8 views × 4 widths | see below |
 
 ### Before / after (findings per view at 320px)
