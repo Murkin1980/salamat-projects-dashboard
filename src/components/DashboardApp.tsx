@@ -60,7 +60,7 @@ const initialRegistry = parseProjectRegistry(projectRegistry)
 // The full node-graph registry is parsed once; the Nodes view selects from it by projectId.
 const nodeGraphs = parseNodeGraphRegistry(nodeGraphRegistry).graphs
 const experiments = parseExperimentRegistry(experimentRegistry)
-const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned', RETIRED: 'Retired' }
+const experimentFilterLabels: Record<ExperimentStatus | 'ALL', string> = { ALL: 'All', READY_TO_TEST: 'To test', RUNNING: 'Running', PASS: 'Passed', FAIL: 'Failed', HOLD: 'Hold', ADOPTED: 'Adopted', IDEA: 'Idea', PLANNED: 'Planned', RETIRED: 'Retired', PARTIAL: 'Partial' }
 
 const viewTitles: Record<DashboardView, string> = {
   triage: 'Triage',

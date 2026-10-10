@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const ExperimentStatusSchema = z.enum(['IDEA', 'PLANNED', 'READY_TO_TEST', 'RUNNING', 'PASS', 'FAIL', 'HOLD', 'ADOPTED', 'RETIRED'])
+export const ExperimentStatusSchema = z.enum(['IDEA', 'PLANNED', 'READY_TO_TEST', 'RUNNING', 'PASS', 'FAIL', 'HOLD', 'ADOPTED', 'RETIRED', 'PARTIAL'])
 export const ExperimentRegistrySchema = z.object({
   schema_version: z.literal('1.0.0'),
   updated_at: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
