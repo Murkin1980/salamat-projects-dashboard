@@ -1,22 +1,308 @@
 {
-  "schema_version":"1.0.0", "updated_at":"2026-09-24", "source":"Murkin1980/murat-project-engineer", "source_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/EXPERIMENT_REGISTRY.json",
-  "experiments":[
-    {"experiment_id":"EXP-ALEXANDRIA","name":"Firecrawl Alexandria source discovery","owning_project":"Murat AI Orchestrator","status":"PLANNED","next_action":"Execute the isolated five-task comparison and record per-run evidence.","updated_at":"2026-09-23","repo":"Murkin1980/Murat-AI-Orchestrator","evidence_url":"https://github.com/Murkin1980/Murat-AI-Orchestrator/pull/12"},
-    {"experiment_id":"EXP-RANKCONTROL","name":"RankControl AI visibility","owning_project":"Murat House","status":"PLANNED","next_action":"After owner registration, run the first fixed-query baseline and record evidence.","updated_at":"2026-09-23","repo":"Murkin1980/Murat-house","evidence_url":"https://github.com/Murkin1980/Murat-house/pull/23"},
-    {"experiment_id":"EXP-002","name":"Machine Protocol","owning_project":"Murat Project Engineer","status":"PASS","next_action":"Keep the closed result; strengthen with another independent executor run.","updated_at":"2026-09-16","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/pull/20"},
-    {"experiment_id":"EXP-07","name":"Strix / FreeBuff evaluation","owning_project":"Murat Project Engineer","status":"PASS","next_action":"Keep Strix on hold; reuse only selected Codebuff patterns.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md"},
-    {"experiment_id":"EXP-08","name":"BrowserAct public-web acquisition","owning_project":"Murat Project Engineer","status":"PASS","next_action":"Reuse the documented browser-acquisition role when needed.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/evaluations/BROWSERACT_EVALUATION.md"},
-    {"experiment_id":"EXP-09","name":"Personalized Assessment Engine v0","owning_project":"Murat Project Engineer","status":"READY_TO_TEST","next_action":"Resolve recorded production-rule and source-of-truth findings.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md"},
-    {"experiment_id":"EXP-10","name":"Munder Difflin controlled pilot","owning_project":"Murat Project Engineer","status":"HOLD","next_action":"Wait for a scoped remedy to the Windows adapter failure.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/stage2/RUN-10_REPORT.json"},
-    {"experiment_id":"EXP-12","name":"CLEARS triage backtest","owning_project":"Murat Project Engineer","status":"PASS","next_action":"Pre-register real cases until ten exist before operational reliance.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/backtest/EXP-12_BACKTEST_RESULTS.json"},
-    {"experiment_id":"EXP-13","name":"Low-cost evaluation harness","owning_project":"Murat Project Engineer","status":"READY_TO_TEST","next_action":"Run Pilot Batch 1 only with valid usage evidence for every route.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/exp-13/PILOT_BATCH1_PRE_REGISTRATION.json"},
-    {"experiment_id":"EXP-14","name":"Laya / System One Decision Layer","owning_project":"Murat Project Engineer","status":"PLANNED","next_action":"Freeze labelled decision cases before model runs.","updated_at":"2026-09-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-14-laya-system-one/README.md"},
-    {"experiment_id":"EXP-15","name":"MPE Project Memory Layer","owning_project":"Murat Project Engineer","status":"PLANNED","next_action":"Select real tasks for baseline versus bounded-memory comparison.","updated_at":"2026-08-28","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/experiments/EXP-15_MPE_PROJECT_MEMORY_LAYER.md"},
-    {"experiment_id":"EXP-S2C-01","name":"Screenshot-to-Code Visual Workflow","owning_project":"Murat Project Engineer","status":"PLANNED","next_action":"Freeze an existing-project fixture and baseline instructions.","updated_at":"2026-08-28","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/experiments/EXP-S2C-01_SCREENSHOT_TO_CODE_VISUAL_WORKFLOW.md"},
-    {"experiment_id":"EXP-COMPUTE-BUDGET","name":"Compute Budget Gate","owning_project":"Murat Project Engineer","status":"HOLD","next_action":"Collect 5–10 observed usage records and rerun evaluation.","updated_at":"2026-08-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/COMPUTE_BUDGET_VALIDATION_REPORT.md"},
-    {"experiment_id":"EXP-QOOPIA-MEMORY","name":"Qoopia cross-session memory","owning_project":"Murat Project Engineer","status":"PLANNED","next_action":"Prepare a disposable synthetic-data test plan.","updated_at":"2026-09-14","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/commit/da8e1ea30e78d04494b8b1d1ec50f6e411248831"},
-    {"experiment_id":"EXP-UX-UI-SKILLS","name":"UX/UI Agent Skills","owning_project":"Murat Project Engineer","status":"READY_TO_TEST","next_action":"Capture ai-microtask-factory baseline and run selective evaluation.","updated_at":"2026-09-15","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/commit/f19daebb6f8efdd28e81aed65b0df5b264c92f4a"},
-    {"experiment_id":"EXP-16","name":"Minimalist Entrepreneur Skills Reuse","owning_project":"Murat Project Engineer","status":"PLANNED","next_action":"Run the five-case retrospective when it reaches priority.","updated_at":"2026-09-15","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/pull/19"},
-    {"experiment_id":"EXP-STAGE3-SYNTHETIC","name":"Synthetic Stakeholder Evaluation","owning_project":"Murat Project Engineer","status":"HOLD","next_action":"Complete Stage 2 review before beginning a Stage 3 experiment.","updated_at":"2026-08-21","repo":"Murkin1980/murat-project-engineer","evidence_url":"https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/experiments/STAGE3_SYNTHETIC_STAKEHOLDER_EVALUATION.md"}
+  "schema_version": "1.0.0",
+  "updated_at": "2026-10-10",
+  "source": "Murkin1980/murat-project-engineer",
+  "source_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/EXPERIMENT_REGISTRY.json",
+  "experiments": [
+    {
+      "experiment_id": "EXP-ALEXANDRIA",
+      "name": "Firecrawl Alexandria source discovery",
+      "owning_project": "Murat AI Orchestrator",
+      "status": "PLANNED",
+      "next_action": "Execute the isolated five-task comparison and record per-run evidence in the owning repository.",
+      "updated_at": "2026-09-23",
+      "repo": "Murkin1980/Murat-AI-Orchestrator",
+      "evidence_url": "https://github.com/Murkin1980/Murat-AI-Orchestrator/blob/experiment/alexandria-source-discovery/docs/experiments/alexandria/README.md"
+    },
+    {
+      "experiment_id": "EXP-RANKCONTROL",
+      "name": "RankControl AI visibility",
+      "owning_project": "Murat House",
+      "status": "PLANNED",
+      "next_action": "After owner registration, run and record the first fixed-query baseline on the live Murat House site.",
+      "updated_at": "2026-09-23",
+      "repo": "Murkin1980/Murat-house",
+      "evidence_url": "https://github.com/Murkin1980/Murat-house/blob/experiment/rankcontrol-ai-visibility/src/content/experiments/rankcontrol-ai-visibility.md"
+    },
+    {
+      "experiment_id": "EXP-002",
+      "name": "Machine Protocol",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Keep the closed result; a second independent executor run is the strengthening step.",
+      "updated_at": "2026-09-16",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-002-machine-protocol/EXP-002_RESULTS.md"
+    },
+    {
+      "experiment_id": "EXP-07",
+      "name": "Strix / FreeBuff evaluation",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Keep Strix on hold; reuse only selected Codebuff patterns.",
+      "updated_at": "2026-09-21",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md"
+    },
+    {
+      "experiment_id": "EXP-08",
+      "name": "BrowserAct public-web acquisition",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Reuse the documented browser-acquisition role where a bounded project task needs it.",
+      "updated_at": "2026-09-21",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md"
+    },
+    {
+      "experiment_id": "EXP-09",
+      "name": "Personalized Assessment Engine v0",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "No further EXP-09 implementation/reconstruction unless the original source repository and frozen artifacts are independently recovered.",
+      "updated_at": "2026-09-30",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/STATUS.md"
+    },
+    {
+      "experiment_id": "EXP-10",
+      "name": "Munder Difflin controlled pilot",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "Do not retry until the Windows Codex-adapter failure has a scoped remedy.",
+      "updated_at": "2026-09-21",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/stage2/RUN-10_REPORT.json"
+    },
+    {
+      "experiment_id": "EXP-12",
+      "name": "CLEARS triage backtest",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Execute pre-registered P-006 using docs/experiments/EXP-12_P006_DASHBOARD_EXPERIMENT_SYNC.md. Human label VERIFIED/no-approval is frozen. Reconcile the public read-only dashboard experiment view against current canonical MPE evidence, validate, do not deploy, then record execution/evaluation evidence.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/backtest/EXP-12_BACKTEST_RESULTS.json"
+    },
+    {
+      "experiment_id": "EXP-13",
+      "name": "Low-cost evaluation harness",
+      "owning_project": "Murat Project Engineer",
+      "status": "READY_TO_TEST",
+      "next_action": "Run docs/experiments/EXP-13_CLOUDFLARE_RELAY_PREFLIGHT.md. First prove real Wrangler/Cloudflare access using existing Cloudflare deployment patterns; then deploy a health-only temporary relay. Stop at OWNER_SECRET_REQUIRED before installing the OpenCode Go credential. Pilot Batch 1 remains forbidden.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/evidence/exp-13/PILOT_BATCH1_PRE_REGISTRATION.json"
+    },
+    {
+      "experiment_id": "EXP-14",
+      "name": "Laya / System One Decision Layer",
+      "owning_project": "Murat Project Engineer",
+      "status": "FAIL",
+      "next_action": "Closed. Do not integrate Laya and do not grant it decision authority. Do not fine-tune on the 43-case evaluation dataset. A continuation requires a new pre-registration with a new, separately frozen dataset whose splits do not overlap these cases, GPU-measured latency, and routine coverage as the primary metric (SEQUENCE_B_REVIEW.md section 7). Separately, the deterministic engine's five DEEP-CHANGE under-tierings are a rule-coverage gap worth its own New Idea Filter decision, not a model change.",
+      "updated_at": "2026-10-01",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-14-laya/2026-09-30/RESULTS.md"
+    },
+    {
+      "experiment_id": "EXP-15",
+      "name": "MPE Project Memory Layer",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Keep EXP-15 as validated experiment evidence. When MPE task runners are next extended, reuse the bounded memory contract as an optional pre-execution context injection step without changing production routing or adding background infrastructure.",
+      "updated_at": "2026-09-30",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-15-memory/2026-09-30/README.md"
+    },
+    {
+      "experiment_id": "EXP-S2C-01",
+      "name": "Screenshot-to-Code Visual Workflow",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Experiment closed as PASS / REUSE_COMPONENT. Apply docs/REUSABLE_UI_RECONSTRUCTION_PATTERN.md as the default UI reconstruction feedback loop: 1 initial render + up to 3 targeted correction cycles with early stop on diminishing returns. Do not use 5 cycles by default and do not reopen EXP-S2C-01 unless new evidence contradicts the rule.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/experiments/EXP-S2C-01_SCREENSHOT_TO_CODE_VISUAL_WORKFLOW.md"
+    },
+    {
+      "experiment_id": "EXP-COMPUTE-BUDGET",
+      "name": "Compute Budget Gate",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "Collect 5–10 observed usage records and rerun the retrospective evaluation.",
+      "updated_at": "2026-08-21",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/COMPUTE_BUDGET_VALIDATION_REPORT.md"
+    },
+    {
+      "experiment_id": "EXP-QOOPIA-MEMORY",
+      "name": "Qoopia cross-session memory",
+      "owning_project": "Murat Project Engineer",
+      "status": "RETIRED",
+      "next_action": "Do not run. Revisit only if a concrete external cross-session requirement appears that Git-bounded MPE memory cannot satisfy.",
+      "updated_at": "2026-10-01",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/commit/da8e1ea30e78d04494b8b1d1ec50f6e411248831"
+    },
+    {
+      "experiment_id": "EXP-UX-UI-SKILLS",
+      "name": "UX/UI Agent Skills",
+      "owning_project": "Murat Project Engineer",
+      "status": "RETIRED",
+      "next_action": "Historical fixture remains retired. Reuse the existing harness only through the bounded 2026-10-06 Emil Kowalski run against accessible Murkin1980/salamat-projects-dashboard; diagnostic pass only, no automatic fixes or production deployment.",
+      "updated_at": "2026-10-06",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-ux-ui-skills/2026-09-30/README.md"
+    },
+    {
+      "experiment_id": "EXP-16",
+      "name": "Minimalist Entrepreneur Skills Reuse",
+      "owning_project": "Murat Project Engineer",
+      "status": "RETIRED",
+      "next_action": "Do not run as a standalone experiment. Revisit the underlying skills only when a concrete MPE decision or project problem requires them.",
+      "updated_at": "2026-10-01",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/commit/4aa3b8325084eb924de340a81f61d746fd815b9d"
+    },
+    {
+      "experiment_id": "EXP-STAGE3-SYNTHETIC",
+      "name": "Synthetic Stakeholder Evaluation",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "Complete EXP-12 prospective validation and the Stage 2 review before starting any Stage 3 experiment.",
+      "updated_at": "2026-08-21",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/docs/experiments/STAGE3_SYNTHETIC_STAKEHOLDER_EVALUATION.md"
+    },
+    {
+      "experiment_id": "EXP-17",
+      "name": "PrivetMaket backend recon",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "If needed, capture a redacted anonymous browser Network manifest only; do not submit forms or cross authentication boundary.",
+      "updated_at": "2026-09-29",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/privetmaket-backend-recon/FINDINGS.md"
+    },
+    {
+      "experiment_id": "EXP-18",
+      "name": "Pirate Face model resilience",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Keep Pirate Face as an optional last-resort path only: record a magnet and canonical SHA-256 manifest with any model pin and verify hashes after a fallback retrieval; do not add production routing, a registry, or seeding infrastructure.",
+      "updated_at": "2026-09-30",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-18-pirateface-model-resilience/FINDINGS.md"
+    },
+    {
+      "experiment_id": "EXP-19",
+      "name": "Shir-man trend intake and agent-readable surface",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Adopt Shir-man compact schema as a file-based intake format for periodic backlog grooming; do not build background scrapers or database infrastructure.",
+      "updated_at": "2026-09-29",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-19-shirman-trend-intake/README.md"
+    },
+    {
+      "experiment_id": "EXP-20",
+      "name": "Dify/OpenHands component extraction",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Closed at the bounded component extraction; STOP after CP-03. No production integration, no Dify/OpenHands dependency or deployment, and no follow-on checkpoint is authorized by this result. If the owner continues, the smallest next step is a separately authorized checkpoint that adds the P1 recovery/idempotency functions beside scripts/runtime_coordination.read_events/append_event (~60 lines) or the P2 failure annotation on the scripts/execution_runner.run_task outcome (~120 lines), each with its own deep-change assessment.",
+      "updated_at": "2026-10-09",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/langgenius/dify"
+    },
+    {
+      "experiment_id": "EXP-21",
+      "name": "EasyKitchen / SketchUp production backend",
+      "owning_project": "MebelFlow AI",
+      "status": "PLANNED",
+      "next_action": "Perform focused technical reconnaissance of SketchUp Ruby + EasyKitchen automation and licensing, then freeze the first minimal straight-kitchen fixture before writing an adapter.",
+      "updated_at": "2026-10-02",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-21-easykitchen-sketchup-production-backend/README.md"
+    },
+    {
+      "experiment_id": "EXP-22",
+      "name": "Colibri local inference / Brio routing",
+      "owning_project": "Murat Project Engineer",
+      "status": "HOLD",
+      "next_action": "Bounded released-weight quality run: execute the frozen CP-01/CP-02 fixtures against the released 842 MB Laya checkpoint on a weights-available suitable machine (>= 8 GB RAM) and record accuracy/determinism/latency before any adapter work. CP-01..CP-03 must not be repeated; no production integration is authorized.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-22-colibri-local-inference/README.md"
+    },
+    {
+      "experiment_id": "EXP-23",
+      "name": "Papermorph document → interactive artifact",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Experiment closed with REUSE_COMPONENT. Do not adopt the Papermorph engine. If the owner accepts reuse, evaluate the mark-based narration↔visual sync contract in EXP-24 and the quiz data model in 1C Tutor KZ through separate bounded owning-project checkpoints. Replacing the 3 CP-01 silent TTS placeholders is optional evidence hygiene, not a blocker.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-23-papermorph-interactive-artifact/README.md"
+    },
+    {
+      "experiment_id": "EXP-24",
+      "name": "Agentic text → film pipeline (HyperFrames/Remotion)",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Experiment closed as PASS / REUSE_COMPONENT. Apply docs/REUSABLE_DERIVED_ARTIFACT_PATTERN.md as the default reuse candidate for applicable media/visual/interactive pipelines. For AI-serial production, continue with bounded scene-level production using the proven source→beats→marks/cues/timings→asset-slots→minimal-diff revision contract; address caption placement, visual continuity and production-quality media in owning-project checkpoints rather than reopening EXP-24.",
+      "updated_at": "2026-10-10",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-24-hyperframes-pr-video/README.md"
+    },
+    {
+      "experiment_id": "EXP-25",
+      "name": "Atomic CRM component extraction",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Closed at the bounded component extraction. CP-01…CP-04 all pass on test data against the MiniBase data-plane contract; no production integration or follow-on checkpoint is authorized by this result. If the owner continues, the smallest next step is a separately approved port of the entity+event CP-05 command pattern into a real MiniBase consumer — not a CRM.",
+      "updated_at": "2026-10-06",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/marmelab/atomic-crm"
+    },
+    {
+      "experiment_id": "EXP-26",
+      "name": "TencentDB Agent Memory component extraction",
+      "owning_project": "Murat Project Engineer",
+      "status": "PARTIAL",
+      "next_action": "Closed at bounded component extraction. No production integration or follow-on checkpoint is authorized by this result.",
+      "updated_at": "2026-10-06",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/TencentCloud/TencentDB-Agent-Memory"
+    },
+    {
+      "experiment_id": "EXP-27",
+      "name": "Paperclip orchestration patterns",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Closed at bounded pattern extraction. No production integration, Router change, governance change, or follow-on checkpoint is authorized by this result; a future owner decision is required before any pattern is implemented in an existing component.",
+      "updated_at": "2026-10-06",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/paperclipai/paperclip"
+    },
+    {
+      "experiment_id": "EXP-28",
+      "name": "Agent workflow skills retrospective (/retro)",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Closed as a manual, evidence-gated pattern. No automatic post-run trigger. Apply the derived context packet only to context-heavy tasks; broader promotion requires independent repeated evidence and a separate owner decision.",
+      "updated_at": "2026-10-09",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/mattpocock/skills/tree/b0618bc436ad893b3c5e84e55fba86586d34a404"
+    },
+    {
+      "experiment_id": "EXP-29",
+      "name": "Arena Bootstrap Harness",
+      "owning_project": "Murat Project Engineer",
+      "status": "PASS",
+      "next_action": "Closed at CP-05 with PASS / REUSE_COMPONENT. Reuse the derived-packet pattern for context-heavy Arena tasks through the documented builder command (experiments/exp-29-arena-bootstrap-harness/harness/bootstrap_builder.py build/verify). Broader adoption — automatic packet generation, lesson promotion beyond the recorded PROJECT/TASK/NO_CHANGE scopes, or any runtime integration — requires a separate owner decision. Do not merge the PR as part of this experiment.",
+      "updated_at": "2026-10-09",
+      "repo": "Murkin1980/murat-project-engineer",
+      "evidence_url": "https://github.com/Murkin1980/murat-project-engineer/blob/main/experiments/exp-29-arena-bootstrap-harness/README.md"
+    }
   ]
 }
