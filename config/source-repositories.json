@@ -14,33 +14,8 @@
       ]
     },
     {
-      "projectId": "business-discovery",
-      "repo": "Murkin1980/business-discovery",
-      "statusPaths": [
-        "PROJECT_STATUS.md"
-      ],
-      "roadmapPaths": [
-        "ROADMAP.md",
-        "docs/product/ROADMAP.md"
-      ],
-      "alternateStatus": {
-        "ref": "codex/stage-5-auditor",
-        "path": "PROJECT_STATUS.md"
-      }
-    },
-    {
       "projectId": "salamat-projects-dashboard",
       "repo": "Murkin1980/salamat-projects-dashboard",
-      "statusPaths": [
-        "PROJECT_STATUS.md"
-      ],
-      "roadmapPaths": [
-        "ROADMAP.md"
-      ]
-    },
-    {
-      "projectId": "ai-microtask-factory",
-      "repo": "Murkin1980/ai-microtask-factory",
       "statusPaths": [
         "PROJECT_STATUS.md"
       ],
@@ -79,6 +54,16 @@
       "projectId": "grand-mebel-document-control",
       "repo": "Murkin1980/grand-mebel-document-control",
       "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
+    },
+    {
+      "projectId": "business-discovery",
+      "repo": "Murkin1980/business-discovery",
+      "reason": "Private repository is not readable by the production GitHub Actions credential (403), so its canonical PROJECT_STATUS.md cannot currently be verified by the production sync. Keep the existing attributed dashboard state until an authorized read-only production credential can verify PROJECT_STATUS.md, then return this repository to sources."
+    },
+    {
+      "projectId": "ai-microtask-factory",
+      "repo": "Murkin1980/ai-microtask-factory",
+      "reason": "Private repository is not readable by the production GitHub Actions credential (403), so its canonical PROJECT_STATUS.md cannot currently be verified by the production sync. Keep the existing attributed dashboard state until an authorized read-only production credential can verify PROJECT_STATUS.md, then return this repository to sources."
     }
   ]
 }
