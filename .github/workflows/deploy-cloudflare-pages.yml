@@ -62,15 +62,10 @@ jobs:
       # failed synchronization.
       - name: Sync GitHub portfolio state
         id: github-sync
-        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
         run: npm run sync:github -- --output config/projects.github.json
-
-      - name: Warn when GitHub portfolio sync falls back to committed snapshot
-        if: steps.github-sync.outcome == 'failure'
-        run: echo "::warning::Fresh GitHub portfolio sync failed; deployment may continue only if verify:snapshot confirms the last committed snapshot is valid and intact."
 
       - name: Sync canonical MPE experiment registry
         env:
