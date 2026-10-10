@@ -1,0 +1,49 @@
+name: Diagnose salamat apex DNS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/diagnose-salamat-apex.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      ZONE_NAME: salamat-mebel.kz
+
+    steps:
+      - name: Verify Cloudflare DNS access and inspect apex/www
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json")
+
+          test -n "$CLOUDFLARE_API_TOKEN"
+
+          zone_json="$(curl --fail-with-body --silent --show-error "${auth[@]}" "$api/zones?name=$ZONE_NAME")"
+          jq -e '.success == true and (.result | length) == 1' <<<"$zone_json" >/dev/null
+          zone_id="$(jq -r '.result[0].id' <<<"$zone_json")"
+
+          records="$(curl --fail-with-body --silent --show-error "${auth[@]}" "$api/zones/$zone_id/dns_records?per_page=100")"
+          jq -e '.success == true' <<<"$records" >/dev/null
+
+          echo "Apex and www records:"
+          jq -r --arg zone "$ZONE_NAME" '
+            .result[]
+            | select(.name == $zone or .name == ("www." + $zone))
+            | "\(.name) type=\(.type) content=\(.content) proxied=\(.proxied // false) ttl=\(.ttl)"
+          ' <<<"$records"
+
+          apex_count="$(jq --arg zone "$ZONE_NAME" '[.result[] | select(.name == $zone)] | length' <<<"$records")"
+          www_count="$(jq --arg zone "$ZONE_NAME" '[.result[] | select(.name == ("www." + $zone))] | length' <<<"$records")"
+          echo "apex_count=$apex_count"
+          echo "www_count=$www_count"
