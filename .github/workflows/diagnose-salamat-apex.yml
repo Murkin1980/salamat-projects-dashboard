@@ -29,7 +29,15 @@ jobs:
 
           test -n "$CLOUDFLARE_API_TOKEN"
 
-          zone_json="$(curl --fail-with-body --silent --show-error "${auth[@]}" "$api/zones?name=$ZONE_NAME")"
+          verify_json="$(curl --silent --show-error "${auth[@]}" "$api/user/tokens/verify" || true)"
+          echo "token_verify_success=$(jq -r '.success // false' <<<"$verify_json" 2>/dev/null || echo false)"
+          echo "token_status=$(jq -r '.result.status // "unknown"' <<<"$verify_json" 2>/dev/null || echo unknown)"
+
+          zone_json="$(curl --silent --show-error "${auth[@]}" "$api/zones?name=$ZONE_NAME" || true)"
+          echo "zone_lookup_success=$(jq -r '.success // false' <<<"$zone_json" 2>/dev/null || echo false)"
+          echo "zone_lookup_count=$(jq -r '.result | length' <<<"$zone_json" 2>/dev/null || echo 0)"
+          jq -r '.errors[]? | "zone_error_code=\(.code) message=\(.message)"' <<<"$zone_json" 2>/dev/null || true
+
           jq -e '.success == true and (.result | length) == 1' <<<"$zone_json" >/dev/null
           zone_id="$(jq -r '.result[0].id' <<<"$zone_json")"
 
