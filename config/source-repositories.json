@@ -58,12 +58,12 @@
     {
       "projectId": "business-discovery",
       "repo": "Murkin1980/business-discovery",
-      "reason": "Private repository is not readable by the production GitHub Actions credential. The dashboard must not fail or fabricate fresh evidence; keep the existing attributed project state until an authorized read-only production credential can verify the canonical status source, then return this repository to sources."
+      "reason": "Private repository is not readable by the production GitHub Actions credential (403), so its canonical PROJECT_STATUS.md cannot currently be verified by the production sync. Keep the existing attributed dashboard state until an authorized read-only production credential can verify PROJECT_STATUS.md, then return this repository to sources."
     },
     {
       "projectId": "ai-microtask-factory",
       "repo": "Murkin1980/ai-microtask-factory",
-      "reason": "Private repository is not readable by the production GitHub Actions credential. The dashboard must not fail or fabricate fresh evidence; keep the existing attributed project state until an authorized read-only production credential can verify the canonical status source, then return this repository to sources."
+      "reason": "Private repository is not readable by the production GitHub Actions credential (403), so its canonical PROJECT_STATUS.md cannot currently be verified by the production sync. Keep the existing attributed dashboard state until an authorized read-only production credential can verify PROJECT_STATUS.md, then return this repository to sources."
     }
   ]
 }
