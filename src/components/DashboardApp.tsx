@@ -9,9 +9,7 @@
  * project (CP-16) only changes the route: the Project Detail view is an
  * observation of the same normalized state, never a control surface.
  */
-// Default React import: see NodeView.tsx — required by the tsx test runner's
-// classic JSX transform, tree-shaken by the automatic-runtime build.
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   IconAlertTriangle,
   IconArrowRight,
@@ -155,6 +153,57 @@ function App() {
     ? null
     : projects.find((project) => project.id === detailProjectId) ?? null
 
+  const navListRef = useRef<HTMLElement>(null)
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    const scrollActiveIntoView = (instant = false) => {
+      const container = navListRef.current
+      if (!container) return
+      const activeBtn = container.querySelector<HTMLButtonElement>('button.active')
+      if (!activeBtn) return
+
+      // Avoid unnecessary scrolling if horizontal overflow is not active.
+      if (container.scrollWidth <= container.clientWidth) return
+
+      const targetLeft =
+        activeBtn.offsetLeft - (container.clientWidth - activeBtn.offsetWidth) / 2
+      const maxScroll = container.scrollWidth - container.clientWidth
+      const clampedLeft = Math.max(0, Math.min(targetLeft, maxScroll))
+
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      const behavior = instant || prefersReducedMotion ? 'auto' : 'smooth'
+
+      if (typeof container.scrollTo === 'function') {
+        container.scrollTo({ left: clampedLeft, behavior })
+      } else {
+        container.scrollLeft = clampedLeft
+      }
+    }
+
+    const instant = isFirstRender.current
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+    }
+
+    scrollActiveIntoView(instant)
+    const frameId = typeof requestAnimationFrame === 'function'
+      ? requestAnimationFrame(() => scrollActiveIntoView(instant))
+      : undefined
+    const timerId = setTimeout(() => scrollActiveIntoView(instant), 50)
+
+    return () => {
+      if (frameId !== undefined && typeof cancelAnimationFrame === 'function') {
+        cancelAnimationFrame(frameId)
+      }
+      clearTimeout(timerId)
+    }
+  }, [view])
+
   return (
     <div className="app-shell">
       <aside className="sidebar" aria-label="Навигация">
@@ -165,7 +214,7 @@ function App() {
             <span>salamat-mebel.kz</span>
           </div>
         </div>
-        <nav className="nav-list">
+        <nav className="nav-list" ref={navListRef}>
           <button className={view === 'triage' ? 'active' : ''} onClick={() => navigate(viewHash('triage'))}><IconLayoutDashboard size={20}/> Triage</button>
           <button className={view === 'portfolio' ? 'active' : ''} onClick={() => navigate(viewHash('portfolio'))}><IconFolderCode size={20}/> Portfolio</button>
           <button className={view === 'experiments' ? 'active' : ''} onClick={() => navigate(viewHash('experiments'))}><IconFlask size={20}/> Experiments</button>
@@ -340,7 +389,13 @@ function ProjectCard({ project, onNavigate }: { project: ProjectState; onNavigat
       )}
       <div className="project-footer">
         <span><IconClock size={16}/> Обновлено {new Intl.DateTimeFormat('ru-RU').format(new Date(`${project.lastUpdated}T00:00:00`))}</span>
-        <span className="project-source" title={sourceHint}>Источник: {project.source.id}<span className="touch-hint"> · {sourceHint}</span></span>
+        <span className="project-source" title={sourceHint}>
+          Источник: {project.source.id}
+          <span className="touch-hint">
+            <span className="provenance-sep" aria-hidden="true"> ·&nbsp;</span>
+            <span className="provenance-text">{sourceHint}</span>
+          </span>
+        </span>
         <span className="project-card-cta">Открыть проект <IconArrowRight size={13}/></span>
       </div>
       {/*

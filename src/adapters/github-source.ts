@@ -93,6 +93,7 @@ function findArtifact(
 }
 
 interface ParsedLabels {
+  stage: string | null
   checkpoint: string | null
   status: string | null
   nextAction: string | null
@@ -100,8 +101,15 @@ interface ParsedLabels {
   lastUpdated: string | null
 }
 
+function extractLabelValue(match: RegExpMatchArray | null): string | null {
+  if (!match) return null
+  const value = (match[1] || match[2] || '').trim()
+  return value.length > 0 ? value : null
+}
+
 function parseLabels(content: string): ParsedLabels {
   const result: ParsedLabels = {
+    stage: null,
     checkpoint: null,
     status: null,
     nextAction: null,
@@ -110,9 +118,14 @@ function parseLabels(content: string): ParsedLabels {
   }
 
   const checkpointMatch = content.match(
-    /Current checkpoint:\s*`([^`]+)`/i,
+    /^\s*(?:#{1,6}\s+)?(?:[-*]\s+)?(?:\*{1,2}|_{1,2})?(?:Current checkpoint|Checkpoint)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|([^\r\n]+))/im,
   )
-  if (checkpointMatch) result.checkpoint = checkpointMatch[1].trim()
+  result.checkpoint = extractLabelValue(checkpointMatch)
+
+  const stageMatch = content.match(
+    /^\s*(?:#{1,6}\s+)?(?:[-*]\s+)?(?:\*{1,2}|_{1,2})?(?:Current stage|Stage)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|([^\r\n]+))/im,
+  )
+  result.stage = extractLabelValue(stageMatch)
 
   const statusMatch = content.match(/Status:\s*`([^`]+)`/i)
   if (statusMatch) result.status = statusMatch[1].trim()
@@ -283,8 +296,12 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
   const roadmapLabels = primary && roadmap ? parseLabels(roadmap.content) : null
 
   // Priority: primary artifact labels win; roadmap only fills gaps
-  const checkpoint =
+  const parsedCheckpoint =
     primaryLabels?.checkpoint ?? roadmapLabels?.checkpoint ?? null
+  const parsedStage =
+    primaryLabels?.stage ?? roadmapLabels?.stage ?? null
+  const stage = parsedStage ?? parsedCheckpoint
+  const checkpoint = parsedCheckpoint
   const rawStatus = primaryLabels?.status ?? roadmapLabels?.status ?? null
   const nextAction =
     primaryLabels?.nextAction ?? roadmapLabels?.nextAction ?? null
@@ -473,7 +490,7 @@ export function adaptGithubSource(snapshot: RepositorySnapshot): ProjectState {
     repo,
     triageState: effectiveTriageState,
     triageSource,
-    stage: null,
+    stage,
     checkpoint,
     progress: null,
     lastUpdated,

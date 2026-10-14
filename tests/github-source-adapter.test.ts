@@ -345,3 +345,68 @@ test('missing values are explicit null, never guessed', () => {
   assert.deepEqual(result.tools, [])
   assert.deepEqual(result.approvals, [])
 })
+
+test('Phase 3 parser: Checkpoint: format with and without backticks', () => {
+  const contentWithBackticks = `# PROJECT STATUS\n\nCheckpoint: \`CP-02 — Core Flow\`\nStatus: \`READY\`\n`
+  const r1 = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: contentWithBackticks })],
+  }))
+  assert.equal(r1.checkpoint, 'CP-02 — Core Flow')
+  assert.equal(r1.stage, 'CP-02 — Core Flow', 'Checkpoint acts as stage when no explicit stage is defined')
+
+  const contentWithoutBackticks = `# PROJECT STATUS\n\nCheckpoint: CP-03 — Schema Definition\nStatus: \`READY\`\n`
+  const r2 = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: contentWithoutBackticks })],
+  }))
+  assert.equal(r2.checkpoint, 'CP-03 — Schema Definition')
+  assert.equal(r2.stage, 'CP-03 — Schema Definition')
+})
+
+test('Phase 3 parser: Current checkpoint: format with markdown lists and bold formatting', () => {
+  const content = `# PROJECT STATUS\n\n- **Current checkpoint:** \`CP-05 — Visual Polish\`\nStatus: \`READY\`\n`
+  const result = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content })],
+  }))
+  assert.equal(result.checkpoint, 'CP-05 — Visual Polish')
+  assert.equal(result.stage, 'CP-05 — Visual Polish')
+})
+
+test('Phase 3 parser: Stage: and Current stage: formats', () => {
+  const stageOnly = `# PROJECT STATUS\n\nStage: \`Phase 1 Discovery\`\nStatus: \`READY\`\n`
+  const r1 = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: stageOnly })],
+  }))
+  assert.equal(r1.stage, 'Phase 1 Discovery')
+  assert.equal(r1.checkpoint, null)
+
+  const currentStageWithoutBackticks = `# PROJECT STATUS\n\nCurrent stage: Beta Launch\nStatus: \`READY\`\n`
+  const r2 = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: currentStageWithoutBackticks })],
+  }))
+  assert.equal(r2.stage, 'Beta Launch')
+  assert.equal(r2.checkpoint, null)
+})
+
+test('Phase 3 parser: precedence when both Stage and Checkpoint are present', () => {
+  const bothPresent = `# PROJECT STATUS\n\nStage: \`Discovery\`\nCheckpoint: \`CP-01 — Intake\`\nStatus: \`READY\`\n`
+  const result = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: bothPresent })],
+  }))
+  assert.equal(result.stage, 'Discovery', 'Explicit stage must take precedence over checkpoint for project.stage')
+  assert.equal(result.checkpoint, 'CP-01 — Intake', 'Explicit checkpoint must be preserved in project.checkpoint')
+})
+
+test('Phase 3 parser: precedence between primary artifact and ROADMAP.md', () => {
+  // Primary has checkpoint only, roadmap has stage
+  const primaryContent = `# PROJECT STATUS\n\nCheckpoint: \`CP-10 — Core\`\nStatus: \`READY\`\n`
+  const roadmapContent = `# ROADMAP\n\nStage: \`Strategic Rollout\`\n`
+  const result = adaptGithubSource(standardSnapshot({
+    artifacts: [
+      makeArtifact({ path: 'PROJECT_STATUS.md', content: primaryContent }),
+      makeArtifact({ path: 'ROADMAP.md', content: roadmapContent }),
+    ],
+  }))
+  assert.equal(result.checkpoint, 'CP-10 — Core')
+  assert.equal(result.stage, 'Strategic Rollout', 'Roadmap stage fills missing stage in primary')
+})
+
