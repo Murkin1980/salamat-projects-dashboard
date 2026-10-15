@@ -78,6 +78,10 @@ jobs:
       - name: Verify published portfolio snapshot
         run: npm run verify:snapshot
 
+      # Diagnostic only: deploy success does not imply all projects are current.
+      - name: Report portfolio source coverage and freshness
+        run: node scripts/report-portfolio-freshness.mjs
+
       - name: Verify Cloudflare credentials are configured
         shell: bash
         run: |
