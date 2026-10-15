@@ -184,7 +184,10 @@ test('provenance separator prevents orphan line breaks', () => {
 test('mobile navigation provides horizontal scroll affordance below 760px', () => {
   assert.equal(declaredAt('.nav-list', 'overflow-x', 320), 'auto')
   assert.equal(declaredAt('.nav-list', 'scrollbar-width', 320), 'thin')
+  assert.equal(declaredAt('.nav-list', 'position', 320), 'relative')
+  assert.equal(declaredAt('.nav-list button', 'width', 320), 'auto')
   assert.equal(declaredAt('.nav-list', 'overflow-x', 1440), undefined, 'desktop must remain default vertical layout')
+  assert.equal(declaredAt('.nav-list button', 'width', 1440), '100%', 'desktop navigation keeps full width')
 })
 
 test('no phone text stays at the 8-9px sizes the audit flagged as unreadable', () => {
@@ -397,3 +400,43 @@ test('the Project Detail view survives the extreme project at 320px', async (t) 
   assert.ok(container.querySelector('.detail-session-panel'), 'the session panel renders')
   assert.equal(container.querySelectorAll('.project-card button, .detail-panel button').length, 0, 'still read-only')
 })
+
+test('mobile navigation: tab switching leaves window.scrollY unchanged (no page-level vertical scroll jump at scrollY=1800)', async (t) => {
+  const { container, act, cleanup } = await render(390, hostileRegistry(snapshot), '#/portfolio')
+  t.after(cleanup)
+
+  // Emulate user having scrolled down the page
+  Object.defineProperty(globalThis.window, 'scrollY', { value: 1800, writable: true, configurable: true })
+  assert.equal(globalThis.window.scrollY, 1800)
+
+  const nav = container.querySelector('.nav-list') as HTMLElement
+  assert.ok(nav, 'nav-list rendered')
+
+  const reportsBtn = [...nav.querySelectorAll('button')].find((b) => b.textContent?.includes('Reports'))!
+  assert.ok(reportsBtn, 'Reports button exists')
+
+  await act(async () => {
+    reportsBtn.click()
+  })
+
+  // Switching view must NOT alter window.scrollY
+  assert.equal(globalThis.window.scrollY, 1800, 'window.scrollY must remain 1800 with no vertical jump')
+  assert.ok(reportsBtn.classList.contains('active'), 'Reports button is now active')
+})
+
+test('mobile navigation: direct navigation activates target tab at 390px', async (t) => {
+  const reportsRender = await render(390, hostileRegistry(snapshot), '#/reports')
+  t.after(reportsRender.cleanup)
+
+  const reportsNav = reportsRender.container.querySelector('.nav-list') as HTMLElement
+  const reportsBtn = [...reportsNav.querySelectorAll('button')].find((b) => b.textContent?.includes('Reports'))!
+  assert.ok(reportsBtn.classList.contains('active'), 'Reports button is active on #/reports')
+
+  const discoveryRender = await render(390, hostileRegistry(snapshot), '#/discovery')
+  t.after(discoveryRender.cleanup)
+
+  const discoveryNav = discoveryRender.container.querySelector('.nav-list') as HTMLElement
+  const discoveryBtn = [...discoveryNav.querySelectorAll('button')].find((b) => b.textContent?.includes('Discovery'))!
+  assert.ok(discoveryBtn.classList.contains('active'), 'Discovery button is active on #/discovery')
+})
+

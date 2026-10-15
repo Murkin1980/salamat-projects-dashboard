@@ -103,8 +103,14 @@ interface ParsedLabels {
 
 function extractLabelValue(match: RegExpMatchArray | null): string | null {
   if (!match) return null
-  const value = (match[1] || match[2] || '').trim()
-  return value.length > 0 ? value : null
+  for (let i = 1; i < match.length; i++) {
+    const raw = match[i]
+    if (raw !== undefined) {
+      const cleaned = raw.trim().replace(/^[`*_]+|[`*_]+$/g, '').trim()
+      if (cleaned.length > 0) return cleaned
+    }
+  }
+  return null
 }
 
 function parseLabels(content: string): ParsedLabels {
@@ -118,12 +124,12 @@ function parseLabels(content: string): ParsedLabels {
   }
 
   const checkpointMatch = content.match(
-    /^\s*(?:#{1,6}\s+)?(?:[-*]\s+)?(?:\*{1,2}|_{1,2})?(?:Current checkpoint|Checkpoint)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|([^\r\n]+))/im,
+    /^\s*(?:#{1,6}\s+)?(?:(?:[+*-]|\d+[.)])\s+)?(?:\*{1,2}|_{1,2})?(?:Current checkpoint|Checkpoint)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|\*\*([^*\r\n]+)\*\*|\*([^*\r\n]+)\*|__([^_\r\n]+)__|_([^_\r\n]+)_|([^\r\n]+))/im,
   )
   result.checkpoint = extractLabelValue(checkpointMatch)
 
   const stageMatch = content.match(
-    /^\s*(?:#{1,6}\s+)?(?:[-*]\s+)?(?:\*{1,2}|_{1,2})?(?:Current stage|Stage)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|([^\r\n]+))/im,
+    /^\s*(?:#{1,6}\s+)?(?:(?:[+*-]|\d+[.)])\s+)?(?:\*{1,2}|_{1,2})?(?:Current stage|Stage)(?::\*{1,2}|\*{1,2}:|:)\s*(?:`([^`\r\n]+)`|\*\*([^*\r\n]+)\*\*|\*([^*\r\n]+)\*|__([^_\r\n]+)__|_([^_\r\n]+)_|([^\r\n]+))/im,
   )
   result.stage = extractLabelValue(stageMatch)
 

@@ -166,8 +166,15 @@ function App() {
       // Avoid unnecessary scrolling if horizontal overflow is not active.
       if (container.scrollWidth <= container.clientWidth) return
 
+      const containerRect = container.getBoundingClientRect()
+      const btnRect = activeBtn.getBoundingClientRect()
+      const btnOffsetWithinScroll = btnRect.width > 0 && containerRect.width > 0
+        ? btnRect.left - containerRect.left + container.scrollLeft
+        : activeBtn.offsetLeft
+      const btnWidth = btnRect.width > 0 ? btnRect.width : activeBtn.offsetWidth
+
       const targetLeft =
-        activeBtn.offsetLeft - (container.clientWidth - activeBtn.offsetWidth) / 2
+        btnOffsetWithinScroll - (container.clientWidth - btnWidth) / 2
       const maxScroll = container.scrollWidth - container.clientWidth
       const clampedLeft = Math.max(0, Math.min(targetLeft, maxScroll))
 

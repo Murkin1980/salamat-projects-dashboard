@@ -410,3 +410,79 @@ test('Phase 3 parser: precedence between primary artifact and ROADMAP.md', () =>
   assert.equal(result.stage, 'Strategic Rollout', 'Roadmap stage fills missing stage in primary')
 })
 
+test('CP-01B-B parser: supports all Markdown bullet and decoration variants for Checkpoint', () => {
+  const variants: Array<[line: string, expected: string]> = [
+    ['+ Checkpoint: CP-18', 'CP-18'],
+    ['1. Checkpoint: CP-18', 'CP-18'],
+    ['1) Checkpoint: CP-18', 'CP-18'],
+    ['Checkpoint: **CP-18**', 'CP-18'],
+    ['Checkpoint: *CP-18*', 'CP-18'],
+    ['**Current checkpoint:** `CP-18`', 'CP-18'],
+    ['### Checkpoint: `CP-18`', 'CP-18'],
+  ]
+
+  for (const [line, expected] of variants) {
+    const content = `# PROJECT STATUS\n\n${line}\nStatus: \`READY\`\n`
+    const result = adaptGithubSource(standardSnapshot({
+      artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content })],
+    }))
+    assert.equal(result.checkpoint, expected, `Variant "${line}" must parse checkpoint "${expected}"`)
+    assert.equal(result.stage, expected, `Variant "${line}" must act as stage when no explicit stage is defined`)
+  }
+})
+
+test('CP-01B-B parser: supports all Markdown bullet and decoration variants for Stage', () => {
+  const variants: Array<[line: string, expected: string]> = [
+    ['+ Stage: Phase 2 Rollout', 'Phase 2 Rollout'],
+    ['1. Stage: Phase 2 Rollout', 'Phase 2 Rollout'],
+    ['1) Stage: Phase 2 Rollout', 'Phase 2 Rollout'],
+    ['Stage: **Phase 2 Rollout**', 'Phase 2 Rollout'],
+    ['Stage: *Phase 2 Rollout*', 'Phase 2 Rollout'],
+    ['**Current stage:** `Phase 2 Rollout`', 'Phase 2 Rollout'],
+    ['### Stage: `Phase 2 Rollout`', 'Phase 2 Rollout'],
+  ]
+
+  for (const [line, expected] of variants) {
+    const content = `# PROJECT STATUS\n\n${line}\nStatus: \`READY\`\n`
+    const result = adaptGithubSource(standardSnapshot({
+      artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content })],
+    }))
+    assert.equal(result.stage, expected, `Variant "${line}" must parse stage "${expected}"`)
+    assert.equal(result.checkpoint, null, `Variant "${line}" must leave checkpoint null when not defined`)
+  }
+})
+
+test('CP-01B-B invariants: Checkpoint != DONE, Stage != PASS, Status governs completion', () => {
+  // Checkpoint is present with READY status -> triageState must be READY, NOT DONE
+  const readyContent = `# PROJECT STATUS\n\nCheckpoint: **CP-18**\nStatus: \`READY\`\n`
+  const rReady = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: readyContent })],
+  }))
+  assert.equal(rReady.checkpoint, 'CP-18')
+  assert.equal(rReady.triageState, 'READY', 'Checkpoint alone must never imply DONE')
+
+  // Checkpoint is present with BLOCKED status -> triageState must be BLOCKED
+  const blockedContent = `# PROJECT STATUS\n\nCheckpoint: **CP-18**\nStatus: \`BLOCKED\`\n\nBlocker\n\`Waiting on credentials\`\n`
+  const rBlocked = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: blockedContent })],
+  }))
+  assert.equal(rBlocked.checkpoint, 'CP-18')
+  assert.equal(rBlocked.triageState, 'BLOCKED', 'Checkpoint alone must never override BLOCKED')
+
+  // Stage is present with IN_PROGRESS status -> triageState must be IN_PROGRESS, NOT DONE/PASS
+  const inProgressContent = `# PROJECT STATUS\n\nStage: *Phase 2 Rollout*\nStatus: \`IN_PROGRESS\`\n`
+  const rProgress = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: inProgressContent })],
+  }))
+  assert.equal(rProgress.stage, 'Phase 2 Rollout')
+  assert.equal(rProgress.triageState, 'IN_PROGRESS', 'Stage alone must never imply PASS or DONE')
+
+  // Only canonical Status: PASS maps to DONE
+  const passContent = `# PROJECT STATUS\n\nStage: **Phase 2**\nCheckpoint: \`CP-18\`\nStatus: \`PASS\`\n`
+  const rPass = adaptGithubSource(standardSnapshot({
+    artifacts: [makeArtifact({ path: 'PROJECT_STATUS.md', content: passContent })],
+  }))
+  assert.equal(rPass.triageState, 'DONE', 'Only canonical Status: PASS maps to DONE')
+})
+
+
