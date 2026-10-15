@@ -116,6 +116,7 @@ const wrappingSelectors = [
   '.sync-state span',
   '.discovery-source-card p',
   '.discovery-source-card small',
+  '.provenance-text',
 ]
 
 for (const selector of wrappingSelectors) {
@@ -173,6 +174,20 @@ test('primary navigation stays reachable after a long scroll on a phone', () => 
 test('tooltip-only content is real text on a phone and stays hidden on desktop', () => {
   assert.equal(declaredAt('.touch-hint', 'display', 320), 'inline')
   assert.equal(declaredAt('.touch-hint', 'display', 1440), 'none', 'desktop output must not change')
+})
+
+test('provenance separator prevents orphan line breaks', () => {
+  assert.equal(declaredAt('.provenance-sep', 'white-space', 320), 'nowrap')
+  assert.equal(declaredAt('.provenance-sep', 'white-space', 1440), 'nowrap')
+})
+
+test('mobile navigation provides horizontal scroll affordance below 760px', () => {
+  assert.equal(declaredAt('.nav-list', 'overflow-x', 320), 'auto')
+  assert.equal(declaredAt('.nav-list', 'scrollbar-width', 320), 'thin')
+  assert.equal(declaredAt('.nav-list', 'position', 320), 'relative')
+  assert.equal(declaredAt('.nav-list button', 'width', 320), 'auto')
+  assert.equal(declaredAt('.nav-list', 'overflow-x', 1440), undefined, 'desktop must remain default vertical layout')
+  assert.equal(declaredAt('.nav-list button', 'width', 1440), '100%', 'desktop navigation keeps full width')
 })
 
 test('no phone text stays at the 8-9px sizes the audit flagged as unreadable', () => {
@@ -350,6 +365,11 @@ test('the source explanation reaches a touch user as text, not only as a tooltip
   const hint = container.querySelector('.project-card .project-source .touch-hint')
   assert.ok(hint, 'the card source hint is rendered as an element, not only in a title attribute')
   assert.ok(hint!.textContent!.includes(unbroken(140, 'R').slice(0, 40)), 'the full conflict reason is in the DOM text')
+  const sep = hint!.querySelector('.provenance-sep')
+  const text = hint!.querySelector('.provenance-text')
+  assert.ok(sep, 'provenance separator is rendered')
+  assert.ok(text, 'provenance text is rendered')
+  assert.equal(sep!.getAttribute('aria-hidden'), 'true', 'separator is hidden from assistive tech')
   // Desktop keeps the compact form: the same element exists but the stylesheet
   // hides it above 760px, asserted in the cascade layer above.
 })
@@ -362,6 +382,8 @@ test('long history provenance keeps its full evidence id reachable by touch', as
   assert.ok(provenance.length > 0, 'history events render')
   const hint = provenance[0].querySelector('.touch-hint')
   assert.ok(hint, 'the full evidence id is rendered, not only in a title attribute')
+  assert.ok(hint!.querySelector('.provenance-sep'), 'history provenance has separator')
+  assert.ok(hint!.querySelector('.provenance-text'), 'history provenance has text wrapper')
   assert.equal(hint!.textContent!.trim().length >= 40, true, `expected the full id, got "${hint!.textContent}"`)
   assert.equal(provenance[0].getAttribute('title')?.length, 40, 'the tooltip still carries the same full id')
   assert.ok(provenance[0].textContent!.includes(LONG_SHA.slice(0, 7)), 'the short form stays for wide screens')
@@ -378,3 +400,43 @@ test('the Project Detail view survives the extreme project at 320px', async (t) 
   assert.ok(container.querySelector('.detail-session-panel'), 'the session panel renders')
   assert.equal(container.querySelectorAll('.project-card button, .detail-panel button').length, 0, 'still read-only')
 })
+
+test('mobile navigation: tab switching leaves window.scrollY unchanged (no page-level vertical scroll jump at scrollY=1800)', async (t) => {
+  const { container, act, cleanup } = await render(390, hostileRegistry(snapshot), '#/portfolio')
+  t.after(cleanup)
+
+  // Emulate user having scrolled down the page
+  Object.defineProperty(globalThis.window, 'scrollY', { value: 1800, writable: true, configurable: true })
+  assert.equal(globalThis.window.scrollY, 1800)
+
+  const nav = container.querySelector('.nav-list') as HTMLElement
+  assert.ok(nav, 'nav-list rendered')
+
+  const reportsBtn = [...nav.querySelectorAll('button')].find((b) => b.textContent?.includes('Reports'))!
+  assert.ok(reportsBtn, 'Reports button exists')
+
+  await act(async () => {
+    reportsBtn.click()
+  })
+
+  // Switching view must NOT alter window.scrollY
+  assert.equal(globalThis.window.scrollY, 1800, 'window.scrollY must remain 1800 with no vertical jump')
+  assert.ok(reportsBtn.classList.contains('active'), 'Reports button is now active')
+})
+
+test('mobile navigation: direct navigation activates target tab at 390px', async (t) => {
+  const reportsRender = await render(390, hostileRegistry(snapshot), '#/reports')
+  t.after(reportsRender.cleanup)
+
+  const reportsNav = reportsRender.container.querySelector('.nav-list') as HTMLElement
+  const reportsBtn = [...reportsNav.querySelectorAll('button')].find((b) => b.textContent?.includes('Reports'))!
+  assert.ok(reportsBtn.classList.contains('active'), 'Reports button is active on #/reports')
+
+  const discoveryRender = await render(390, hostileRegistry(snapshot), '#/discovery')
+  t.after(discoveryRender.cleanup)
+
+  const discoveryNav = discoveryRender.container.querySelector('.nav-list') as HTMLElement
+  const discoveryBtn = [...discoveryNav.querySelectorAll('button')].find((b) => b.textContent?.includes('Discovery'))!
+  assert.ok(discoveryBtn.classList.contains('active'), 'Discovery button is active on #/discovery')
+})
+

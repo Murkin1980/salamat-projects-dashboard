@@ -25,7 +25,7 @@ function extractSteps(yaml: string): WorkflowStep[] {
   const steps: WorkflowStep[] = []
   let current: { name: string; body: string[] } | null = null
 
-  for (const line of yaml.split('\n')) {
+  for (const line of yaml.replace(/\r/g, '').split('\n')) {
     const match = /^      - (?:name: (.*)|uses: (.*))$/.exec(line)
     if (match) {
       if (current) steps.push({ name: current.name, body: current.body.join('\n') })

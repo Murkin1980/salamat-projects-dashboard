@@ -324,8 +324,26 @@ body { margin: 0; min-height: 100vh; }
   .app-shell { display: block; }
   .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); padding: 14px 14px 10px; gap: 12px; }
   .brand { display: none; }
-  .nav-list { flex-direction: row; overflow-x: auto; padding-bottom: 2px; }
-  .nav-list button { flex: 0 0 auto; }
+  .nav-list {
+    position: relative;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-list::-webkit-scrollbar {
+    height: 3px;
+  }
+  .nav-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .nav-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+  }
+  .nav-list button { flex: 0 0 auto; width: auto; }
   .nav-list button:disabled, .sidebar-note { display: none; }
   .main-content { padding: 20px 14px 40px; }
   .page-header { align-items: stretch; flex-direction: column; gap: 16px; }
@@ -661,6 +679,8 @@ body { margin: 0; min-height: 100vh; }
 /* Tooltip-only content becomes real text on touch screens, where `title` never
    appears. Hidden on wide screens, so desktop output is unchanged. */
 .touch-hint { display: none; }
+.provenance-sep { white-space: nowrap; }
+.provenance-text { overflow-wrap: anywhere; }
 
 @media (max-width: 760px) {
   .reports-heading-actions { justify-items: start; }

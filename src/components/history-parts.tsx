@@ -42,7 +42,12 @@ export function HistoryEventBody({ event }: { event: HistoryEvent }) {
         <span>{event.source}</span> · <code>{shortSourceId(event)}</code>
         {/* The 7-character form is deliberate on wide screens, but a `title` is
             unreachable by touch: on phones the full evidence id is real text. */}
-        {shortSourceId(event) !== event.sourceId && <span className="touch-hint"> · {event.sourceId}</span>}
+        {shortSourceId(event) !== event.sourceId && (
+          <span className="touch-hint">
+            <span className="provenance-sep" aria-hidden="true"> ·&nbsp;</span>
+            <span className="provenance-text">{event.sourceId}</span>
+          </span>
+        )}
       </p>
       <a href={event.evidenceUrl} target="_blank" rel="noreferrer"><IconExternalLink size={13}/> Evidence</a>
     </>
