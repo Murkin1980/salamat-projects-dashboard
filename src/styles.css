@@ -315,12 +315,33 @@ body { margin: 0; min-height: 100vh; }
 .history-timeline p { margin: 7px 0; color: #697589; font-size: 12px; line-height: 1.45; }
 .history-timeline a { display: inline-flex; align-items: center; gap: 5px; color: #1e64b7; font-size: 10px; font-weight: 800; }
 
+/* CP-18 — cross-project Recent Activity */
+.activity-workspace { border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 18px 55px rgba(34, 48, 70, 0.07); }
+.activity-controls { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 14px 22px; border-bottom: 1px solid #e5e9ef; }
+.activity-controls p, .activity-boundary { margin: 0; color: var(--muted); font-size: 11px; }
+.activity-coverage { display: flex; align-items: center; gap: 7px; margin: 0; padding: 11px 22px; border-bottom: 1px solid #eadfbe; background: #fffaf0; color: #725c29; font-size: 12px; }
+.activity-feed { display: grid; gap: 12px; margin: 0; padding: 20px 22px; list-style: none; }
+.activity-feed > li { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.activity-feed article { min-width: 0; border: 1px solid #e2e7ed; border-radius: 14px; padding: 14px 16px; overflow-wrap: anywhere; }
+.activity-feed article p { margin: 7px 0; color: #697589; font-size: 12px; line-height: 1.45; }
+.activity-feed article > a { display: inline-flex; align-items: center; gap: 5px; color: #1e64b7; font-size: 10px; font-weight: 800; }
+.activity-project { display: grid; gap: 5px; padding-top: 12px; }
+.activity-project a { color: #153d70; font-size: 13px; font-weight: 850; overflow-wrap: anywhere; }
+.activity-project span { color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+.activity-boundary { display: flex; align-items: center; gap: 6px; padding: 12px 22px; border-top: 1px solid #e5e9ef; }
+
 @media (max-width: 1100px) {
   .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
+  .activity-controls { display: grid; padding: 12px; }
+  .activity-coverage { padding: 10px 12px; }
+  .activity-feed { padding: 12px; }
+  .activity-feed > li { grid-template-columns: 1fr; gap: 5px; }
+  .activity-project { padding-top: 0; }
+  .activity-boundary { padding: 12px; }
   .app-shell { display: block; }
   .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); padding: 14px 14px 10px; gap: 12px; }
   .brand { display: none; }

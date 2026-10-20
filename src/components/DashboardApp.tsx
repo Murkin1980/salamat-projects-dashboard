@@ -12,6 +12,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   IconAlertTriangle,
+  IconActivity,
   IconArrowRight,
   IconClock,
   IconExternalLink,
@@ -33,6 +34,7 @@ import nodeGraphRegistry from '../../config/node-graphs.json'
 import experimentRegistry from '../../config/experiments.github.json'
 import { NodesView } from './NodesView'
 import { ReportView } from './ReportView'
+import { RecentActivityView } from './RecentActivityView'
 import { DiscoveryView } from './DiscoveryView'
 import { ProjectDetailView } from './ProjectDetailView'
 import { SessionIndicator, StatusBadge, triageMeta } from './status-badges'
@@ -65,6 +67,7 @@ const viewTitles: Record<DashboardView, string> = {
   portfolio: 'Portfolio',
   experiments: 'Experiments',
   attention: 'Attention',
+  activity: 'Recent Activity',
   nodes: 'Node View',
   reports: 'History & Reports',
   discovery: 'Discovery',
@@ -226,6 +229,7 @@ function App() {
           <button className={view === 'portfolio' ? 'active' : ''} onClick={() => navigate(viewHash('portfolio'))}><IconFolderCode size={20}/> Portfolio</button>
           <button className={view === 'experiments' ? 'active' : ''} onClick={() => navigate(viewHash('experiments'))}><IconFlask size={20}/> Experiments</button>
           <button className={view === 'attention' ? 'active' : ''} onClick={() => navigate(viewHash('attention'))}><IconAlertTriangle size={20}/> Attention</button>
+          <button className={view === 'activity' ? 'active' : ''} onClick={() => navigate(viewHash('activity'))}><IconActivity size={20}/> Activity</button>
           <button className={view === 'nodes' ? 'active' : ''} onClick={() => navigate(viewHash('nodes'))}><IconRoute size={20}/> Nodes</button>
           <button disabled title="Будет реализовано в следующих checkpoint"><IconTargetArrow size={20}/> Roadmap</button>
           <button className={view === 'reports' ? 'active' : ''} onClick={() => navigate(viewHash('reports'))}><IconListDetails size={20}/> Reports</button>
@@ -244,10 +248,10 @@ function App() {
             <p className="eyebrow">Operational portfolio</p>
             <h1>{detailProjectId === null ? viewTitles[view] : detailProject?.name ?? 'Проект не найден'}</h1>
             <p>{detailProjectId === null
-              ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Живая хронология проекта из GitHub evidence: коммиты, PR, переходы статуса и события сессии Arena.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
+              ? (view === 'experiments' ? 'Read-only view of the canonical MPE registry. Full plans and results remain in the owning repository.' : view === 'activity' ? 'Последние подтверждённые изменения по всему портфелю из текущего snapshot.' : view === 'nodes' ? 'Карта реальных связей выбранного проекта с evidence для каждого узла и ребра.' : view === 'reports' ? 'Живая хронология проекта из GitHub evidence: коммиты, PR, переходы статуса и события сессии Arena.' : view === 'discovery' ? 'Кто из поисковых и AI-краулеров заходил на Murat House и какие страницы они запрашивали.' : 'Живой пульт проектов. Состояния обновляются из проверенного runtime snapshot без ручного редактирования карточек.')
               : 'Полная карточка проекта: состояние, активность, сессия Arena и evidence. Только чтение.'}</p>
           </div>
-          {(detailProjectId !== null || (view !== 'nodes' && view !== 'reports' && view !== 'discovery')) && <div className="header-actions">
+          {(detailProjectId !== null || (view !== 'nodes' && view !== 'reports' && view !== 'activity' && view !== 'discovery')) && <div className="header-actions">
             <div className={`sync-state ${error ? 'sync-error' : ''}`} role="status">
               <span>{error ? `Ошибка обновления: ${error}` : lastSuccessAt ? `Обновлено ${lastSuccessAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : 'Загрузка live snapshot…'}</span>
               <button type="button" onClick={() => void refresh()} disabled={refreshState === 'REFRESHING'}>
@@ -263,7 +267,7 @@ function App() {
           </div>}
         </header>
 
-        {detailProjectId === null && view !== 'nodes' && view !== 'reports' && view !== 'discovery' && <section className="summary-grid" aria-label="Сводка">
+        {detailProjectId === null && view !== 'nodes' && view !== 'reports' && view !== 'activity' && view !== 'discovery' && <section className="summary-grid" aria-label="Сводка">
           <SummaryCard label="Активные" value={projects.filter(p => p.triageState !== null && p.triageState !== 'HOLD' && p.triageState !== 'DONE').length} detail="в рабочем портфеле" />
           <SummaryCard label="Требуют внимания" value={attentionProjects.length} detail="с объяснимой причиной" tone="critical" />
           <SummaryCard label="Готовы к следующему этапу" value={counts.READY} detail="READY" tone="positive" />
@@ -321,6 +325,7 @@ function App() {
         )}
 
         {detailProjectId === null && view === 'nodes' && <NodesView graphs={nodeGraphs}/>}
+        {detailProjectId === null && view === 'activity' && <RecentActivityView projects={reportProjects} onNavigate={navigate}/>}
         {detailProjectId === null && view === 'reports' && <ReportView projects={reportProjects} selectedProjectId={route.reportProjectId ?? null} onNavigate={navigate}/>}
         {detailProjectId === null && view === 'discovery' && <DiscoveryView/>}
       </main>

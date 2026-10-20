@@ -16,6 +16,7 @@ export const DASHBOARD_VIEWS = [
   'portfolio',
   'experiments',
   'attention',
+  'activity',
   'nodes',
   'reports',
   'discovery',
