@@ -16,6 +16,7 @@ import {
   RUNTIME_SNAPSHOT_RELATIVE_PATH,
 } from './sync-github-projects.js'
 import { parseProjectRegistry } from '../src/contract/project-state.js'
+import { classifyProject } from '../src/monitoring/portfolio-coverage.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
@@ -95,6 +96,9 @@ async function main(): Promise<void> {
   //    with explicit evidence may be CLOSED. (Enforced by the Zod schema.)
   //  * Every REPOSITORY project must be classified in source-repositories.json
   //    as either a synchronized source or an explicit gap.
+  //  * Primary classification buckets (CURRENT/STALE/UNKNOWN/UNAVAILABLE/FIXTURE)
+  //    are a mutually exclusive partition of the project set and must sum to
+  //    the project total. Same for session and history coverage.
 
   let sourceRepositories: { sources: Array<{ projectId: string }>; gaps?: Array<{ projectId: string }> }
   try {
@@ -107,20 +111,15 @@ async function main(): Promise<void> {
   const sourceIds = new Set(sourceRepositories.sources.map((s) => s.projectId))
   const gapIds = new Set((sourceRepositories.gaps ?? []).map((g) => g.projectId))
 
-  const counts = { current: 0, stale: 0, unknown: 0, unavailable: 0, fixture: 0, sessionKnown: 0, sessionUnknown: 0, historyKnown: 0, historyUnavailable: 0 }
-  const DAY = 86_400_000
-  const snapshotTime = Date.parse(registry.projects[0]?.activity.snapshotGeneratedAt.at ?? '')
+  const counts = {
+    current: 0, stale: 0, unknown: 0, unavailable: 0, fixture: 0,
+    sessionKnown: 0, sessionUnknown: 0,
+    historyKnown: 0, historyUnavailable: 0,
+  }
 
   for (const project of registry.projects) {
     const isFixture = project.source.kind === 'FIXTURE'
     const isRepository = project.source.kind === 'REPOSITORY'
-
-    if (isFixture) {
-      counts.fixture += 1
-      if (project.repo !== null) {
-        fail(`fixture project ${project.id} must not claim a repository`)
-      }
-    }
 
     if (isRepository) {
       if (project.repo === null) {
@@ -131,10 +130,29 @@ async function main(): Promise<void> {
       }
     }
 
+    // Primary classification — exactly one bucket per project. Uses the same
+    // pure classifier as the UI CoveragePanel so verifier and UI cannot disagree.
+    const classification = classifyProject(project).classification
+
+    if (isFixture) {
+      if (project.repo !== null) fail(`fixture project ${project.id} must not claim a repository`)
+      if (classification !== 'FIXTURE') {
+        fail(`fixture project ${project.id} must classify as FIXTURE, got ${classification}`)
+      }
+      counts.fixture += 1
+    } else {
+      if (classification === 'FIXTURE') {
+        fail(`repository project ${project.id} must not classify as FIXTURE`)
+      }
+      if (classification === 'UNAVAILABLE') counts.unavailable += 1
+      else if (classification === 'UNKNOWN') counts.unknown += 1
+      else if (classification === 'STALE') counts.stale += 1
+      else counts.current += 1
+    }
+
+    // Invariants per triage-resolution (checked regardless of bucket).
     const triageResolution = project.triageSource.status
     if (triageResolution === 'UNAVAILABLE') {
-      counts.unavailable += 1
-      // UNAVAILABLE projects must not carry fabricated operational data.
       if (project.triageState !== null) fail(`UNAVAILABLE project ${project.id} must not carry a triageState`)
       if (project.blocker !== null) fail(`UNAVAILABLE project ${project.id} must not carry a fabricated blocker`)
       if (project.nextAction !== null) fail(`UNAVAILABLE project ${project.id} must not carry a fabricated nextAction`)
@@ -153,26 +171,24 @@ async function main(): Promise<void> {
         fail(`UNAVAILABLE project ${project.id} must not assert a session state without evidence`)
       }
     } else if (triageResolution === 'UNKNOWN' || triageResolution === 'CONFLICT') {
-      counts.unknown += 1
       if (project.triageState !== null) fail(`${triageResolution} project ${project.id} must not carry a triageState`)
-    } else {
-      // KNOWN: real evidence. Count freshness from lastMeaningfulActivity when known,
-      // otherwise from lastUpdated date.
-      const activityKnown = project.activity.lastMeaningfulActivity.status === 'KNOWN'
-      const referenceTime = activityKnown
-        ? Date.parse(project.activity.lastMeaningfulActivity.at)
-        : Date.parse(`${project.lastUpdated}T00:00:00Z`)
-      const ageDays = Number.isFinite(referenceTime) && Number.isFinite(snapshotTime)
-        ? Math.floor((snapshotTime - referenceTime) / DAY)
-        : null
-      if (ageDays !== null && ageDays >= project.staleAfterDays) counts.stale += 1
-      else counts.current += 1
     }
 
     if (project.session.sessionState === 'UNKNOWN') counts.sessionUnknown += 1
     else counts.sessionKnown += 1
     if (project.history.status === 'KNOWN') counts.historyKnown += 1
     else counts.historyUnavailable += 1
+  }
+
+  const primarySum = counts.current + counts.stale + counts.unknown + counts.unavailable + counts.fixture
+  if (primarySum !== registry.projects.length) {
+    fail(`coverage classification buckets must sum to total projects (${registry.projects.length}); got ${primarySum} (current=${counts.current} stale=${counts.stale} unknown=${counts.unknown} unavailable=${counts.unavailable} fixture=${counts.fixture})`)
+  }
+  if (counts.sessionKnown + counts.sessionUnknown !== registry.projects.length) {
+    fail(`session coverage buckets must sum to ${registry.projects.length}`)
+  }
+  if (counts.historyKnown + counts.historyUnavailable !== registry.projects.length) {
+    fail(`history coverage buckets must sum to ${registry.projects.length}`)
   }
 
   process.stdout.write(
@@ -182,7 +198,8 @@ async function main(): Promise<void> {
   )
   process.stdout.write(
     `verify-project-state: coverage — current ${counts.current}, stale ${counts.stale}, `
-    + `unknown ${counts.unknown}, unavailable ${counts.unavailable}, fixture ${counts.fixture}; `
+    + `unknown ${counts.unknown}, unavailable ${counts.unavailable}, fixture ${counts.fixture} `
+    + `(sum ${primarySum}/${registry.projects.length}); `
     + `session known ${counts.sessionKnown}, session unknown ${counts.sessionUnknown}; `
     + `history known ${counts.historyKnown}, history unavailable ${counts.historyUnavailable}.\n`,
   )

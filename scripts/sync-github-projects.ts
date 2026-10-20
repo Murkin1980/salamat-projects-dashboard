@@ -5,7 +5,6 @@ import { tmpdir } from 'node:os'
 import {
   adaptGithubSource,
   readStatusRevisionLabels,
-  unavailableProjectState,
   type RepositoryArtifact,
   type RepositorySnapshot,
 } from '../src/adapters/github-source.js'
@@ -17,7 +16,6 @@ import {
   type StatusRevisionEvidence,
 } from '../src/monitoring/history-derivation.js'
 import {
-  PROJECT_STATE_SCHEMA_VERSION,
   parseProjectRegistry,
   type ProjectRegistry,
   type ProjectState,

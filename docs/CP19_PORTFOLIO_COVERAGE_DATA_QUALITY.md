@@ -120,11 +120,10 @@ session control was added.
 | grand-mebel-document-control | REPOSITORY | UNKNOWN | UNKNOWN | UNAVAILABLE | private, unverifiable |
 
 Coverage counts (from `npm run verify:snapshot`):
-- total 15
-- current 0 (snapshot refreshed manually; full production sync will reclassify)
-- stale 7
-- unknown 6 (includes CONFLICT)
-- unavailable 2
+- total 15 (primary buckets: 0+2+6+2+5 = 15 — mutually exclusive partition)
+- current 0, stale 2 (repository KNOWN projects: salamat-projects-dashboard, murat-ads-control — both past the 7-day freshness threshold because the snapshot was regenerated without a live sync in this sandbox; production sync on main will recompute freshness)
+- unknown 6 (includes CONFLICT for business-discovery)
+- unavailable 2 (murat-house, murat-ai-orchestrator — fabricated READY removed)
 - fixture 5
 - session known 1, session unknown 14
 - history known 2, history unavailable 13

@@ -9,6 +9,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { test } from 'node:test'
+import { spawnSync } from 'node:child_process'
 import {
   ARENA_SESSION_STATES,
   PROJECT_STATE_SCHEMA_VERSION,
@@ -16,7 +17,7 @@ import {
   type ProjectState,
 } from '../src/contract/project-state.js'
 import { unavailableProjectState } from '../src/adapters/github-source.js'
-import { classifyProject, summarizeCoverage } from '../src/monitoring/portfolio-coverage.js'
+import { classifyProject, summarizeCoverage, type CoverageClassification } from '../src/monitoring/portfolio-coverage.js'
 
 const repoUrl = (relative: string) => fileURLToPath(new URL(relative, import.meta.url))
 async function readJson(relative: string): Promise<unknown> {
@@ -252,4 +253,60 @@ test('private-repository gaps that previously had fabricated KNOWN states are no
     )
     assert.equal(project!.triageState, null)
   }
+})
+
+// --- Partition invariants (mutually exclusive buckets) ----------------------
+
+test('every project in the committed snapshot belongs to exactly one primary classification', async () => {
+  const registry = parseProjectRegistry(await readJson('../config/projects.github.json'))
+  for (const project of registry.projects) {
+    const c = classifyProject(project)
+    const buckets: CoverageClassification[] = ['CURRENT', 'STALE', 'UNKNOWN', 'UNAVAILABLE', 'FIXTURE']
+    const matches = buckets.filter((b) => {
+      if (b === 'FIXTURE') return project.source.kind === 'FIXTURE'
+      if (project.source.kind === 'FIXTURE') return false
+      if (b === 'UNAVAILABLE') return project.triageSource.status === 'UNAVAILABLE'
+      if (b === 'UNKNOWN') return project.triageSource.status === 'UNKNOWN' || project.triageSource.status === 'CONFLICT'
+      if (project.triageSource.status !== 'KNOWN') return false
+      const now = new Date(project.activity.snapshotGeneratedAt.at)
+      const lastUpdatedTime = new Date(`${project.lastUpdated}T00:00:00Z`).getTime()
+      const elapsedDays = Math.floor((now.getTime() - lastUpdatedTime) / 86_400_000)
+      const isStale = elapsedDays >= project.staleAfterDays
+      return b === 'STALE' ? isStale : !isStale
+    })
+    assert.equal(matches.length, 1, `${project.id} must belong to exactly one primary bucket, matched ${matches.join(',')}`)
+    assert.equal(matches[0], c.classification, `${project.id}: explicit bucket check must equal classifyProject()`)
+  }
+})
+
+test('summarizeCoverage primary buckets sum to total and equal verify:snapshot printed counts', async () => {
+  const registry = parseProjectRegistry(await readJson('../config/projects.github.json'))
+  const { summary } = summarizeCoverage(registry)
+  assert.equal(summary.current + summary.stale + summary.unknown + summary.unavailable + summary.fixture, summary.total)
+  assert.equal(summary.sessionKnown + summary.sessionUnknown, summary.total)
+  assert.equal(summary.historyKnown + summary.historyUnavailable, summary.total)
+
+  // Drive the real verify:snapshot script and confirm its printed counts
+  // match summarizeCoverage() exactly — UI and verifier cannot disagree.
+  const result = spawnSync(
+    process.execPath,
+    ['--import', 'tsx', repoUrl('../scripts/verify-project-state.ts')],
+    { cwd: repoUrl('..'), encoding: 'utf8' },
+  )
+  if (result.status !== 0) {
+    assert.fail(`verify-project-state exited non-zero:\n${result.stderr}\n${result.stdout}`)
+  }
+  const line = result.stdout.split('\n').find((l: string) => l.includes('verify-project-state: coverage —'))
+  assert.ok(line, 'verify:snapshot must print the coverage line')
+  const extract = (label: string) => {
+    const m = line!.match(new RegExp(`${label} (\\d+)`))
+    assert.ok(m, `coverage line must contain "${label}"`)
+    return Number(m![1])
+  }
+  assert.equal(extract('current'), summary.current)
+  assert.equal(extract('stale'), summary.stale)
+  assert.equal(extract('unknown'), summary.unknown)
+  assert.equal(extract('unavailable'), summary.unavailable)
+  assert.equal(extract('fixture'), summary.fixture)
+  assert.match(line!, /sum 15\/15/, 'verify:snapshot must print sum N/N matching total')
 })
