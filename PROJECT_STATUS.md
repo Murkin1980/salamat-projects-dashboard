@@ -2,7 +2,7 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-17 — Live History & Reports`
+Current checkpoint: `CP-18 — Portfolio Recent Activity Feed`
 Status: `PASS`
 
 ## CP-00 — Repository Foundation
@@ -725,29 +725,114 @@ Scope boundary (unchanged):
   starts, continues or closes an Arena session; a merge, commit, validation result or
   status update is not closure.
 
-## Arena Session
-Session state: `CLOSED`
-Session checkpoint: `CP-17 — Live History & Reports`
-Session started: 2026-10-01T14:18:00Z
-Last session activity: 2026-10-01T14:40:00Z
-Session closure: `CONFIRMED`
-Session closure evidence: https://github.com/Murkin1980/salamat-projects-dashboard/pull/29
+## CP-18 — Portfolio Recent Activity Feed
+Status: `PASS`
 
-Arena session closure:
-- Session checkpoint: `CP-17`;
-- Session closure: `CONFIRMED`;
-- Closure evidence: explicit post-merge Arena session closure record associated with
-  PR #29 (`d4ce36b`), authorized by the owner instruction that defined CP-17 completion as
-  merged validation plus a committed and verified status update;
-- Closure does not derive from the merge alone.
+Result:
+- PR #37 (`CP-18: add portfolio Recent Activity feed`, branch `codex/cp18-recent-activity`,
+  head commit `10ea28f1b0f8bbf146526b4c5073f45ecc62cea8`) merged to `main` at merge commit
+  `c44a510bdbb089107c226ceef596125dc4177d59` on 2026-10-20T17:24:06Z.
+- Disposition `EXTEND_EXISTING`. Implementation summary, as recorded in
+  `docs/CP18_PORTFOLIO_RECENT_ACTIVITY.md`:
+  - the existing live `ProjectState.history` data now powers one read-only, cross-project
+    Recent Activity view at `#/activity`;
+  - the feed aggregates evidence-backed events from every project, reuses the existing
+    deterministic history ordering and shows the newest 20 events in the compact window;
+  - a project selector filters the same feed without changing the snapshot;
+  - every event links to its Project Detail route and to its original GitHub evidence;
+  - session lifecycle events, including `READY_TO_CLOSE`, `CLOSED` and `STALE_SESSION`,
+    stay separate from operational project state and appear only when the normalized
+    history carries attributable session evidence;
+  - projects without readable history stay explicit and the view reports coverage instead
+    of fabricating events.
+- Boundary: no contract/schema change, source adapter, backend, database, realtime
+  channel, notification, task queue, execution control or session control; the view reads
+  the same periodically synchronized snapshot as the rest of the dashboard.
+
+Validation (as recorded in `docs/CP18_PORTFOLIO_RECENT_ACTIVITY.md` and in the PR #37
+validation list; this documentation-only closeout did not re-run them):
+- `npm test`: 284/284 passed;
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `npm run verify:snapshot`: PASS — schema `1.2.0`, version 6, 15 projects, no credentials
+  detected;
+- `git diff --check`: clean;
+- real Chromium validation: desktop 1440×1000 and mobile 390×844 PASS; mobile document
+  width matched the viewport (`390/390`); the feed rendered 20 events and the
+  unavailable-history filter state remained explicit;
+- browser console: no application error, only the pre-existing missing `favicon.ico`.
+
+Production verification (`main` at `c44a510`):
+- workflow run `39465753157` ("Deploy Cloudflare Pages", `push` to `main`): SUCCESS —
+  started 2026-10-20T17:24:09Z, completed 2026-10-20T17:25:01Z;
+- every step of the `Verify and deploy production` job reported success: tests, GitHub
+  credentials check, `Sync GitHub portfolio state`, `Sync canonical MPE experiment
+  registry`, `Verify published portfolio snapshot`, `Report portfolio source coverage and
+  freshness`, Cloudflare credentials check, `Refresh Murat House discovery analytics`,
+  build, `Deploy existing Cloudflare Pages project`, `Verify production snapshot` and
+  `Verify production discovery snapshot`;
+- the PR #37 `validate` check (tests + `verify:snapshot` + `sync:discovery` + build)
+  reported SUCCESS (workflow run `39464883285`, job `118773559646`);
+- the Cloudflare Pages PR-preview integration reported a failed preview build for the
+  PR #37 head `10ea28f`; as on PR #27 and PR #29 that external preview is not a
+  code-validation gate — the production run on `main` above is the gate and it succeeded.
+
+Arena session state (recorded explicitly, never inferred):
+- the CP-18 run left no explicit Arena session closure record in this repository, so no
+  closure evidence exists for it;
+- under the CP-14 contract the observed state is therefore `READY_TO_CLOSE` — the checkpoint
+  work is factually complete while closure is unconfirmed — and it becomes `STALE_SESSION`
+  at the next synchronization once the 24 h inactivity threshold passes;
+- `merge != CLOSED`, `commit != CLOSED`, a green workflow is not closure evidence and this
+  status update is not closure evidence either; the dashboard observes the state and never
+  closes a session;
+- the last explicitly closed Arena session on this repository remains the CP-17 one
+  (PR #29, `CONFIRMED`), recorded in the CP-17 section above.
+
+Known limitation (pre-existing, not introduced and not fixed by CP-18; it is CP-19 scope):
+- the committed snapshot on `main` is still schema `1.2.0`, version 6, 15 projects, and only
+  two of them carry `history: KNOWN` (`salamat-projects-dashboard` with 34 events,
+  `murat-project-engineer` with 27 events and one explicit session gap); the other 13
+  projects stay explicit `history: UNAVAILABLE` with an attributable reason, which the
+  Recent Activity view reports as coverage instead of inventing events.
 
 Current state:
-- Progress: `18/21`;
-- Blocker: none;
-- Current stage/checkpoint: `CP-17 — Live History & Reports` (closed);
-- Next checkpoint: `CP-18 — Portfolio Recent Activity Feed`; CP-18 has not started;
-- Next action: run the next full portfolio synchronization (existing scheduled six-hour
-  mechanism, full-scope token) so history is collected for the 13 projects that are
-  currently `UNAVAILABLE`; then start CP-18 as the sole scope of the next Arena run.
+- Progress: `19/21`;
+- Blocker: none for CP-18;
+- Current stage/checkpoint: `CP-18 — Portfolio Recent Activity Feed` (implementation merged
+  and production-verified; closed by this status record);
+- Next checkpoint: `CP-19 — Portfolio Coverage & Data Quality Hardening`; CP-19 has not
+  started and is not implemented by this run;
+- Next action: merge this closeout PR, verify `main`, then start CP-19 as the sole scope of
+  the next Arena run.
 
-Last updated: 2026-10-01 19:40 (Asia/Almaty)
+Last updated: 2026-10-20 22:35 (Asia/Qyzylorda)
+
+## Arena Session
+Session state: `READY_TO_CLOSE`
+Session checkpoint: `CP-18 — Portfolio Recent Activity Feed`
+Last session activity: 2026-10-20T17:35:31Z
+Session closure: `NOT_CONFIRMED`
+Session closure evidence: none recorded for CP-18
+
+Arena session closure:
+- Session checkpoint: `CP-18`;
+- Session closure: `NOT_CONFIRMED` — no explicit Arena session closure record exists for the
+  CP-18 run, and this status update does not create one;
+- Session start: not recorded by the CP-18 run; it stays an explicit gap instead of a guess;
+- Closure is not inferred from PR #37, from the merge commit `c44a510`, from the 284/284
+  test record or from the successful production workflow `39465753157`; under the CP-14
+  contract the observed state is `READY_TO_CLOSE` (then `STALE_SESSION` beyond the 24 h
+  inactivity threshold) and the dashboard never closes a session itself;
+- the CP-17 session closure (`CONFIRMED`, PR #29) is preserved in the CP-17 section above.
+
+Current state:
+- Progress: `19/21`;
+- Blocker: none;
+- Current stage/checkpoint: `CP-18 — Portfolio Recent Activity Feed` (closed by this status record);
+- Next checkpoint: `CP-19 — Portfolio Coverage & Data Quality Hardening`; CP-19 has not
+  started;
+- Next action: merge this closeout PR and verify `main`; then run the next full portfolio
+  synchronization with the existing scheduled mechanism and start CP-19 as the sole scope of
+  the next Arena run.
+
+Last updated: 2026-10-20 22:35 (Asia/Qyzylorda)
