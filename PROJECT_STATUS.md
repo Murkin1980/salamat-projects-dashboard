@@ -805,10 +805,10 @@ Current state:
 - Next action: merge this closeout PR, verify `main`, then start CP-19 as the sole scope of
   the next Arena run.
 
-Last updated: 2026-10-20 22:35 (Asia/Almaty)
+Last updated: 2026-10-20 22:35 (Asia/Qyzylorda)
 
 ## Arena Session
-Session state: `ACTIVE`
+Session state: `READY_TO_CLOSE`
 Session checkpoint: `CP-18 — Portfolio Recent Activity Feed`
 Last session activity: 2026-10-20T17:35:31Z
 Session closure: `NOT_CONFIRMED`
@@ -835,4 +835,4 @@ Current state:
   synchronization with the existing scheduled mechanism and start CP-19 as the sole scope of
   the next Arena run.
 
-Last updated: 2026-10-20 22:35 (Asia/Almaty)
+Last updated: 2026-10-20 22:35 (Asia/Qyzylorda)
