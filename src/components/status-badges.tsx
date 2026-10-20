@@ -57,11 +57,17 @@ export const triageMeta: Record<TriageState, { label: string; className: string;
 
 /**
  * Operational status badge. An unresolved source stays explicit as
- * `STATUS UNKNOWN` / `SOURCE CONFLICT` instead of being rendered as a state.
+ * `STATUS UNKNOWN` / `SOURCE CONFLICT` / `SOURCE UNAVAILABLE` instead of
+ * being rendered as a state.
  */
-export function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | null; resolution?: 'KNOWN' | 'UNKNOWN' | 'CONFLICT' }) {
+export function StatusBadge({ state, resolution = 'KNOWN' }: { state: TriageState | null; resolution?: 'KNOWN' | 'UNKNOWN' | 'CONFLICT' | 'UNAVAILABLE' }) {
   if (state === null) {
-    return <span className="status-badge status-hold"><IconAlertTriangle size={15}/>{resolution === 'CONFLICT' ? 'SOURCE CONFLICT' : 'STATUS UNKNOWN'}</span>
+    const label = resolution === 'CONFLICT'
+      ? 'SOURCE CONFLICT'
+      : resolution === 'UNAVAILABLE'
+        ? 'SOURCE UNAVAILABLE'
+        : 'STATUS UNKNOWN'
+    return <span className="status-badge status-hold"><IconAlertTriangle size={15}/>{label}</span>
   }
   const meta = triageMeta[state]
   const Icon = meta.Icon
