@@ -19,7 +19,8 @@
 17. CP-16 Project Detail Drill-down & Session Inspection — PASS (PR #24 plus routing/provenance hardening PR #26 merged 2026-10-01; 172/172 tests, build PASS; production workflow runs 36868477244 and 36874033588 succeeded)
 18. CP-17 Live History & Reports — PASS (PR #29 merged 2026-10-01 with the post-merge status record PR #30; 216/216 tests, build PASS; `ProjectState` schema 1.2.0 with the required `history` block)
 19. CP-18 Portfolio Recent Activity Feed — PASS (PR #37 merged 2026-10-20 at c44a510bdbb089107c226ceef596125dc4177d59; 284/284 tests, build PASS, snapshot verification PASS, desktop 1440×1000 and mobile 390×844 PASS; production workflow run 39465753157 SUCCESS, including Cloudflare deploy and production snapshot verification)
+20. CP-19 Portfolio Coverage & Data Quality Hardening — PASS (PR #40 merged 2026-10-24 at ede570f27ef7075d7deb5cdea1451c3bc83960bf; 295/295 tests, build and snapshot verification PASS; production workflow run 40056131304 SUCCESS; primary coverage partition 15/15 and UI/verifier parity confirmed)
 
-Next checkpoint: CP-19 Portfolio Coverage & Data Quality Hardening — not started; it becomes eligible only after the CP-18 closeout is merged into `main` and the resulting `PROJECT_STATUS.md` on `main` is verified.
+Next checkpoint: CP-20 Production UX & Acceptance — authorized by Murat on 2026-10-24. Scope is the final desktop/mobile monitoring acceptance pass only; no new product capability or infrastructure is implied.
 
 No later checkpoint starts by silently expanding the scope of an earlier checkpoint.
