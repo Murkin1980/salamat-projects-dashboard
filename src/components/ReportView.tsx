@@ -27,6 +27,7 @@ import {
 } from '../monitoring/history-view'
 import { formatEventTimestamp } from '../monitoring/project-detail-events'
 import { projectDetailHash, reportHash } from '../routing/hash-route'
+import { CoveragePanel } from './CoveragePanel'
 import { HistoryEventBody, HistoryGaps } from './history-parts'
 
 const categoryIcon = {
@@ -115,11 +116,11 @@ export function ReportView({ projects, selectedProjectId, onNavigate }: ReportVi
     <section className="reports-workspace" aria-labelledby="reports-heading">
       <header className="reports-heading">
         <div>
-          <p className="eyebrow">Live history · GitHub / project evidence</p>
+          <p className="eyebrow">Portfolio coverage · Live history</p>
           <h2 id="reports-heading">{project.name}</h2>
           <p>
-            Только подтверждённые события: коммиты, жизненный цикл PR, переходы канонического статуса и
-            события сессии Arena. Статус проекта и статус сессии — разные факты.
+            Покрытие портфеля по источникам и подтверждённая история проекта. Статус проекта и статус
+            сессии Arena — разные факты; недоступные источники остаются явными.
           </p>
         </div>
         <div className="reports-heading-actions">
@@ -132,9 +133,12 @@ export function ReportView({ projects, selectedProjectId, onNavigate }: ReportVi
         </div>
       </header>
 
+      <CoveragePanel projects={projects} onNavigate={onNavigate}/>
+
       <div className="report-controls">
         {selector}
         <p className="report-window">
+          Показана история проекта <strong>{project.name}</strong>.{' '}
           {history.status === 'KNOWN'
             ? <>Окно: последние {history.limits.commits} коммитов, {history.limits.pullRequests} PR, {history.limits.statusRevisions} ревизий статуса. </>
             : null}

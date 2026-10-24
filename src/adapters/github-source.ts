@@ -271,6 +271,76 @@ function buildEvidenceUrl(artifact: RepositoryArtifact, repo: string): string {
   return `https://github.com/${repo}/blob/${artifact.ref}/${artifact.path}`
 }
 
+export interface UnavailableProjectInput {
+  projectId: string
+  name: string
+  summary: string
+  repo: string
+  /** Snapshot generation timestamp (ISO-8601 UTC). Never project activity. */
+  generatedAt: string
+  snapshotSourceId: string
+  /** Attributable reason the canonical source is unavailable. */
+  reason: string
+}
+
+/**
+ * Builds an explicit UNAVAILABLE project state for configured portfolio
+ * repositories whose canonical status source cannot currently be read
+ * (private repo without authorization, missing canonical status artifact, etc.).
+ *
+ * This fails closed: no triage state, no history events, no session state
+ * and no activity is fabricated. The last valid snapshot is preserved only
+ * when no real source exists to contradict it; when this routine is used by
+ * the sync it replaces stale fixture triage/activity claims so the dashboard
+ * never shows a status it cannot attribute.
+ */
+export function unavailableProjectState(input: UnavailableProjectInput): ProjectState {
+  const { projectId, name, summary, repo, generatedAt, snapshotSourceId, reason } = input
+  const unavailableTimestamp = { status: 'UNAVAILABLE' as const, reason }
+  return {
+    schemaVersion: PROJECT_STATE_SCHEMA_VERSION,
+    id: projectId,
+    name,
+    summary,
+    repo,
+    triageState: null,
+    triageSource: { status: 'UNAVAILABLE', reason },
+    stage: null,
+    checkpoint: null,
+    progress: null,
+    // No attributable date: fall back to the snapshot date explicitly so the
+    // field remains schema-valid, while freshness reports it as unknown.
+    lastUpdated: generatedAt.slice(0, 10),
+    activity: {
+      lastMeaningfulActivity: unavailableTimestamp,
+      statusUpdatedAt: unavailableTimestamp,
+      snapshotGeneratedAt: { at: generatedAt, source: 'SNAPSHOT', sourceId: snapshotSourceId },
+    },
+    session: {
+      sessionState: 'UNKNOWN',
+      sessionCheckpoint: null,
+      sessionStartedAt: unavailableTimestamp,
+      sessionLastActivityAt: unavailableTimestamp,
+      sessionClosureStatus: 'UNKNOWN',
+      sessionClosureEvidence: null,
+      sessionStateEvidence: [],
+      sessionStateReason: `No Arena session evidence is available: ${reason}`,
+    },
+    history: {
+      status: 'UNAVAILABLE',
+      reason: `History was not collected: ${reason}`,
+    },
+    blocker: null,
+    nextAction: null,
+    evidenceLinks: [],
+    dependencies: [],
+    tools: [],
+    approvals: [],
+    source: { kind: 'REPOSITORY', id: repo },
+    staleAfterDays: 7,
+  }
+}
+
 /** A declared calendar date has no time component; midnight UTC is explicit. */
 function dateToTimestamp(isoDate: string): string | null {
   return normalizeIsoTimestamp(`${isoDate}T00:00:00Z`)

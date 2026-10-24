@@ -27,9 +27,17 @@ const IsoTimestampSchema = z.string()
 const IdSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
 const NonEmptyStringSchema = z.string().trim().min(1)
 
+/**
+ * Canonical resolution of a project's triage state:
+ * - `KNOWN` — the canonical status artifact was read and maps to a triage state.
+ * - `UNKNOWN` — the source was readable but carried no recognized status label (e.g. narrative text only, conflicting labels, or no status line).
+ * - `CONFLICT` — two canonical sources disagree and the adapter refused to guess.
+ * - `UNAVAILABLE` — the configured canonical source could not be read at all (private repository without credentials, missing status artifact, HTTP error). The project carries no current triage claim.
+ */
 const TriageSourceSchema = z.discriminatedUnion('status', [
   z.object({ status: z.literal('KNOWN'), sourceId: NonEmptyStringSchema }).strict(),
   z.object({ status: z.literal('UNKNOWN'), reason: NonEmptyStringSchema }).strict(),
+  z.object({ status: z.literal('UNAVAILABLE'), reason: NonEmptyStringSchema }).strict(),
   z.object({
     status: z.literal('CONFLICT'),
     sourceIds: z.array(NonEmptyStringSchema).min(2),
@@ -387,7 +395,9 @@ const ProjectStateBaseSchema = z.object({
 }).strict()
 
 export const ProjectStateSchema = ProjectStateBaseSchema.superRefine((project, context) => {
-  const statusIsUnknown = project.triageSource.status === 'UNKNOWN' || project.triageSource.status === 'CONFLICT'
+  const statusIsUnknown = project.triageSource.status === 'UNKNOWN'
+    || project.triageSource.status === 'CONFLICT'
+    || project.triageSource.status === 'UNAVAILABLE'
 
   if ((project.triageState === null) !== statusIsUnknown) {
     context.addIssue({

@@ -776,3 +776,59 @@ body { margin: 0; min-height: 100vh; }
 @media (max-width: 420px) {
   .page-header h1 { font-size: 24px; }
 }
+
+/* CP-19 — Portfolio Coverage & Data Quality diagnostics */
+.coverage-panel { border-top: 1px solid #e5e9ef; background: #fbfcfe; }
+.coverage-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; padding: 16px 22px; }
+.cov-total { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; min-height: 62px; border: 1px solid #d0dcec; border-radius: 12px; padding: 11px 13px; background: #fff; color: #3d5273; }
+.cov-total span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; display: block; }
+.cov-total strong { font-size: 20px; color: #10233e; line-height: 1.1; display: block; }
+.cov-total svg { color: #5d78a0; grid-row: 1 / span 2; }
+.cov-card { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 3px 10px; align-items: center; min-height: 62px; border: 1px solid #e0e5ec; border-radius: 12px; padding: 11px 13px; background: #fff; color: #52627a; }
+.cov-card span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; grid-column: 2; }
+.cov-card strong { grid-column: 2; color: #10233e; font-size: 20px; line-height: 1.1; }
+.cov-card svg { grid-row: 1 / span 2; color: #5d78a0; }
+.cov-card.cov-current { border-color: #b7ddc1; background: #f1faf3; } .cov-card.cov-current svg { color: #2f7048; }
+.cov-card.cov-stale { border-color: #ebd6ad; background: #fdf6e7; } .cov-card.cov-stale svg { color: #a06b1e; }
+.cov-card.cov-unknown { border-color: #d6d1e9; background: #f4f1fb; } .cov-card.cov-unknown svg { color: #6f56a2; }
+.cov-card.cov-unavailable { border-color: #ebc4c4; background: #fdf0f0; } .cov-card.cov-unavailable svg { color: #9c3636; }
+.cov-card.cov-fixture { border-color: #c8d6e8; background: #eef4fa; } .cov-card.cov-fixture svg { color: #315b8d; }
+.cov-card.cov-session { border-color: #ead5f0; background: #fbf3fd; } .cov-card.cov-session svg { color: #843ba0; }
+.cov-card.cov-history { border-color: #cad6e5; background: #f2f6fb; } .cov-card.cov-history svg { color: #2f5e95; }
+
+.coverage-details { border-top: 1px solid #e5e9ef; background: #fff; }
+.coverage-details summary { cursor: pointer; padding: 10px 22px; font-size: 12px; font-weight: 750; color: #43546e; list-style: none; }
+.coverage-details summary::-webkit-details-marker { display: none; }
+.coverage-details summary::before { content: '▸ '; display: inline-block; transition: transform 0.15s; }
+.coverage-details[open] summary::before { transform: rotate(90deg); }
+
+.coverage-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.coverage-table thead th { text-align: left; padding: 10px 14px; font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: 0.04em; color: #6c7a8e; background: #f1f4f9; border-top: 1px solid #e3e7ee; border-bottom: 1px solid #e3e7ee; }
+.coverage-table tbody td { padding: 10px 14px; border-bottom: 1px solid #eef1f5; color: #3c4a5f; vertical-align: top; }
+.coverage-table tbody tr:last-child td { border-bottom: none; }
+.coverage-table tbody tr.cov-row-current td:first-child { border-left: 3px solid #3e8b5a; }
+.coverage-table tbody tr.cov-row-stale td:first-child { border-left: 3px solid #c69432; }
+.coverage-table tbody tr.cov-row-unknown td:first-child { border-left: 3px solid #7e68b5; }
+.coverage-table tbody tr.cov-row-unavailable td:first-child { border-left: 3px solid #b85050; }
+.coverage-table tbody tr.cov-row-fixture td:first-child { border-left: 3px solid #4d79a8; }
+.coverage-table a { color: #1e4d86; font-weight: 700; text-decoration: none; }
+.coverage-table a:hover { text-decoration: underline; }
+.coverage-reason { margin-top: 4px; font-size: 11px; color: #7a8595; max-width: 420px; overflow-wrap: anywhere; }
+.coverage-source { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #697589; }
+.coverage-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 750; }
+.coverage-badge.cov-current { background: #e4f4e9; color: #2f7048; }
+.coverage-badge.cov-stale { background: #fceecb; color: #8a5a10; }
+.coverage-badge.cov-unknown { background: #ece6f9; color: #6f56a2; }
+.coverage-badge.cov-unavailable { background: #fadada; color: #9c3636; }
+.coverage-badge.cov-fixture { background: #e0ecf8; color: #315b8d; }
+.coverage-sub { font-size: 11px; font-weight: 700; }
+.coverage-sub.cov-known { color: #2f7048; }
+.coverage-sub.cov-unknown { color: #7e68b5; }
+.coverage-sub.cov-unavail { color: #9c3636; }
+
+@media (max-width: 720px) {
+  .coverage-metrics { padding: 12px; gap: 8px; }
+  .coverage-table { font-size: 11px; }
+  .coverage-table thead th, .coverage-table tbody td { padding: 8px 10px; }
+  .coverage-reason { max-width: 100%; }
+}

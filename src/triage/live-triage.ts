@@ -13,6 +13,8 @@ export function deriveLiveProjectState(project: ProjectState, now: Date): LivePr
     attention.push({ kind: 'SOURCE_CONFLICT', label: project.triageSource.reason, sourceId: project.triageSource.sourceIds.join(', ') })
   } else if (project.triageSource.status === 'UNKNOWN') {
     attention.push({ kind: 'SOURCE_UNKNOWN', label: project.triageSource.reason, sourceId: project.source.id })
+  } else if (project.triageSource.status === 'UNAVAILABLE') {
+    attention.push({ kind: 'SOURCE_UNKNOWN', label: `Источник недоступен: ${project.triageSource.reason}`, sourceId: project.source.id })
   }
   if (project.blocker) attention.push({ kind: 'BLOCKER', label: project.blocker, sourceId: attributedSource })
   for (const approval of project.approvals) {

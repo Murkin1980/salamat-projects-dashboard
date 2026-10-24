@@ -436,6 +436,17 @@ export async function syncOnce(
     selected.push(adaptGithubSource(snapshot))
   }
 
+  // Gap projects: configured portfolio repositories whose canonical status
+  // source cannot currently be synchronized (missing artifact, private repo,
+  // missing production credentials). Fail-closed: this CLI already throws on
+  // any source-access failure before writing output, so we DO NOT overwrite
+  // the last valid snapshot entry for gap projects. Each gap must resolve to
+  // a registry entry so coverage accounting never drops a configured project.
+  for (const gap of sourceConfig.gaps ?? []) {
+    const existing = registry.projects.find((project) => project.id === gap.projectId)
+    if (!existing) failClosed(`gap project is absent from validated registry: ${gap.projectId}`)
+  }
+
   const merged = mergeSelected(registry, selected)
   // Re-parse to enforce schema validation (fail closed on schema errors).
   const validated = parseProjectRegistry(merged)

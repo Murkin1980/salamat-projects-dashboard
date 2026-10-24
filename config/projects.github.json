@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.2.0",
-  "version": 6,
-  "updatedAt": "2026-10-01",
+  "version": 7,
+  "updatedAt": "2026-10-20",
   "projects": [
     {
       "schemaVersion": "1.2.0",
@@ -31,7 +31,7 @@
           "reason": "No canonical status artifact carried an attributable \"Last updated\" value"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T14:24:51Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
           "sourceId": "config/projects.github.json"
         }
@@ -450,9 +450,9 @@
           "reason": "Repository Murkin1980/business-discovery was not readable during this snapshot refresh"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T10:50:25Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -530,7 +530,7 @@
           "evidenceUrl": "https://github.com/Murkin1980/salamat-projects-dashboard/blob/main/PROJECT_STATUS.md"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T14:24:51Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
           "sourceId": "config/projects.github.json"
         }
@@ -1037,9 +1037,9 @@
           "reason": "Fixture-only project: no canonical status artifact exists"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1102,9 +1102,9 @@
           "reason": "Registry attribution records no canonical status-artifact update time"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1179,9 +1179,9 @@
           "reason": "Fixture-only project: no canonical status artifact exists"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1244,9 +1244,9 @@
           "reason": "Fixture-only project: no canonical status artifact exists"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1309,9 +1309,9 @@
           "reason": "Fixture-only project: no canonical status artifact exists"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1374,9 +1374,9 @@
           "reason": "Registry attribution records no canonical status-artifact update time"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1451,9 +1451,9 @@
           "reason": "Fixture-only project: no canonical status artifact exists"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1516,9 +1516,9 @@
           "reason": "Registry attribution records no canonical status-artifact update time"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1610,9 +1610,9 @@
           "reason": "Repository Murkin1980/ai-microtask-factory was not readable during this snapshot refresh"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T10:50:25Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1665,31 +1665,28 @@
       "name": "Murat House",
       "summary": "Public project journal about how Murat's projects, decisions, lessons and skills are built.",
       "repo": "Murkin1980/Murat-house",
-      "triageState": "READY",
+      "triageState": null,
       "triageSource": {
-        "status": "KNOWN",
-        "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
+        "status": "UNAVAILABLE",
+        "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
-      "stage": "CP-05 — House Navigation",
-      "checkpoint": "CP-05 — House Navigation",
+      "stage": null,
+      "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-09-18",
+      "lastUpdated": "2026-10-20",
       "activity": {
         "lastMeaningfulActivity": {
-          "status": "KNOWN",
-          "at": "2026-09-18T00:00:00Z",
-          "source": "MANUAL",
-          "sourceId": "config/projects.json:murat-house",
-          "evidenceUrl": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0"
+          "status": "UNAVAILABLE",
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "statusUpdatedAt": {
           "status": "UNAVAILABLE",
-          "reason": "Registry attribution records no canonical status-artifact update time"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1697,36 +1694,24 @@
         "sessionCheckpoint": null,
         "sessionStartedAt": {
           "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session start timestamp was found"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "sessionLastActivityAt": {
           "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session activity timestamp was found"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "sessionClosureStatus": "UNKNOWN",
         "sessionClosureEvidence": null,
-        "sessionStateEvidence": [
-          {
-            "label": "CP-05 merge",
-            "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
-            "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
-          }
-        ],
-        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+        "sessionStateEvidence": [],
+        "sessionStateReason": "No Arena session evidence is available: Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
       "history": {
         "status": "UNAVAILABLE",
-        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+        "reason": "History was not collected: Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
       "blocker": null,
-      "nextAction": "Start CP-06 after the merged CP-05 navigation checkpoint.",
-      "evidenceLinks": [
-        {
-          "label": "CP-05 merge",
-          "url": "https://github.com/Murkin1980/Murat-house/commit/02a63cb5091f79d47ef00afda61a793932a7def0",
-          "sourceId": "02a63cb5091f79d47ef00afda61a793932a7def0"
-        }
-      ],
+      "nextAction": null,
+      "evidenceLinks": [],
       "dependencies": [],
       "tools": [],
       "approvals": [],
@@ -1742,31 +1727,28 @@
       "name": "Murat AI Orchestrator",
       "summary": "Bounded orchestration layer for Murat AI with governed routing, fallback and durable execution checkpoints.",
       "repo": "Murkin1980/murat-ai-orchestrator",
-      "triageState": "READY",
+      "triageState": null,
       "triageSource": {
-        "status": "KNOWN",
-        "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
+        "status": "UNAVAILABLE",
+        "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
-      "stage": "CP-06 — Bounded Fallback & Quality Escalation v1",
-      "checkpoint": "CP-06 — Bounded Fallback & Quality Escalation v1",
+      "stage": null,
+      "checkpoint": null,
       "progress": null,
-      "lastUpdated": "2026-09-18",
+      "lastUpdated": "2026-10-20",
       "activity": {
         "lastMeaningfulActivity": {
-          "status": "KNOWN",
-          "at": "2026-09-18T00:00:00Z",
-          "source": "MANUAL",
-          "sourceId": "config/projects.json:murat-ai-orchestrator",
-          "evidenceUrl": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f"
+          "status": "UNAVAILABLE",
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "statusUpdatedAt": {
           "status": "UNAVAILABLE",
-          "reason": "Registry attribution records no canonical status-artifact update time"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
@@ -1774,46 +1756,24 @@
         "sessionCheckpoint": null,
         "sessionStartedAt": {
           "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session start timestamp was found"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "sessionLastActivityAt": {
           "status": "UNAVAILABLE",
-          "reason": "No attributable Arena session activity timestamp was found"
+          "reason": "Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
         },
         "sessionClosureStatus": "UNKNOWN",
         "sessionClosureEvidence": null,
-        "sessionStateEvidence": [
-          {
-            "label": "CP-06 merge",
-            "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
-            "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
-          },
-          {
-            "label": "CP-07 instruction",
-            "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
-            "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
-          }
-        ],
-        "sessionStateReason": "No Arena session evidence is attributable; a merge, commit or status update is not closure"
+        "sessionStateEvidence": [],
+        "sessionStateReason": "No Arena session evidence is available: Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
       "history": {
         "status": "UNAVAILABLE",
-        "reason": "History was not collected: the project has no synchronized GitHub source (see the source coverage list in config/source-repositories.json), so no commit, pull request, status or session evidence was read"
+        "reason": "History was not collected: Private repository: no canonical PROJECT_STATUS.md or STATUS.md could be verified from an authorized read-only session. Commit evidence alone cannot establish triage."
       },
       "blocker": null,
-      "nextAction": "Execute CP-07 — Durable Execution using the committed Arena checkpoint instruction.",
-      "evidenceLinks": [
-        {
-          "label": "CP-06 merge",
-          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/625e7819633725abca49c4e40c2c5e7d1318f83f",
-          "sourceId": "625e7819633725abca49c4e40c2c5e7d1318f83f"
-        },
-        {
-          "label": "CP-07 instruction",
-          "url": "https://github.com/Murkin1980/murat-ai-orchestrator/commit/99f9390b7928c4ce745ddc2d554ae62c2c42bf04",
-          "sourceId": "99f9390b7928c4ce745ddc2d554ae62c2c42bf04"
-        }
-      ],
+      "nextAction": null,
+      "evidenceLinks": [],
       "dependencies": [],
       "tools": [],
       "approvals": [],
@@ -1851,9 +1811,9 @@
           "reason": "Registry attribution records no canonical status-artifact update time"
         },
         "snapshotGeneratedAt": {
-          "at": "2026-10-01T00:00:00Z",
+          "at": "2026-10-20T12:00:00Z",
           "source": "SNAPSHOT",
-          "sourceId": "config/projects.json"
+          "sourceId": "config/projects.github.json"
         }
       },
       "session": {
