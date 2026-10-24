@@ -2,8 +2,7 @@
 
 Disposition: `EXTEND_EXISTING`
 
-Status: `VALIDATION` — implementation and acceptance evidence are complete;
-post-merge production deployment verification remains the final gate.
+Status: `PASS`
 
 ## Result
 
@@ -71,7 +70,11 @@ Checked with real Chromium on 2026-10-24:
 
 ## Final gate
 
-After this branch is merged, the `main` production workflow must complete the
-GitHub sync, tests, snapshot verification, build, Cloudflare Pages deployment and
-production snapshot verification. Only then may CP-20 move from `VALIDATION` to
-`PASS` in the post-merge closeout.
+- PR #41 merged to `main` at
+  `abe13e18772dd484f6fda7e0d7bf669791e87686` on 2026-10-24T03:12:48Z.
+- Canonical production workflow run `40057379197` completed successfully in
+  1m09s.
+- Tests, GitHub portfolio sync, MPE experiment sync, snapshot and coverage
+  verification, build, Cloudflare Pages deployment, production snapshot
+  verification and production discovery verification all passed.
+- CP-20 therefore satisfies its final deployment gate and is accepted as PASS.
