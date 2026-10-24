@@ -2,8 +2,8 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-18 — Portfolio Recent Activity Feed`
-Status: `PASS`
+Current checkpoint: `CP-20 — Production UX & Acceptance`
+Status: `VALIDATION`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -836,3 +836,105 @@ Current state:
   the next Arena run.
 
 Last updated: 2026-10-20 22:35 (Asia/Qyzylorda)
+
+## CP-19 — Portfolio Coverage & Data Quality Hardening
+Status: `PASS`
+
+Disposition:
+- `EXTEND_EXISTING` — CP-19 strengthened the existing source adapter, normalized
+  snapshot verifier and read-only Reports surface; it introduced no parallel data
+  path, backend, Worker, database or execution authority.
+
+Result:
+- PR #40 merged to `main` at merge commit
+  `ede570f27ef7075d7deb5cdea1451c3bc83960bf` on 2026-10-24T02:54:38Z;
+- the primary coverage classification is a mutually exclusive partition shared by
+  the UI and verifier through `classifyProject()`;
+- every project is classified as CURRENT, STALE, UNKNOWN, UNAVAILABLE or FIXTURE,
+  with session and history coverage reported separately;
+- fabricated READY states for `murat-house` and `murat-ai-orchestrator` were removed
+  and replaced by attributable UNAVAILABLE source gaps;
+- snapshot verification enforces schema validity, cache/runtime byte identity,
+  repository source/gap accounting, fixture and UNAVAILABLE invariants, credential
+  scanning and coverage sums;
+- the read-only Reports coverage panel exposes the same classifications and counts
+  as the verifier, including per-project source/session/history limitations;
+- UI/verifier parity and mutual-exclusivity regressions are covered by tests that
+  drive the real verification script.
+
+Validation:
+- PR #40 `validate` check: SUCCESS;
+- `npm test`: 295/295 passed;
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `npm run verify:snapshot`: PASS;
+- production workflow run `40056131304` on merge commit `ede570f`: SUCCESS,
+  including GitHub portfolio sync, tests, snapshot verification, coverage report,
+  build, Cloudflare Pages deployment and production snapshot verification;
+- the production run reported schema `1.2.0`, 15 projects and the mutually exclusive
+  coverage partition `current 0 + stale 2 + unknown 6 + unavailable 2 + fixture 5 = 15`;
+  session coverage was `known 1 / unknown 14`, and history coverage was
+  `known 2 / unavailable 13`;
+- production synchronization used the existing secret path and emitted no credential
+  values or raw private repository content.
+
+Known limitations:
+- 14 projects still have UNKNOWN Arena session state because no attributable session
+  evidence is present; missing evidence is never inferred as CLOSED;
+- 13 projects have history UNAVAILABLE with an attributable reason;
+- the external Cloudflare Pages PR-preview check remains unreliable, but the canonical
+  production workflow on `main` completed successfully.
+
+Current state:
+- Progress: `20/21`;
+- Blocker: none;
+- Current stage/checkpoint: `CP-19 — Portfolio Coverage & Data Quality Hardening`
+  (merged and production-verified);
+- Next checkpoint: `CP-20 — Production UX & Acceptance`;
+- Next action: perform the bounded CP-20 desktop/mobile acceptance pass without adding
+  product scope, infrastructure, execution controls or a second source of truth.
+
+Arena session evidence:
+- no explicit CP-19 Arena session closure record exists in the repository;
+- merge, green validation and production deployment are not session-closure evidence;
+- the dashboard must continue to report the resulting READY_TO_CLOSE/STALE_SESSION or
+  UNKNOWN state from attributable evidence rather than closing the session itself.
+
+Last updated: 2026-10-24 08:55 (Asia/Qyzylorda)
+
+## CP-20 — Production UX & Acceptance
+Status: `VALIDATION`
+
+Disposition:
+- `EXTEND_EXISTING` — final acceptance of the existing monitoring product; no new
+  product capability, runtime, data path or infrastructure was introduced.
+
+Result:
+- the complete monitoring journey was exercised in real production Chromium at
+  desktop 1440×1000 and mobile 390×844;
+- Portfolio/Activity → Project Detail → project state → Arena session state →
+  recent activity/history → GitHub evidence → return to Portfolio works;
+- project operational status and session status remain visibly separate;
+- the production dashboard correctly keeps the unclosed dashboard session as
+  STALE_SESSION and never infers CLOSED from commits, merge or deployment;
+- UNKNOWN and UNAVAILABLE source/session/history gaps remain explicit;
+- no horizontal overflow, browser console errors or warnings were observed;
+- no writable form, execution action or session-control action exists;
+- no implementation defect requiring a code change was found.
+
+Validation evidence:
+- `npm test`: 295/295 passed;
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `npm run verify:snapshot`: PASS — schema `1.2.0`, version 7, 15 projects,
+  no credentials detected, primary coverage sum 15/15;
+- production browser acceptance details are recorded in
+  `docs/CP20_PRODUCTION_UX_ACCEPTANCE.md`;
+- post-merge production deployment remains the final gate before PASS.
+
+Current state:
+- Progress: `20/21` plus CP-20 implementation/acceptance complete;
+- Blocker: none;
+- Current stage/checkpoint: `CP-20 — Production UX & Acceptance`;
+- Next action: merge the CP-20 PR, verify the canonical `main` production workflow,
+  then record CP-20 PASS in the post-merge closeout.
+
+Last updated: 2026-10-24 09:10 (Asia/Qyzylorda)
