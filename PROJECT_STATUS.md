@@ -3,7 +3,7 @@
 Decision: `EXTEND_EXISTING`
 
 Current checkpoint: `CP-20 — Production UX & Acceptance`
-Status: `VALIDATION`
+Status: `PASS`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -902,7 +902,7 @@ Arena session evidence:
 Last updated: 2026-10-24 08:55 (Asia/Qyzylorda)
 
 ## CP-20 — Production UX & Acceptance
-Status: `VALIDATION`
+Status: `PASS`
 
 Disposition:
 - `EXTEND_EXISTING` — final acceptance of the existing monitoring product; no new
@@ -928,13 +928,20 @@ Validation evidence:
   no credentials detected, primary coverage sum 15/15;
 - production browser acceptance details are recorded in
   `docs/CP20_PRODUCTION_UX_ACCEPTANCE.md`;
-- post-merge production deployment remains the final gate before PASS.
+- PR #41 merged to `main` at merge commit
+  `abe13e18772dd484f6fda7e0d7bf669791e87686` on 2026-10-24T03:12:48Z;
+- canonical production workflow run `40057379197`: SUCCESS in 1m09s — tests,
+  GitHub portfolio sync, MPE experiment sync, snapshot and coverage verification,
+  Cloudflare credential check, discovery refresh, build, Pages deployment,
+  production snapshot verification and production discovery verification all passed.
 
 Current state:
-- Progress: `20/21` plus CP-20 implementation/acceptance complete;
+- Progress: `21/21`;
 - Blocker: none;
-- Current stage/checkpoint: `CP-20 — Production UX & Acceptance`;
-- Next action: merge the CP-20 PR, verify the canonical `main` production workflow,
-  then record CP-20 PASS in the post-merge closeout.
+- Current stage/checkpoint: `CP-20 — Production UX & Acceptance` (merged,
+  production-deployed and accepted);
+- Next checkpoint: none defined;
+- Next action: routine portfolio monitoring and scheduled synchronization only;
+  any new substantial scope requires a separately approved checkpoint and New Idea Filter.
 
-Last updated: 2026-10-24 09:10 (Asia/Qyzylorda)
+Last updated: 2026-10-24 09:14 (Asia/Qyzylorda)

@@ -20,8 +20,8 @@
 18. CP-17 Live History & Reports — PASS (PR #29 merged 2026-10-01 with the post-merge status record PR #30; 216/216 tests, build PASS; `ProjectState` schema 1.2.0 with the required `history` block)
 19. CP-18 Portfolio Recent Activity Feed — PASS (PR #37 merged 2026-10-20 at c44a510bdbb089107c226ceef596125dc4177d59; 284/284 tests, build PASS, snapshot verification PASS, desktop 1440×1000 and mobile 390×844 PASS; production workflow run 39465753157 SUCCESS, including Cloudflare deploy and production snapshot verification)
 20. CP-19 Portfolio Coverage & Data Quality Hardening — PASS (PR #40 merged 2026-10-24 at ede570f27ef7075d7deb5cdea1451c3bc83960bf; 295/295 tests, build and snapshot verification PASS; production workflow run 40056131304 SUCCESS; primary coverage partition 15/15 and UI/verifier parity confirmed)
-21. CP-20 Production UX & Acceptance — VALIDATION (295/295 tests, build and snapshot verification PASS; real production Chromium acceptance passed at 1440×1000 and 390×844 with no overflow or console errors; awaiting merge and canonical `main` production deployment verification)
+21. CP-20 Production UX & Acceptance — PASS (PR #41 merged 2026-10-24 at abe13e18772dd484f6fda7e0d7bf669791e87686; 295/295 tests, build and snapshot verification PASS; real production Chromium acceptance passed at 1440×1000 and 390×844 with no overflow or console errors; production workflow run 40057379197 SUCCESS)
 
-Next action: merge CP-20, verify the canonical `main` production workflow, then record CP-20 PASS. No later checkpoint is defined or implied.
+All 21 defined checkpoints are complete. Next action is routine portfolio monitoring and scheduled synchronization. No later checkpoint is defined or implied; substantial new scope requires an owner-approved checkpoint and New Idea Filter disposition.
 
 No later checkpoint starts by silently expanding the scope of an earlier checkpoint.
