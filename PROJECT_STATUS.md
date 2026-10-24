@@ -2,8 +2,8 @@
 
 Decision: `EXTEND_EXISTING`
 
-Current checkpoint: `CP-19 — Portfolio Coverage & Data Quality Hardening`
-Status: `PASS`
+Current checkpoint: `CP-20 — Production UX & Acceptance`
+Status: `VALIDATION`
 
 ## CP-00 — Repository Foundation
 Status: `PASS`
@@ -900,3 +900,41 @@ Arena session evidence:
   UNKNOWN state from attributable evidence rather than closing the session itself.
 
 Last updated: 2026-10-24 08:55 (Asia/Qyzylorda)
+
+## CP-20 — Production UX & Acceptance
+Status: `VALIDATION`
+
+Disposition:
+- `EXTEND_EXISTING` — final acceptance of the existing monitoring product; no new
+  product capability, runtime, data path or infrastructure was introduced.
+
+Result:
+- the complete monitoring journey was exercised in real production Chromium at
+  desktop 1440×1000 and mobile 390×844;
+- Portfolio/Activity → Project Detail → project state → Arena session state →
+  recent activity/history → GitHub evidence → return to Portfolio works;
+- project operational status and session status remain visibly separate;
+- the production dashboard correctly keeps the unclosed dashboard session as
+  STALE_SESSION and never infers CLOSED from commits, merge or deployment;
+- UNKNOWN and UNAVAILABLE source/session/history gaps remain explicit;
+- no horizontal overflow, browser console errors or warnings were observed;
+- no writable form, execution action or session-control action exists;
+- no implementation defect requiring a code change was found.
+
+Validation evidence:
+- `npm test`: 295/295 passed;
+- `npm run build` (`tsc -b && vite build`): PASS;
+- `npm run verify:snapshot`: PASS — schema `1.2.0`, version 7, 15 projects,
+  no credentials detected, primary coverage sum 15/15;
+- production browser acceptance details are recorded in
+  `docs/CP20_PRODUCTION_UX_ACCEPTANCE.md`;
+- post-merge production deployment remains the final gate before PASS.
+
+Current state:
+- Progress: `20/21` plus CP-20 implementation/acceptance complete;
+- Blocker: none;
+- Current stage/checkpoint: `CP-20 — Production UX & Acceptance`;
+- Next action: merge the CP-20 PR, verify the canonical `main` production workflow,
+  then record CP-20 PASS in the post-merge closeout.
+
+Last updated: 2026-10-24 09:10 (Asia/Qyzylorda)
