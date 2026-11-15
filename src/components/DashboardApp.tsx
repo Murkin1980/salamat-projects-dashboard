@@ -284,6 +284,7 @@ function App() {
 
         {detailProjectId === null && view === 'triage' && (
           <>
+            <RecentActivityView projects={reportProjects} onNavigate={navigate} compact/>
             <section className="triage-tabs" aria-label="Фильтр по готовности">
               <button className={filter === 'ALL' ? 'selected' : ''} onClick={() => setFilter('ALL')}>ALL <span>{projects.length}</span></button>
               {triageOrder.map((state) => {

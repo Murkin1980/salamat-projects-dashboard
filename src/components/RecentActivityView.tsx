@@ -5,38 +5,43 @@ import {
   IconLock,
   IconQuestionMark,
 } from '@tabler/icons-react'
-import { historyEventCategory, type ProjectState } from '../contract/project-state'
+import { HISTORY_EVENT_TYPES, HistoryEventTypeSchema, historyEventCategory, type HistoryEvent, type ProjectState } from '../contract/project-state'
 import {
   getPortfolioActivity,
   projectsWithoutHistory,
   RECENT_ACTIVITY_LIMIT,
 } from '../monitoring/recent-activity'
-import { projectDetailHash } from '../routing/hash-route'
+import { HISTORY_EVENT_LABELS } from '../monitoring/history-view'
+import { projectDetailHash, viewHash } from '../routing/hash-route'
 import { HistoryEventBody } from './history-parts'
 
 export function RecentActivityView({
   projects,
   onNavigate,
+  compact = false,
 }: {
+  compact?: boolean
   projects: readonly ProjectState[]
   onNavigate: (hash: string) => void
 }) {
   const [projectId, setProjectId] = useState('ALL')
+  const [eventType, setEventType] = useState<HistoryEvent['type'] | null>(null)
+  const limit = compact ? 3 : RECENT_ACTIVITY_LIMIT
   const events = useMemo(
-    () => getPortfolioActivity(projects, projectId === 'ALL' ? null : projectId),
-    [projectId, projects],
+    () => getPortfolioActivity(projects, projectId === 'ALL' ? null : projectId, limit, eventType),
+    [projectId, projects, limit, eventType],
   )
   const unavailable = useMemo(() => projectsWithoutHistory(projects), [projects])
 
   return (
-    <section className="activity-workspace" aria-labelledby="activity-heading">
+    <section className={compact ? 'activity-workspace activity-compact' : 'activity-workspace'} aria-labelledby="activity-heading">
       <header className="reports-heading">
         <div>
-          <p className="eyebrow">Portfolio activity · latest snapshot</p>
           <h2 id="activity-heading">Что изменилось недавно</h2>
-          <p>Единая лента подтверждённых событий всех проектов. Порядок определяется временем evidence, а не временем открытия страницы.</p>
         </div>
-        <span className="read-only-badge"><IconLock size={15}/> READ ONLY</span>
+        {compact
+          ? <a className="activity-all" href={viewHash('activity')}>Открыть ленту</a>
+          : <span className="read-only-badge"><IconLock size={15}/> READ ONLY</span>}
       </header>
 
       <div className="activity-controls">
@@ -47,17 +52,25 @@ export function RecentActivityView({
             {projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
           </select>
         </label>
-        <p>Показаны последние {RECENT_ACTIVITY_LIMIT} событий из текущего snapshot.</p>
+        <label className="report-project-select">
+          <span>Тип события</span>
+          <select value={eventType ?? ''} onChange={(event) => {
+            setEventType(HistoryEventTypeSchema.safeParse(event.target.value).data ?? null)
+          }}>
+            <option value="">Все типы</option>
+            {HISTORY_EVENT_TYPES.map((type) => <option key={type} value={type}>{HISTORY_EVENT_LABELS[type]}</option>)}
+          </select>
+        </label>
       </div>
 
       {unavailable.length > 0 && projectId === 'ALL' && (
         <p className="activity-coverage" role="status">
-          <IconQuestionMark size={16}/> История недоступна для {unavailable.length} из {projects.length} проектов; события для них не придуманы.
+          <IconQuestionMark size={16}/> История недоступна для {unavailable.length} из {projects.length} проектов.
         </p>
       )}
 
       {events.length === 0 ? (
-        <div className="empty-state"><IconActivity size={26}/><p>Для выбранного проекта нет событий с evidence.</p></div>
+        <div className="empty-state"><IconActivity size={26}/><p>Нет подтверждённых событий по выбранным фильтрам.</p></div>
       ) : (
         <ol className="activity-feed">
           {events.map(({ project, event }) => (
@@ -68,15 +81,15 @@ export function RecentActivityView({
                   click.preventDefault()
                   onNavigate(projectDetailHash(project.id))
                 }}>{project.name}</a>
-                <span>{project.checkpoint ?? 'Checkpoint не указан'}</span>
+                {!compact && project.checkpoint && <span>{project.checkpoint}</span>}
               </div>
-              <article><HistoryEventBody event={event}/></article>
+              <article><HistoryEventBody event={event} compact={compact}/></article>
             </li>
           ))}
         </ol>
       )}
 
-      <p className="activity-boundary"><IconExternalLink size={14}/> Ссылки Evidence ведут к исходным GitHub-данным. Лента ничего не запускает и не изменяет.</p>
+      {!compact && <p className="activity-boundary"><IconExternalLink size={14}/> До {limit} последних событий из текущего снимка GitHub.</p>}
     </section>
   )
 }

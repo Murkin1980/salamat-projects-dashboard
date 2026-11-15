@@ -20,12 +20,14 @@ export function getPortfolioActivity(
   projects: readonly ProjectState[],
   projectId: string | null = null,
   limit = RECENT_ACTIVITY_LIMIT,
+  eventType: HistoryEvent['type'] | null = null,
 ): PortfolioActivityEvent[] {
   return projects
     .filter((project) => projectId === null || project.id === projectId)
     .flatMap((project) => project.history.status === 'KNOWN'
       ? project.history.events.map((event) => ({ project, event }))
       : [])
+    .filter(({ event }) => eventType === null || event.type === eventType)
     .sort((left, right) => {
       const byEvent = compareHistoryEvents(left.event, right.event)
       if (byEvent !== 0) return byEvent

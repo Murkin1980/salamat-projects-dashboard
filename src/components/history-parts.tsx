@@ -23,7 +23,7 @@ function shortSourceId(event: HistoryEvent): string {
  * evidence source / id, and a link to that evidence. Shared by History & Reports
  * and the Project Detail history panel so both render an event identically.
  */
-export function HistoryEventBody({ event }: { event: HistoryEvent }) {
+export function HistoryEventBody({ event, compact = false }: { event: HistoryEvent; compact?: boolean }) {
   const note = TIME_BASIS_NOTE[event.timeBasis]
   return (
     <>
@@ -31,14 +31,14 @@ export function HistoryEventBody({ event }: { event: HistoryEvent }) {
         <span data-category={historyEventCategory(event.type)}>{HISTORY_EVENT_LABELS[event.type]}</span>
         <time dateTime={event.occurredAt}>{formatEventTimestamp(event.occurredAt)} UTC</time>
       </div>
-      {(event.from !== null || event.to !== null) && (
+      {!compact && (event.from !== null || event.to !== null) && (
         <div className="history-transition">
           <strong>{event.from ?? 'нет блокера'}</strong><IconArrowRight size={16}/><strong>{event.to ?? 'нет блокера'}</strong>
         </div>
       )}
       <p>{event.summary}</p>
       {note && <p className="history-time-note">{note}</p>}
-      <p className="history-provenance" title={event.sourceId}>
+      {!compact && <p className="history-provenance" title={event.sourceId}>
         <span>{event.source}</span> · <code>{shortSourceId(event)}</code>
         {/* The 7-character form is deliberate on wide screens, but a `title` is
             unreachable by touch: on phones the full evidence id is real text. */}
@@ -48,7 +48,7 @@ export function HistoryEventBody({ event }: { event: HistoryEvent }) {
             <span className="provenance-text">{event.sourceId}</span>
           </span>
         )}
-      </p>
+      </p>}
       <a href={event.evidenceUrl} target="_blank" rel="noreferrer"><IconExternalLink size={13}/> Evidence</a>
     </>
   )
