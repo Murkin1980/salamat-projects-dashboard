@@ -40,3 +40,27 @@ dashboard.
 
 `PROJECT_STATUS.md` must be updated only after PR merge and production
 validation, in accordance with the mandatory post-merge status rule.
+
+## Triage feed and event-type filter
+
+The Triage home page shows up to three events above the project grid using the
+same component as the full 20-event feed at `#/activity`. Both views combine
+the project and event-type filters before applying their limits. The full view
+and CP-17 Reports retain detailed source provenance.
+
+Portfolio tiers (`P0 / SUPPORT / HOLD / ARCHIVE`) have no field in
+`ProjectState` or the published snapshot. Implementing a tier filter requires
+an approved data source and contract change. The current filters use the
+existing project IDs and history event types.
+
+Verification on base `5c097ce`:
+
+- 298/298 tests passed via `node --import tsx --test tests/**/*.test.ts`,
+  including CP-17 and the new combined-filter, empty-state and invalid snapshot
+  checks. The `npm test` command encountered an IPC permission error in the
+  local tsx CLI.
+- `npm run build` and `git diff --check` passed.
+- The snapshot verifier passed via `node --import tsx scripts/verify-project-state.ts`
+  (15 projects, 2 with known history).
+- The real browser could not start in the local environment. The test suite
+  covered the Dashboard at simulated widths of 390 and 1440 pixels.

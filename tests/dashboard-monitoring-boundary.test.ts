@@ -119,6 +119,7 @@ function chromeText(container: Element) {
     '.project-evidence',
     '.attention-row p',
     '.attention-row small',
+    '.activity-feed',
     // Source provenance that the UI reveals on touch screens instead of keeping
     // it in a `title` tooltip. Like `.attention-row p`, this is verbatim
     // source-artifact text (a conflicting status reason may legitimately name a
@@ -258,4 +259,28 @@ test('blocker and progress render when the source provides them', async (t) => {
   assert.ok(text.includes('3') && text.includes('10'), 'progress values must be visible')
   assert.ok(card.querySelector('.status-badge')?.textContent?.includes('BLOCKED'))
   assert.equal(card.querySelectorAll('button').length, 0, 'no execution control on a BLOCKED card')
+})
+
+test('Triage shows the compact feed and renders the empty filter state', async (t) => {
+  const { container, cleanup, act } = await renderDashboard(390)
+  t.after(cleanup)
+  const activity = container.querySelector('.activity-compact')
+  assert.ok(activity)
+  assert.equal(activity.querySelectorAll('.activity-feed > li').length, 3)
+  assert.ok(activity.querySelector('a[href="#/activity"]'))
+  assert.ok(activity.querySelector('a[href^="#/project/"]'))
+  assert.ok(activity.querySelector('.activity-feed article a[href^="https://"]'))
+
+  const unavailable = (JSON.parse(snapshotText) as Registry).projects.find(
+    (project) => (project.history as { status: string }).status === 'UNAVAILABLE',
+  )
+  assert.ok(unavailable)
+  const filter = activity.querySelector<HTMLSelectElement>('select[aria-label="Фильтр проекта"]')
+  assert.ok(filter)
+  await act(async () => {
+    filter.value = String(unavailable.id)
+    filter.dispatchEvent(new window.Event('change', { bubbles: true }))
+  })
+  assert.ok(activity.querySelector('.empty-state'))
+  assert.equal(activity.querySelectorAll('.activity-feed > li').length, 0)
 })

@@ -47,3 +47,22 @@ test('zero and negative limits return no events', () => {
   assert.deepEqual(getPortfolioActivity(registry.projects, null, 0), [])
   assert.deepEqual(getPortfolioActivity(registry.projects, null, -1), [])
 })
+
+test('event type and project filters intersect before the recent limit is applied', () => {
+  const all = getPortfolioActivity(registry.projects, null, Infinity)
+  const target = all.find(({ event }) => event.type !== all[0].event.type)
+  assert.ok(target)
+
+  const expected = all.filter(({ project, event }) =>
+    project.id === target.project.id && event.type === target.event.type)
+  assert.deepEqual(getPortfolioActivity(registry.projects, target.project.id, 1, target.event.type), expected.slice(0, 1))
+  assert.deepEqual(getPortfolioActivity(registry.projects, 'unknown-project', 3, target.event.type), [])
+})
+
+test('invalid event timestamps are rejected at the snapshot boundary', () => {
+  const snapshot = structuredClone(registryJson)
+  const project = snapshot.projects.find((candidate) => candidate.history.events?.length)
+  assert.ok(project?.history.events?.[0])
+  project.history.events[0].occurredAt = 'invalid-date'
+  assert.throws(() => parseProjectRegistry(snapshot), /occurredAt/)
+})
